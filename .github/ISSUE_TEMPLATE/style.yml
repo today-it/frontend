@@ -1,0 +1,41 @@
+name: "🎨 스타일 수정"
+description: "기능 동작에 영향을 주지 않는 코드 포맷팅 및 스타일 작업을 정의합니다."
+title: "[Style] "
+labels: ["🎨 Style"]
+body:
+  - type: textarea
+    id: target
+    attributes:
+      label: "🎯 수정 대상"
+      description: "스타일을 수정할 파일, 모듈 또는 범위를 작성해주세요."
+      placeholder: |
+        - 대상 파일 / 모듈:
+        - 적용 범위:
+    validations:
+      required: true
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: "🎨 변경 내용"
+      description: "포맷팅, 네이밍, import 정리 등 변경할 스타일 내용을 작성해주세요."
+      placeholder: |
+        - 코드 포맷팅 통일
+        - 불필요한 공백 및 줄바꿈 정리
+        - import 순서 정리
+        - 네이밍 규칙에 맞게 수정
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "✅ 세부 작업 목록 (To-Do)"
+      description: "작업 단계를 체크리스트로 작성해주세요."
+      placeholder: |
+        - [ ] 수정 대상 확인
+        - [ ] 스타일 규칙 적용
+        - [ ] 기능 동작에 영향이 없는지 확인
+        - [ ] 정적 분석 / 포맷터 실행
+    validations:
+      required: true

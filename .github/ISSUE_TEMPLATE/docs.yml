@@ -1,0 +1,48 @@
+name: "📚 문서 수정 및 추가"
+description: "README 또는 프로젝트 문서를 수정하거나 추가합니다."
+title: "[Docs] "
+labels: ["📚 Docs"]
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: "📖 수정 / 추가 목적"
+      description: "어떤 문서를 왜 수정하거나 추가하려는지 작성해주세요."
+      placeholder: |
+        - 예: 실행 방법이 현재 프로젝트 구성과 달라 최신화 필요
+        - 예: 프로젝트 기여 가이드 추가
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: "🎯 수정 범위"
+      description: "대상 문서와 주요 변경 내용을 작성해주세요."
+      placeholder: |
+        - 대상 문서: README.md, docs/...
+        - 변경 내용:
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "✅ 세부 작업 목록 (To-Do)"
+      description: "문서 작업을 완료하기 위한 단계를 체크리스트로 작성해주세요."
+      placeholder: |
+        - [ ] 기존 내용 검토
+        - [ ] 문서 추가 또는 수정
+        - [ ] 코드 / 링크 / 이미지 등 참조 정보 확인
+        - [ ] 최종 내용 검토
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: "💬 기타 참고사항 (선택 사항)"
+      description: "리뷰어가 참고해야 할 자료나 논의 내용이 있다면 작성해주세요."
+      placeholder: "관련 문서, 이슈 또는 참고 링크"
+    validations:
+      required: false

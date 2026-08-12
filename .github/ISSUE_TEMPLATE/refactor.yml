@@ -1,0 +1,62 @@
+name: "🔨 리팩터링"
+description: "기능 동작을 유지하면서 코드 또는 구조를 개선하는 작업을 정의합니다."
+title: "[Refactor] "
+labels: ["🛠 Refactor"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "📄 작업 요약"
+      description: "어떤 코드나 구조를 개선할지 간단히 작성해주세요."
+      placeholder: |
+        - 예: 중복된 검증 로직을 공통 모듈로 분리
+        - 예: 하나의 모듈에 집중된 책임을 기능 단위로 분리
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "🎯 리팩터링 목적"
+      description: "현재 구조의 문제와 개선을 통해 얻으려는 효과를 작성해주세요."
+      placeholder: |
+        - 현재 문제: 동일한 로직이 여러 위치에 중복되어 있음
+        - 목적: 변경 지점을 줄이고 유지보수성을 높임
+    validations:
+      required: true
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: "🔄 주요 변경 사항 (Before & After)"
+      description: "구조적으로 무엇이 달라지는지 비교해 작성해주세요."
+      placeholder: |
+        - Before: 각 모듈이 동일한 검증 로직을 개별적으로 수행
+        - After: 공통 검증 모듈을 통해 동일한 규칙을 사용
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "✅ 세부 작업 목록 (To-Do)"
+      description: "리팩터링 작업 단계를 체크리스트로 작성해주세요."
+      placeholder: |
+        - [ ] 개선 대상 및 영향 범위 확인
+        - [ ] 코드 또는 구조 변경
+        - [ ] 불필요한 중복 코드 제거
+        - [ ] 기존 기능 회귀 테스트
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "🏁 완료 조건"
+      description: "리팩터링이 완료되었다고 판단할 기준을 작성해주세요."
+      placeholder: |
+        - [ ] 기존 기능의 동작이 유지된다.
+        - [ ] 정의한 구조 개선이 반영된다.
+        - [ ] 관련 테스트가 통과한다.
+    validations:
+      required: false

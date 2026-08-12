@@ -1,0 +1,51 @@
+name: "🐳 DevOps / 인프라"
+description: "배포, CI/CD, 인프라 및 운영 자동화 작업을 정의합니다."
+title: "[DevOps] "
+labels: ["🐳 DevOps"]
+body:
+  - type: textarea
+    id: work-summary
+    attributes:
+      label: "📄 작업 요약"
+      description: "진행할 인프라 또는 자동화 작업을 간결하게 작성해주세요."
+      placeholder: "예: 기본 브랜치 변경 시 빌드 및 테스트를 수행하는 CI 파이프라인 구성"
+    validations:
+      required: true
+
+  - type: textarea
+    id: infrastructure-context
+    attributes:
+      label: "🏗️ 배경 및 대상 환경"
+      description: "작업이 필요한 배경과 대상 인프라 또는 도구를 작성해주세요."
+      placeholder: |
+        - 현재 문제:
+        - 대상 환경:
+        - 사용 도구:
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-details
+    attributes:
+      label: "💡 상세 구현 계획"
+      description: "환경 구성 또는 자동화 방식과 주요 변경 사항을 작성해주세요."
+      placeholder: |
+        - Build / Test:
+        - Deploy:
+        - Secret / Environment:
+        - Monitoring / Rollback:
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "✅ 세부 작업 목록 (To-Do)"
+      description: "완료해야 할 작업을 체크리스트로 작성해주세요."
+      placeholder: |
+        - [ ] 인프라 또는 파이프라인 설정 작성
+        - [ ] 환경 변수 및 Secret 구성
+        - [ ] 실행 / 배포 테스트
+        - [ ] 실패 및 복구 시나리오 확인
+    validations:
+      required: true

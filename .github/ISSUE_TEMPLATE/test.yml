@@ -1,0 +1,79 @@
+name: "🧪 테스트 추가 및 수정"
+description: "단위, 통합, E2E 등 테스트 추가 및 수정 작업을 정의합니다."
+title: "[Test] "
+labels: ["🧪 Test"]
+body:
+  - type: textarea
+    id: test-target
+    attributes:
+      label: "🎯 테스트 대상"
+      description: "테스트를 추가하거나 수정할 기능, 모듈, API 또는 흐름을 작성해주세요."
+      placeholder: |
+        - 대상 기능: 사용자 정보 수정
+        - 대상 모듈: 사용자 정보 변경 로직
+        - 대상 인터페이스: 사용자 정보 수정 API
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-purpose
+    attributes:
+      label: "📄 테스트 목적"
+      description: "해당 테스트가 필요한 이유와 검증할 동작을 작성해주세요."
+      placeholder: |
+        - 정상 입력에서 변경이 성공하는지 검증
+        - 잘못된 입력이 거부되는지 검증
+        - 권한이 없는 요청이 차단되는지 검증
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-cases
+    attributes:
+      label: "🧪 테스트 시나리오"
+      description: "정상, 예외, 경계값 등 검증할 시나리오를 작성해주세요."
+      placeholder: |
+        - [ ] 정상적인 요청은 성공한다.
+        - [ ] 유효하지 않은 입력은 적절한 오류를 반환한다.
+        - [ ] 권한이 없는 요청은 거부된다.
+        - [ ] 경계값에서도 예상한 결과가 반환된다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-environment
+    attributes:
+      label: "⚙️ 테스트 환경 및 범위 (선택 사항)"
+      description: "테스트 종류, 사용 도구, Mock 여부, 외부 의존성 등 필요한 환경을 작성해주세요."
+      placeholder: |
+        - 테스트 종류: 단위 테스트 / 통합 테스트 / E2E 테스트
+        - 테스트 도구:
+        - Mock 또는 Stub 대상:
+        - 필요한 외부 환경:
+    validations:
+      required: false
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "✅ 세부 작업 목록 (To-Do)"
+      description: "테스트 작업을 완료하기 위한 단계를 체크리스트로 작성해주세요."
+      placeholder: |
+        - [ ] 테스트 데이터 및 Fixture 준비
+        - [ ] 정상 시나리오 테스트 작성
+        - [ ] 예외 및 경계값 테스트 작성
+        - [ ] 전체 테스트 실행 및 회귀 여부 확인
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: "🏁 완료 조건"
+      description: "테스트 작업이 완료되었다고 판단할 기준을 작성해주세요."
+      placeholder: |
+        - [ ] 정의한 테스트 시나리오가 구현되었다.
+        - [ ] 새로 추가한 테스트가 통과한다.
+        - [ ] 기존 테스트에 회귀가 없다.
+    validations:
+      required: false
