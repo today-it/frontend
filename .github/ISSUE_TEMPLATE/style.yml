@@ -1,7 +1,7 @@
-name: "🎨 스타일 수정"
+name: "🧹 스타일 수정"
 description: "기능 동작에 영향을 주지 않는 코드 포맷팅 및 스타일 작업을 정의합니다."
-title: "[Style] "
-labels: ["🎨 Style"]
+title: "[style] "
+labels: ["🧹 style"]
 body:
   - type: textarea
     id: target
@@ -17,7 +17,7 @@ body:
   - type: textarea
     id: changes
     attributes:
-      label: "🎨 변경 내용"
+      label: "🧹 변경 내용"
       description: "포맷팅, 네이밍, import 정리 등 변경할 스타일 내용을 작성해주세요."
       placeholder: |
         - 코드 포맷팅 통일

@@ -1,7 +1,7 @@
-name: "🔨 리팩터링"
+name: "🛠️ 리팩터링"
 description: "기능 동작을 유지하면서 코드 또는 구조를 개선하는 작업을 정의합니다."
-title: "[Refactor] "
-labels: ["🛠 Refactor"]
+title: "[refactor] "
+labels: ["🛠 refactor"]
 body:
   - type: textarea
     id: summary
