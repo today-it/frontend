@@ -8,10 +8,10 @@
 
 ## 🔗 관련 이슈 (Related Issues)
 
-> 완료되는 이슈는 `Closes`, `Fixes`, `Resolves` 중 목적에 맞는 키워드로 연결해주세요.
+> 완료되는 이슈는 `closes`, `fixes`, `resolves` 중 목적에 맞는 키워드로 연결해주세요.
 > 단순 참조만 필요한 이슈는 이슈 번호만 작성해주세요.
 
-- Closes #
+- closes #
 
 <br>
 

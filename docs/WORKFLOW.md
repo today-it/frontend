@@ -33,33 +33,35 @@ Branch 삭제
 
 ## 2. Branch 생성
 
-최신 기본 브랜치를 기준으로 작업 브랜치를 생성합니다.
+최신 develop 브랜치를 기준으로 feature 브랜치를 생성합니다.
 
 ```bash
-git switch main
-git pull origin main
-git switch -c feature/12-profile-update
+git switch develop
+git pull origin develop
+git switch -c feature/profile-update
 ```
 
 브랜치 이름은 [Convention](CONVENTION.md)의 Branch Convention을 따릅니다.
-
-> 프로젝트의 기본 브랜치가 `develop` 등 다른 이름이라면 해당 브랜치를 기준으로 사용합니다.
 
 ## 3. 개발 및 Commit
 
 Issue의 작업 범위를 기준으로 구현하고 의미 있는 작업 단위로 Commit합니다.
 
 ```text
-✨ Feat: 프로필 수정 API 구현
-🧪 Test: 프로필 수정 서비스 테스트 추가
+feat: 프로필 수정 기능 구현 #1
+test: 프로필 수정 서비스 테스트 추가 #1
 ```
 
 Commit Message는 [Convention](CONVENTION.md)의 Commit Convention을 따릅니다.
 
 ## 4. Pull Request 생성
 
-작업이 완료되면 기본 브랜치를 대상으로 Pull Request를 생성합니다.
+작업이 완료되면 develop 브랜치를 대상으로 Pull Request를 생성합니다.
 
+- PR 제목은 [Convention](CONVENTION.md)의 PR Title 규칙(이모지 포함)을 따릅니다.
+  ```text
+  ✨ feat: 사용자 프로필 수정 기능 구현
+  ```
 - PR Template의 항목을 작성합니다.
 - 관련 Issue를 연결합니다.
 - 주요 변경 사항과 리뷰 포인트를 작성합니다.
@@ -78,11 +80,7 @@ Merge 전에 다음 사항을 확인합니다.
 
 리뷰와 테스트가 완료되면 프로젝트의 Merge 정책에 따라 병합합니다.
 
-Merge 방식은 프로젝트 특성에 따라 하나를 선택해 일관되게 사용합니다.
-
-- Merge Commit
-- Squash and Merge
-- Rebase and Merge
+Merge 방식은 'Squash and Merge' 방식을 사용합니다.
 
 ## 7. Branch 삭제
 

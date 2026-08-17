@@ -1,7 +1,7 @@
 name: "🐳 DevOps / 인프라"
 description: "배포, CI/CD, 인프라 및 운영 자동화 작업을 정의합니다."
-title: "[DevOps] "
-labels: ["🐳 DevOps"]
+title: "[devops] "
+labels: ["🐳 devops"]
 body:
   - type: textarea
     id: work-summary
