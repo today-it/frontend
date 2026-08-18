@@ -20,20 +20,20 @@
 
 변경 목적에 따라 아래 타입 중 하나를 사용합니다.
 
-| Type | 사용 범위 |
-| --- | --- |
-| `feat` | 새로운 기능 구현 |
-| `fix` | 버그 수정 |
-| `docs` | 문서 수정 |
-| `style` | 코드 포맷팅, 세미콜론 누락 등 코드 동작 변경이 없는 수정 |
-| `refactor` | 코드 리팩터링 |
-| `test` | 테스트 코드 추가 또는 수정 |
-| `chore` | 빌드 설정, 패키지 매니저, 기타 환경 설정 수정 |
-| `comment` | 필요한 주석 추가 또는 수정 |
-| `design` | CSS, UI 디자인, 이미지 등 화면 관련 수정 |
-| `remove` | 파일 또는 코드 삭제 |
-| `rename` | 파일 경로 또는 파일명 변경 |
-| `devops` | 배포, CI/CD 및 프로젝트 자동화 관련 |
+| Type       | 사용 범위                                                |
+| ---------- | -------------------------------------------------------- |
+| `feat`     | 새로운 기능 구현                                         |
+| `fix`      | 버그 수정                                                |
+| `docs`     | 문서 수정                                                |
+| `style`    | 코드 포맷팅, 세미콜론 누락 등 코드 동작 변경이 없는 수정 |
+| `refactor` | 코드 리팩터링                                            |
+| `test`     | 테스트 코드 추가 또는 수정                               |
+| `chore`    | 빌드 설정, 패키지 매니저, 기타 환경 설정 수정            |
+| `comment`  | 필요한 주석 추가 또는 수정                               |
+| `design`   | CSS, UI 디자인, 이미지 등 화면 관련 수정                 |
+| `remove`   | 파일 또는 코드 삭제                                      |
+| `rename`   | 파일 경로 또는 파일명 변경                               |
+| `devops`   | 배포, CI/CD 및 프로젝트 자동화 관련                      |
 
 ### Subject
 
@@ -70,10 +70,10 @@ feat: 알림 설정 기능 구현
 
 관련 이슈를 연결하거나 자동으로 종료할 때 사용합니다.
 
-| Keyword | 사용 기준 | 예시 |
-| --- | --- | --- |
-| `closes` | 일반 작업을 완료한 경우 | `closes #10` |
-| `fixes` | 버그를 수정한 경우 | `fixes #25` |
+| Keyword    | 사용 기준                    | 예시           |
+| ---------- | ---------------------------- | -------------- |
+| `closes`   | 일반 작업을 완료한 경우      | `closes #10`   |
+| `fixes`    | 버그를 수정한 경우           | `fixes #25`    |
 | `resolves` | 논의·설계 이슈를 해결한 경우 | `resolves #40` |
 
 이슈를 종료하지 않고 참조만 할 경우 이슈 번호만 작성합니다.
@@ -94,15 +94,15 @@ related: #75
 - `summary`는 영문 소문자와 하이픈을 사용해 간결하게 작성합니다.
 - 작업 브랜치는 최신 develop 브랜치에서 생성합니다.
 
-| Type | 예시 | 용도 |
-| --- | --- | --- |
-| `feature` | `feature/profile-update` | 새로운 기능 구현 |
-| `style` | `style/code-formatting` | 코드 스타일 및 포맷팅 수정 |
-| `fix` | `fix/duplicate-request` | 버그(기능) 수정 |
-| `refactor` | `refactor/auth-validation` | 리팩토링 |
-| `docs` | `docs/readme-update` | README 등 문서 작업 |
-| `test` | `test/service-test` | 테스트 코드, 실험, 기타 검증 작업 |
-| `design` | `design/login-button` | CSS, UI 디자인, 이미지 등 화면 관련 수정 |
+| Type       | 예시                       | 용도                                     |
+| ---------- | -------------------------- | ---------------------------------------- |
+| `feature`  | `feature/profile-update`   | 새로운 기능 구현                         |
+| `style`    | `style/code-formatting`    | 코드 스타일 및 포맷팅 수정               |
+| `fix`      | `fix/duplicate-request`    | 버그(기능) 수정                          |
+| `refactor` | `refactor/auth-validation` | 리팩토링                                 |
+| `docs`     | `docs/readme-update`       | README 등 문서 작업                      |
+| `test`     | `test/service-test`        | 테스트 코드, 실험, 기타 검증 작업        |
+| `design`   | `design/login-button`      | CSS, UI 디자인, 이미지 등 화면 관련 수정 |
 
 ## Pull Request Convention
 
@@ -116,17 +116,17 @@ PR 제목은 이모지와 대표 커밋과 동일한 형식을 사용합니다.
 
 PR 제목에 사용하는 이모지는 다음과 같습니다.
 
-| Type | Emoji | Emoji Code | 사용 범위 |
-| --- | --- | --- | --- |
-| `feat` | ✨ | `:sparkles:` | 새로운 기능 추가 또는 기존 기능 개선 |
-| `fix` | 🐛 | `:bug:` | 버그 수정 (서버 오류, 데이터 불일치 등) |
-| `docs` | 📚 | `:books:` | 프로젝트 문서 수정 및 추가 (`README.md` 등) |
-| `style` | 🧹 | `:broom:` | 코드 포맷팅, 세미콜론 누락 등 기능과 무관한 스타일 수정 |
-| `design` | 🎨 | `:art:` | CSS, UI 디자인, 이미지 등 화면 관련 수정 |
-| `refactor` | 🛠 | `:hammer_and_wrench:` | 기존 코드 및 아키텍처 개선 (리팩토링) |
-| `test` | 🧪 | `:test_tube:` | 유닛 테스트, 통합 테스트 코드 추가 및 수정 |
-| `chore` | ⚙️ | `:gear:` | 개발 환경 구축 및 설정 변경 사항 (빌드, 의존성 업데이트 등) |
-| `devops` | 🐳 | `:whale:` | 배포, CI/CD 및 프로젝트 자동화 관련 |
+| Type       | Emoji | Emoji Code            | 사용 범위                                                   |
+| ---------- | ----- | --------------------- | ----------------------------------------------------------- |
+| `feat`     | ✨    | `:sparkles:`          | 새로운 기능 추가 또는 기존 기능 개선                        |
+| `fix`      | 🐛    | `:bug:`               | 버그 수정 (서버 오류, 데이터 불일치 등)                     |
+| `docs`     | 📚    | `:books:`             | 프로젝트 문서 수정 및 추가 (`README.md` 등)                 |
+| `style`    | 🧹    | `:broom:`             | 코드 포맷팅, 세미콜론 누락 등 기능과 무관한 스타일 수정     |
+| `design`   | 🎨    | `:art:`               | CSS, UI 디자인, 이미지 등 화면 관련 수정                    |
+| `refactor` | 🛠     | `:hammer_and_wrench:` | 기존 코드 및 아키텍처 개선 (리팩토링)                       |
+| `test`     | 🧪    | `:test_tube:`         | 유닛 테스트, 통합 테스트 코드 추가 및 수정                  |
+| `chore`    | ⚙️    | `:gear:`              | 개발 환경 구축 및 설정 변경 사항 (빌드, 의존성 업데이트 등) |
+| `devops`   | 🐳    | `:whale:`             | 배포, CI/CD 및 프로젝트 자동화 관련                         |
 
 ### PR Body
 
