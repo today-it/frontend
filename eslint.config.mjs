@@ -14,6 +14,18 @@ const eslintConfig = defineConfig([
     rules: {
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../*'],
+              message:
+                '상위 디렉터리 참조 시 상대 경로(../) 대신 @/ 절대 경로 별칭을 사용해 주세요.',
+            },
+          ],
+        },
+      ],
     },
   },
   // Override default ignores of eslint-config-next.
