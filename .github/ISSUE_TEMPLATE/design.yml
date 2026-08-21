@@ -1,13 +1,13 @@
-name: "🎨 디자인 수정"
-description: "CSS, UI 디자인, 이미지 등 화면 관련 작업을 정의합니다."
-title: "[design] "
-labels: ["🎨 design"]
+name: '🎨 디자인 수정'
+description: 'CSS, UI 디자인, 이미지 등 화면 관련 작업을 정의합니다.'
+title: '[design] '
+labels: ['🎨 design']
 body:
   - type: textarea
     id: target
     attributes:
-      label: "🎨 디자인 수정 대상"
-      description: "디자인을 수정할 컴포넌트, 페이지 또는 화면 범위를 작성해주세요."
+      label: '🎨 디자인 수정 대상'
+      description: '디자인을 수정할 컴포넌트, 페이지 또는 화면 범위를 작성해주세요.'
       placeholder: |
         - 대상 페이지 / 컴포넌트:
         - 시각적 요소 / 레이아웃:
@@ -17,8 +17,8 @@ body:
   - type: textarea
     id: design-changes
     attributes:
-      label: "🖼️ 변경 사양 및 주요 내용"
-      description: "CSS, 스타일링, 색상, 마진, 반응형 등 변경할 디자인 사양을 작성해주세요."
+      label: '🖼️ 변경 사양 및 주요 내용'
+      description: 'CSS, 스타일링, 색상, 마진, 반응형 등 변경할 디자인 사양을 작성해주세요.'
       placeholder: |
         - UI / CSS 스타일 변경
         - 레이아웃 및 반응형 처리
@@ -29,8 +29,8 @@ body:
   - type: textarea
     id: tasks
     attributes:
-      label: "✅ 세부 작업 목록 (To-Do)"
-      description: "디자인 작업 단계를 체크리스트로 작성해주세요."
+      label: '✅ 세부 작업 목록 (To-Do)'
+      description: '디자인 작업 단계를 체크리스트로 작성해주세요.'
       placeholder: |
         - [ ] 디자인 마크업 및 CSS 적용
         - [ ] 반응형 화면 확인
