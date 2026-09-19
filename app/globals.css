@@ -79,14 +79,16 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
 
-  /* Shadcn border radius */
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Semantic: border radii */
+  --radius-none: var(--td-radius-none);
+  --radius-xs: var(--td-radius-xs);
+  --radius-sm: var(--td-radius-sm);
+  --radius-md: var(--td-radius-md);
+  --radius-lg: var(--td-radius-lg);
+  --radius-xl: var(--td-radius-xl);
+  --radius-2xl: var(--td-radius-2xl);
+  --radius-3xl: var(--td-radius-3xl);
+  --radius-full: var(--td-radius-full);
 }
 
 :root {
@@ -122,6 +124,17 @@
   --td-border-width-sm: var(--td-number-1);
   --td-border-width-md: var(--td-number-2);
   --td-border-width-lg: var(--td-number-4);
+
+  /* Semantic: border radii */
+  --td-radius-none: var(--td-number-0);
+  --td-radius-xs: var(--td-number-2);
+  --td-radius-sm: var(--td-number-4);
+  --td-radius-md: var(--td-number-6);
+  --td-radius-lg: var(--td-number-8);
+  --td-radius-xl: var(--td-number-12);
+  --td-radius-2xl: var(--td-number-16);
+  --td-radius-3xl: var(--td-number-24);
+  --td-radius-full: var(--td-number-100);
 
   /* Primitive: base colors */
   --td-color-black: #000000;
