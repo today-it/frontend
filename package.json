@@ -12,7 +12,8 @@
     "format:check": "prettier . --check",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test:storybook": "vitest run --project=storybook"
   },
   "lint-staged": {
     "*.{js,jsx,mjs,cjs,ts,tsx}": [
@@ -39,11 +40,11 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "latest",
-    "@storybook/addon-a11y": "10.5.9",
-    "@storybook/addon-docs": "10.5.9",
-    "@storybook/addon-vitest": "10.5.9",
-    "@storybook/nextjs-vite": "10.5.9",
+    "@chromatic-com/storybook": "5.3.1",
+    "@storybook/addon-a11y": "10.6.0",
+    "@storybook/addon-docs": "10.6.0",
+    "@storybook/addon-vitest": "10.6.0",
+    "@storybook/nextjs-vite": "10.6.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -54,13 +55,13 @@
     "eslint-config-next": "16.3.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-simple-import-sort": "^14.0.0",
-    "eslint-plugin-storybook": "10.5.9",
+    "eslint-plugin-storybook": "10.6.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.3.0",
     "playwright": "latest",
     "prettier": "3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "storybook": "10.5.9",
+    "storybook": "10.6.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite": "latest",
