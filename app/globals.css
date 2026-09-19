@@ -9,6 +9,35 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
+  /* Semantic: colors */
+  --color-system-error: var(--td-color-system-error);
+  --color-system-success: var(--td-color-system-success);
+  --color-text-primary: var(--td-color-text-primary);
+  --color-text-secondary: var(--td-color-text-secondary);
+  --color-text-tertiary: var(--td-color-text-tertiary);
+  --color-text-muted: var(--td-color-text-muted);
+  --color-text-disabled: var(--td-color-text-disabled);
+  --color-text-inverse: var(--td-color-text-inverse);
+  --color-text-brand: var(--td-color-text-brand);
+  --color-text-error: var(--td-color-text-error);
+  --color-border-default: var(--td-color-border-default);
+  --color-border-active: var(--td-color-border-active);
+  --color-border-disabled: var(--td-color-border-disabled);
+  --color-border-inverse: var(--td-color-border-inverse);
+  --color-icon-default: var(--td-color-icon-default);
+  --color-icon-muted: var(--td-color-icon-muted);
+  --color-icon-disabled: var(--td-color-icon-disabled);
+  --color-surface-default: var(--td-color-surface-default);
+  --color-surface-inverse: var(--td-color-surface-inverse);
+  --color-surface-inverse-hover: var(--td-color-surface-inverse-hover);
+  --color-surface-inverse-pressed: var(--td-color-surface-inverse-pressed);
+  --color-surface-inverse-disabled: var(--td-color-surface-inverse-disabled);
+  --color-surface-neutral: var(--td-color-surface-neutral);
+  --color-surface-subtle: var(--td-color-surface-subtle);
+  --color-surface-disabled: var(--td-color-surface-disabled);
+  --color-bg-hover: var(--td-color-bg-hover);
+  --color-bg-pressed: var(--td-color-bg-pressed);
+
   /* Semantic: fonts */
   --font-sans: var(--ti-font-family-sans);
   --font-mono: var(--ti-font-family-mono);
@@ -126,6 +155,45 @@
   /* Primitive: brand colors */
   --td-color-brand-kakao: #f7e600;
 
+  /* Semantic: system colors */
+  --td-color-system-error: var(--td-color-error-500);
+  --td-color-system-success: var(--td-color-success-500);
+
+  /* Semantic: text colors */
+  --td-color-text-primary: var(--td-color-gray-900);
+  --td-color-text-secondary: var(--td-color-gray-600);
+  --td-color-text-tertiary: var(--td-color-gray-700);
+  --td-color-text-muted: var(--td-color-gray-400);
+  --td-color-text-disabled: var(--td-color-gray-300);
+  --td-color-text-inverse: var(--td-color-white);
+  --td-color-text-brand: var(--td-color-black);
+  --td-color-text-error: var(--td-color-error-500);
+
+  /* Semantic: border colors */
+  --td-color-border-default: var(--td-color-gray-200);
+  --td-color-border-active: var(--td-color-gray-900);
+  --td-color-border-disabled: var(--td-color-gray-100);
+  --td-color-border-inverse: var(--td-color-white);
+
+  /* Semantic: icon colors */
+  --td-color-icon-default: var(--td-color-gray-600);
+  --td-color-icon-muted: var(--td-color-gray-200);
+  --td-color-icon-disabled: var(--td-color-gray-100);
+
+  /* Semantic: surface colors */
+  --td-color-surface-default: var(--td-color-white);
+  --td-color-surface-inverse: var(--td-color-gray-900);
+  --td-color-surface-inverse-hover: var(--td-color-gray-800);
+  --td-color-surface-inverse-pressed: var(--td-color-black);
+  --td-color-surface-inverse-disabled: var(--td-color-gray-200);
+  --td-color-surface-neutral: var(--td-color-gray-300);
+  --td-color-surface-subtle: var(--td-color-gray-100);
+  --td-color-surface-disabled: var(--td-color-gray-100);
+
+  /* Semantic: background interaction colors */
+  --td-color-bg-hover: var(--td-color-gray-100);
+  --td-color-bg-pressed: var(--td-color-gray-200);
+
   /* Primitive: font families */
   --td-font-family-sans: var(--font-asta-sans), Arial, sans-serif;
   --td-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -175,6 +243,10 @@
 
 /* Shadcn dark theme */
 .dark {
+  /* Semantic: dark mode colors */
+  --td-color-text-primary: var(--td-color-white);
+  --td-color-icon-default: var(--td-color-white);
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
