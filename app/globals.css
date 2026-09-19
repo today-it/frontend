@@ -84,6 +84,48 @@
   --td-number-100: 100px;
   --td-number-440: 440px;
 
+  /* Primitive: base colors */
+  --td-color-black: #000000;
+  --td-color-white: #ffffff;
+
+  /* Primitive: gray colors */
+  --td-color-gray-100: #e2e2e2;
+  --td-color-gray-200: #c6c6c6;
+  --td-color-gray-300: #ababab;
+  --td-color-gray-400: #919191;
+  --td-color-gray-500: #777777;
+  --td-color-gray-600: #5e5e5e;
+  --td-color-gray-700: #474747;
+  --td-color-gray-800: #303030;
+  --td-color-gray-900: #1c1c1c;
+
+  /* Primitive: error colors */
+  --td-color-error-50: #fdf2f2;
+  --td-color-error-100: #fae0e1;
+  --td-color-error-200: #f5c2c3;
+  --td-color-error-300: #ee9699;
+  --td-color-error-400: #e6656a;
+  --td-color-error-500: #dd3137;
+  --td-color-error-600: #c52026;
+  --td-color-error-700: #a21a1f;
+  --td-color-error-800: #7b1417;
+  --td-color-error-900: #580e11;
+
+  /* Primitive: success colors */
+  --td-color-success-50: #f3fcf6;
+  --td-color-success-100: #e3f7eb;
+  --td-color-success-200: #c8efd6;
+  --td-color-success-300: #a0e3b9;
+  --td-color-success-400: #75d799;
+  --td-color-success-500: #45c976;
+  --td-color-success-600: #34b262;
+  --td-color-success-700: #2a9251;
+  --td-color-success-800: #206f3d;
+  --td-color-success-900: #174f2c;
+
+  /* Primitive: brand colors */
+  --td-color-brand-kakao: #f7e600;
+
   /* Primitive: font families */
   --td-font-family-sans: var(--font-asta-sans), Arial, sans-serif;
   --td-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
