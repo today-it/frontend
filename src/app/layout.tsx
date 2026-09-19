@@ -3,7 +3,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 import { astaSans } from '@/app/fonts';
-import Providers from '@/providers/query-provider';
+
+import Providers from './providers/query-provider';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
