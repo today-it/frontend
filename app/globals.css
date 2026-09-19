@@ -138,6 +138,16 @@
   --td-number-100: 100px;
   --td-number-440: 440px;
 
+  /* Semantic: typography */
+  --td-typography-heading-h1: var(--td-number-36);
+  --td-typography-heading-h2: var(--td-number-24);
+  --td-typography-heading-h3: var(--td-number-20);
+  --td-typography-body-b1: var(--td-number-20);
+  --td-typography-body-b2: var(--td-number-16);
+  --td-typography-body-b3: var(--td-number-14);
+  --td-typography-caption-c1: var(--td-number-14);
+  --td-typography-caption-c2: var(--td-number-12);
+
   /* Semantic: spacing */
   --td-spacing-1: var(--td-number-2);
   --td-spacing-2: var(--td-number-4);
