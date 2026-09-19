@@ -39,7 +39,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primavry);
+  --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -56,6 +56,34 @@
 }
 
 :root {
+  /* Primitive: numbers */
+  --td-number-0: 0px;
+  --td-number-1: 1px;
+  --td-number-2: 2px;
+  --td-number-4: 4px;
+  --td-number-6: 6px;
+  --td-number-8: 8px;
+  --td-number-10: 10px;
+  --td-number-12: 12px;
+  --td-number-14: 14px;
+  --td-number-16: 16px;
+  --td-number-18: 18px;
+  --td-number-20: 20px;
+  --td-number-22: 22px;
+  --td-number-24: 24px;
+  --td-number-28: 28px;
+  --td-number-30: 30px;
+  --td-number-32: 32px;
+  --td-number-36: 36px;
+  --td-number-40: 40px;
+  --td-number-48: 48px;
+  --td-number-50: 50px;
+  --td-number-60: 60px;
+  --td-number-64: 64px;
+  --td-number-96: 96px;
+  --td-number-100: 100px;
+  --td-number-440: 440px;
+
   /* Primitive: font families */
   --td-font-family-sans: var(--font-asta-sans), Arial, sans-serif;
   --td-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
