@@ -43,6 +43,40 @@
   --font-mono: var(--td-font-family-mono);
   --font-heading: var(--td-font-family-sans);
 
+  /* Semantic: typography */
+  --text-heading-h1: var(--td-typography-heading-h1);
+  --text-heading-h1--line-height: var(--td-line-height-100);
+  --text-heading-h1--letter-spacing: var(--td-letter-spacing-1);
+  --text-heading-h1--font-weight: var(--td-font-weight-bold);
+  --text-heading-h2: var(--td-typography-heading-h2);
+  --text-heading-h2--line-height: var(--td-line-height-100);
+  --text-heading-h2--letter-spacing: var(--td-letter-spacing-1);
+  --text-heading-h2--font-weight: var(--td-font-weight-semibold);
+  --text-heading-h3: var(--td-typography-heading-h3);
+  --text-heading-h3--line-height: var(--td-line-height-100);
+  --text-heading-h3--letter-spacing: var(--td-letter-spacing-1);
+  --text-heading-h3--font-weight: var(--td-font-weight-semibold);
+  --text-body-b1: var(--td-typography-body-b1);
+  --text-body-b1--line-height: var(--td-line-height-100);
+  --text-body-b1--letter-spacing: var(--td-letter-spacing-1);
+  --text-body-b1--font-weight: var(--td-font-weight-medium);
+  --text-body-b2: var(--td-typography-body-b2);
+  --text-body-b2--line-height: var(--td-line-height-100);
+  --text-body-b2--letter-spacing: var(--td-letter-spacing-1);
+  --text-body-b2--font-weight: var(--td-font-weight-medium);
+  --text-body-b3: var(--td-typography-body-b3);
+  --text-body-b3--line-height: var(--td-line-height-100);
+  --text-body-b3--letter-spacing: var(--td-letter-spacing-1);
+  --text-body-b3--font-weight: var(--td-font-weight-regular);
+  --text-caption-c1: var(--td-typography-caption-c1);
+  --text-caption-c1--line-height: var(--td-line-height-100);
+  --text-caption-c1--letter-spacing: var(--td-letter-spacing-1);
+  --text-caption-c1--font-weight: var(--td-font-weight-medium);
+  --text-caption-c2: var(--td-typography-caption-c2);
+  --text-caption-c2--line-height: var(--td-line-height-100);
+  --text-caption-c2--letter-spacing: var(--td-letter-spacing-1);
+  --text-caption-c2--font-weight: var(--td-font-weight-regular);
+
   /* Semantic: spacing */
   --spacing-1: var(--td-spacing-1);
   --spacing-2: var(--td-spacing-2);
@@ -137,6 +171,14 @@
   --td-number-96: 96px;
   --td-number-100: 100px;
   --td-number-440: 440px;
+
+  /* Primitive: typography values */
+  --td-font-weight-regular: 400;
+  --td-font-weight-medium: 500;
+  --td-font-weight-semibold: 600;
+  --td-font-weight-bold: 700;
+  --td-line-height-100: 1;
+  --td-letter-spacing-1: 0.01em;
 
   /* Semantic: typography */
   --td-typography-heading-h1: var(--td-number-36);
