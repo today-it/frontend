@@ -43,6 +43,11 @@
   --font-mono: var(--ti-font-family-mono);
   --font-heading: var(--ti-font-family-sans);
 
+  /* Semantic: border widths */
+  --border-width-sm: var(--td-border-width-sm);
+  --border-width-md: var(--td-border-width-md);
+  --border-width-lg: var(--td-border-width-lg);
+
   /* Shadcn colors */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -112,6 +117,11 @@
   --td-number-96: 96px;
   --td-number-100: 100px;
   --td-number-440: 440px;
+
+  /* Semantic: border widths */
+  --td-border-width-sm: var(--td-number-1);
+  --td-border-width-md: var(--td-number-2);
+  --td-border-width-lg: var(--td-number-4);
 
   /* Primitive: base colors */
   --td-color-black: #000000;
