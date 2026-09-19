@@ -39,9 +39,9 @@
   --color-bg-pressed: var(--td-color-bg-pressed);
 
   /* Semantic: fonts */
-  --font-sans: var(--ti-font-family-sans);
-  --font-mono: var(--ti-font-family-mono);
-  --font-heading: var(--ti-font-family-sans);
+  --font-sans: var(--td-font-family-sans);
+  --font-mono: var(--td-font-family-mono);
+  --font-heading: var(--td-font-family-sans);
 
   /* Semantic: spacing */
   --spacing-1: var(--td-spacing-1);
