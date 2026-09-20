@@ -3,6 +3,12 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Button } from './button';
 
 const buttonSizes = ['lg', 'md', 'sm'] as const;
+const buttonStates = [
+  { label: 'Default', className: 'pointer-events-none' },
+  { label: 'Hover', className: 'pointer-events-none bg-surface-inverse-hover' },
+  { label: 'Pressed', className: 'pointer-events-none bg-surface-inverse-pressed' },
+  { label: 'Disabled', className: 'pointer-events-none', disabled: true },
+] as const;
 
 const meta = {
   title: 'Shared/UI/Button',
@@ -50,5 +56,40 @@ export const AllSizes: Story = {
         </Button>
       ))}
     </div>
+  ),
+};
+
+export const StateMatrix: Story = {
+  parameters: {
+    controls: { disable: true },
+    layout: 'padded',
+  },
+  render: () => (
+    <table className="border-separate border-spacing-x-8 border-spacing-y-4">
+      <thead>
+        <tr>
+          <th className="text-left text-caption-c1 text-text-secondary">Size</th>
+          {buttonStates.map(({ label }) => (
+            <th className="text-left text-caption-c1 text-text-secondary" key={label}>
+              {label}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {buttonSizes.map((size) => (
+          <tr key={size}>
+            <th className="text-left text-caption-c1 text-text-secondary uppercase">{size}</th>
+            {buttonStates.map(({ label, className, ...stateProps }) => (
+              <td key={label}>
+                <Button className={className} size={size} {...stateProps}>
+                  Button
+                </Button>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   ),
 };
