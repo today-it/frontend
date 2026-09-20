@@ -110,6 +110,7 @@
   --spacing-social-button: var(--td-size-social-button);
   --spacing-divider: var(--td-size-divider);
   --spacing-divider-label: var(--td-size-divider-label);
+  --spacing-divider-label-width: var(--td-size-divider-label-width);
 
   /* Semantic: border widths */
   --border-width-sm: var(--td-border-width-sm);
@@ -180,13 +181,20 @@
   --td-number-32: 32px;
   --td-number-36: 36px;
   --td-number-40: 40px;
+  --td-number-44: 44px;
   --td-number-48: 48px;
   --td-number-50: 50px;
+  --td-number-52: 52px;
   --td-number-60: 60px;
   --td-number-64: 64px;
   --td-number-96: 96px;
   --td-number-100: 100px;
+  --td-number-140: 140px;
+  --td-number-212: 212px;
+  --td-number-264: 264px;
+  --td-number-280: 280px;
   --td-number-440: 440px;
+  --td-number-480: 480px;
 
   /* Primitive: typography values */
   --td-font-weight-regular: 400;
@@ -239,6 +247,7 @@
   --td-size-social-button: var(--td-number-60);
   --td-size-divider: var(--td-number-1);
   --td-size-divider-label: var(--td-number-18);
+  --td-size-divider-label-width: var(--td-number-280);
 
   /* Semantic: border widths */
   --td-border-width-sm: var(--td-number-1);
