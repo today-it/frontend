@@ -49,7 +49,7 @@ export const Disabled: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="grid grid-cols-4 gap-16">
+    <div className="grid grid-cols-4 gap-8">
       <PasswordInput
         aria-label="기본 비밀번호"
         defaultVisible
@@ -57,7 +57,7 @@ export const AllStates: Story = {
       />
       <PasswordInput
         aria-label="포커스된 비밀번호"
-        className="border-border-focus"
+        className="border-border-active"
         defaultValue="password"
         defaultVisible
       />
@@ -76,7 +76,7 @@ export const AllStates: Story = {
       <PasswordInput aria-label="기본 비밀번호 숨김" placeholder="비밀번호를 입력해주세요" />
       <PasswordInput
         aria-label="포커스된 비밀번호 숨김"
-        className="border-border-focus"
+        className="border-border-active"
         defaultValue="password"
       />
       <PasswordInput aria-invalid aria-label="오류 비밀번호 숨김" defaultValue="password" />
