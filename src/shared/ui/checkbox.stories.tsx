@@ -34,7 +34,7 @@ export const Disabled: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex items-center gap-16">
+    <div className="flex items-center gap-8">
       <Checkbox aria-label="선택 안 됨" />
       <Checkbox aria-label="선택됨" defaultChecked />
       <Checkbox aria-label="비활성화됨" disabled />
