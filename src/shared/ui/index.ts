@@ -6,6 +6,8 @@ export type { CheckboxProps } from './checkbox';
 export { Checkbox } from './checkbox';
 export type { IconName, IconProps, IconTone } from './icon';
 export { Icon } from './icon';
+export type { IconButtonProps } from './icon-button';
+export { IconButton } from './icon-button';
 export type { TextInputProps } from './text-input';
 export { TextInput } from './text-input';
 export type { TextLinkProps } from './text-link';
