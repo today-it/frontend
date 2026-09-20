@@ -31,7 +31,7 @@ export const Disabled: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex items-center gap-64">
+    <div className="flex items-center gap-32">
       <TextLink href="/">Link Text</TextLink>
       <TextLink href="/">Link Text</TextLink>
       <TextLink disabled href="/">
