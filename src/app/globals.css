@@ -12,6 +12,7 @@
   /* Semantic: colors */
   --color-system-error: var(--td-color-system-error);
   --color-system-success: var(--td-color-system-success);
+  --color-brand-kakao: var(--td-color-brand-kakao);
   --color-text-primary: var(--td-color-text-primary);
   --color-text-secondary: var(--td-color-text-secondary);
   --color-text-tertiary: var(--td-color-text-tertiary);
@@ -108,6 +109,7 @@
   --spacing-button-md: var(--td-size-button-md);
   --spacing-button-lg: var(--td-size-button-lg);
   --spacing-social-button: var(--td-size-social-button);
+  --spacing-social-logo: var(--td-size-social-logo);
   --spacing-divider: var(--td-size-divider);
   --spacing-divider-label: var(--td-size-divider-label);
   --spacing-divider-label-width: var(--td-size-divider-label-width);
@@ -245,6 +247,7 @@
   --td-size-button-md: var(--td-number-48);
   --td-size-button-lg: var(--td-number-60);
   --td-size-social-button: var(--td-number-60);
+  --td-size-social-logo: var(--td-number-40);
   --td-size-divider: var(--td-number-1);
   --td-size-divider-label: var(--td-number-18);
   --td-size-divider-label-width: var(--td-number-280);
