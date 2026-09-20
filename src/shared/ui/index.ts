@@ -10,6 +10,8 @@ export type { IconName, IconProps, IconTone } from './icon';
 export { Icon } from './icon';
 export type { IconButtonProps } from './icon-button';
 export { IconButton } from './icon-button';
+export type { PasswordInputProps } from './password-input';
+export { PasswordInput } from './password-input';
 export type { TextInputProps } from './text-input';
 export { TextInput } from './text-input';
 export type { TextLinkProps } from './text-link';
