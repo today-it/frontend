@@ -22,7 +22,7 @@ export function Checkbox({ className, ...props }: CheckboxProps) {
   return (
     <CheckboxPrimitive.Root
       className={cn(
-        'inline-flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-md border-(length:--td-border-width-md) border-border-default bg-transparent p-0 text-text-inverse transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-checked:border-transparent data-checked:bg-surface-inverse data-disabled:pointer-events-none data-disabled:cursor-default data-disabled:border-border-default data-disabled:bg-surface-disabled',
+        'inline-flex size-checkbox shrink-0 cursor-pointer items-center justify-center rounded-md border-(length:--td-border-width-md) border-border-default bg-transparent p-0 text-text-inverse transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-checked:border-transparent data-checked:bg-surface-inverse data-disabled:pointer-events-none data-disabled:cursor-default data-disabled:border-border-default data-disabled:bg-surface-disabled',
         className,
       )}
       data-slot="checkbox"
