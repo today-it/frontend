@@ -45,7 +45,7 @@ export const Success: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex flex-col items-center justify-center gap-16">
+    <div className="flex flex-col items-center justify-center gap-8">
       <CodeInput aria-label="기본 인증 코드" />
       <CodeInput aria-label="입력된 인증 코드" defaultValue="123456" timerSeconds={179} />
       <CodeInput
