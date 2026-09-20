@@ -95,6 +95,22 @@
   --spacing-24: var(--td-spacing-24);
   --spacing-32: var(--td-spacing-32);
 
+  /* Semantic: sizes */
+  --spacing-avatar-sm: var(--td-size-avatar-sm);
+  --spacing-avatar-md: var(--td-size-avatar-md);
+  --spacing-avatar-lg: var(--td-size-avatar-lg);
+  --spacing-avatar-xl: var(--td-size-avatar-xl);
+  --spacing-icon-button: var(--td-size-icon-button);
+  --spacing-checkbox: var(--td-size-checkbox);
+  --spacing-input: var(--td-size-input);
+  --spacing-form-width: var(--td-size-form-width);
+  --spacing-button-sm: var(--td-size-button-sm);
+  --spacing-button-md: var(--td-size-button-md);
+  --spacing-button-lg: var(--td-size-button-lg);
+  --spacing-social-button: var(--td-size-social-button);
+  --spacing-divider: var(--td-size-divider);
+  --spacing-divider-label: var(--td-size-divider-label);
+
   /* Semantic: border widths */
   --border-width-sm: var(--td-border-width-sm);
   --border-width-md: var(--td-border-width-md);
@@ -207,6 +223,22 @@
   --td-spacing-20: var(--td-number-40);
   --td-spacing-24: var(--td-number-48);
   --td-spacing-32: var(--td-number-64);
+
+  /* Semantic: sizes */
+  --td-size-avatar-sm: var(--td-number-32);
+  --td-size-avatar-md: var(--td-number-48);
+  --td-size-avatar-lg: var(--td-number-64);
+  --td-size-avatar-xl: var(--td-number-96);
+  --td-size-icon-button: var(--td-number-32);
+  --td-size-checkbox: var(--td-number-24);
+  --td-size-input: var(--td-number-64);
+  --td-size-form-width: var(--td-number-440);
+  --td-size-button-sm: var(--td-number-36);
+  --td-size-button-md: var(--td-number-48);
+  --td-size-button-lg: var(--td-number-60);
+  --td-size-social-button: var(--td-number-60);
+  --td-size-divider: var(--td-number-1);
+  --td-size-divider-label: var(--td-number-18);
 
   /* Semantic: border widths */
   --td-border-width-sm: var(--td-number-1);
