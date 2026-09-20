@@ -29,7 +29,7 @@ export function Divider({
       aria-label={accessibleLabel}
       aria-orientation="horizontal"
       className={cn(
-        'flex h-divider-label w-divider-label-width max-w-full items-center gap-12',
+        'flex h-divider-label w-divider-label-width max-w-full items-center gap-6',
         className,
       )}
       data-slot="divider"

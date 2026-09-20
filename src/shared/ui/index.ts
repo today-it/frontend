@@ -8,6 +8,8 @@ export type { ChipProps } from './chip';
 export { Chip } from './chip';
 export type { CodeInputProps } from './code-input';
 export { CodeInput } from './code-input';
+export type { DividerProps } from './divider';
+export { Divider } from './divider';
 export type { IconName, IconProps, IconTone } from './icon';
 export { Icon } from './icon';
 export type { IconButtonProps } from './icon-button';
