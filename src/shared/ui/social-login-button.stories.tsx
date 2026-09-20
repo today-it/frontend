@@ -34,7 +34,7 @@ export const Kakao: Story = {
 
 export const AllProviders: Story = {
   render: () => (
-    <div className="flex items-center gap-16">
+    <div className="flex items-center gap-8">
       <SocialLoginButton provider="google" />
       <SocialLoginButton provider="kakao" />
     </div>
