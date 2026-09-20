@@ -30,22 +30,22 @@ export const Default: Story = {};
 
 export const Hover: Story = {
   args: {
-    className: 'bg-state-hover',
+    className: 'bg-bg-hover',
   },
 };
 
 export const Pressed: Story = {
   args: {
-    className: 'bg-state-pressed',
+    className: 'bg-bg-pressed',
   },
 };
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex items-center gap-64">
+    <div className="flex items-center gap-32">
       <IconButton icon="close" label="기본 닫기" />
-      <IconButton className="bg-state-hover" icon="close" label="호버 닫기" />
-      <IconButton className="bg-state-pressed" icon="close" label="눌린 닫기" />
+      <IconButton className="bg-bg-hover" icon="close" label="호버 닫기" />
+      <IconButton className="bg-bg-pressed" icon="close" label="눌린 닫기" />
     </div>
   ),
 };
