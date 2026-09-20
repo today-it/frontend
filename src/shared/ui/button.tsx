@@ -8,9 +8,9 @@ const buttonVariants = cva(
   {
     variants: {
       size: {
-        lg: 'h-[60px] px-20 text-heading-h3',
-        md: 'h-[47px] px-14 text-body-b2',
-        sm: 'h-[37px] px-10 text-caption-c1',
+        lg: 'h-button-lg px-20 text-heading-h3',
+        md: 'h-button-md px-14 text-body-b2',
+        sm: 'h-button-sm px-10 text-caption-c1',
       },
     },
     defaultVariants: {
