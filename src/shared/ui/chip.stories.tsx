@@ -46,7 +46,7 @@ export const Disabled: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex items-center gap-64">
+    <div className="flex items-center gap-32">
       <Chip>기본</Chip>
       <Chip className="pointer-events-none bg-state-primary-subtle-hover [color:var(--td-color-text-primary)]">
         호버
