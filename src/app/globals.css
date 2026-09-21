@@ -30,14 +30,15 @@
   --color-icon-disabled: var(--td-color-icon-disabled);
   --color-surface-default: var(--td-color-surface-default);
   --color-surface-inverse: var(--td-color-surface-inverse);
-  --color-surface-inverse-hover: var(--td-color-surface-inverse-hover);
-  --color-surface-inverse-pressed: var(--td-color-surface-inverse-pressed);
-  --color-surface-inverse-disabled: var(--td-color-surface-inverse-disabled);
-  --color-surface-neutral: var(--td-color-surface-neutral);
+  --color-surface-placeholder: var(--td-color-surface-placeholder);
   --color-surface-subtle: var(--td-color-surface-subtle);
-  --color-surface-disabled: var(--td-color-surface-disabled);
-  --color-bg-hover: var(--td-color-bg-hover);
-  --color-bg-pressed: var(--td-color-bg-pressed);
+  --color-state-disabled: var(--td-color-state-disabled);
+  --color-state-hover: var(--td-color-state-hover);
+  --color-state-inverse-disabled: var(--td-color-state-inverse-disabled);
+  --color-state-inverse-hover: var(--td-color-state-inverse-hover);
+  --color-state-inverse-pressed: var(--td-color-state-inverse-pressed);
+  --color-state-pressed: var(--td-color-state-pressed);
+  --color-state-selected: var(--td-color-state-selected);
 
   /* Semantic: fonts */
   --font-sans: var(--td-font-family-sans);
@@ -101,8 +102,10 @@
   --spacing-avatar-md: var(--td-size-avatar-md);
   --spacing-avatar-lg: var(--td-size-avatar-lg);
   --spacing-avatar-xl: var(--td-size-avatar-xl);
+  --spacing-avatar-badge: var(--td-size-avatar-badge);
   --spacing-icon-button: var(--td-size-icon-button);
   --spacing-checkbox: var(--td-size-checkbox);
+  --spacing-chip: var(--td-size-chip);
   --spacing-input: var(--td-size-input);
   --spacing-form-width: var(--td-size-form-width);
   --spacing-button-sm: var(--td-size-button-sm);
@@ -112,7 +115,19 @@
   --spacing-social-logo: var(--td-size-social-logo);
   --spacing-dropdown: var(--td-size-dropdown);
   --spacing-dropdown-width: var(--td-size-dropdown-width);
-  --spacing-dropdown-option: var(--td-size-dropdown-option);
+  --spacing-dropdown-panel-width: var(--td-size-dropdown-panel-width);
+  --spacing-option-row: var(--td-size-option-row);
+  --spacing-icon-xs: var(--td-size-icon-xs);
+  --spacing-icon-sm: var(--td-size-icon-sm);
+  --spacing-icon-md: var(--td-size-icon-md);
+  --spacing-icon-lg: var(--td-size-icon-lg);
+  --spacing-icon-xl: var(--td-size-icon-xl);
+  --spacing-icon-2xl: var(--td-size-icon-2xl);
+  --spacing-modal-width: var(--td-size-modal-width);
+  --spacing-profile-chip: var(--td-size-profile-chip);
+  --spacing-profile-chip-width: var(--td-size-profile-chip-width);
+  --spacing-timer-badge: var(--td-size-timer-badge);
+  --spacing-toast-content-width: var(--td-size-toast-content-width);
   --spacing-divider: var(--td-size-divider);
   --spacing-divider-label: var(--td-size-divider-label);
   --spacing-divider-label-width: var(--td-size-divider-label-width);
@@ -242,8 +257,10 @@
   --td-size-avatar-md: var(--td-number-48);
   --td-size-avatar-lg: var(--td-number-64);
   --td-size-avatar-xl: var(--td-number-96);
+  --td-size-avatar-badge: var(--td-number-28);
   --td-size-icon-button: var(--td-number-32);
   --td-size-checkbox: var(--td-number-24);
+  --td-size-chip: var(--td-number-36);
   --td-size-input: var(--td-number-64);
   --td-size-form-width: var(--td-number-440);
   --td-size-button-sm: var(--td-number-36);
@@ -253,7 +270,19 @@
   --td-size-social-logo: var(--td-number-40);
   --td-size-dropdown: var(--td-number-52);
   --td-size-dropdown-width: var(--td-number-280);
-  --td-size-dropdown-option: var(--td-number-44);
+  --td-size-dropdown-panel-width: var(--td-number-212);
+  --td-size-option-row: var(--td-number-44);
+  --td-size-icon-xs: var(--td-number-12);
+  --td-size-icon-sm: var(--td-number-14);
+  --td-size-icon-md: var(--td-number-16);
+  --td-size-icon-lg: var(--td-number-20);
+  --td-size-icon-xl: var(--td-number-22);
+  --td-size-icon-2xl: var(--td-number-24);
+  --td-size-modal-width: var(--td-number-480);
+  --td-size-profile-chip: var(--td-number-40);
+  --td-size-profile-chip-width: var(--td-number-140);
+  --td-size-timer-badge: var(--td-number-44);
+  --td-size-toast-content-width: var(--td-number-264);
   --td-size-divider: var(--td-number-1);
   --td-size-divider-label: var(--td-number-18);
   --td-size-divider-label-width: var(--td-number-280);
@@ -344,16 +373,17 @@
   /* Semantic: surface colors */
   --td-color-surface-default: var(--td-color-white);
   --td-color-surface-inverse: var(--td-color-gray-900);
-  --td-color-surface-inverse-hover: var(--td-color-gray-800);
-  --td-color-surface-inverse-pressed: var(--td-color-black);
-  --td-color-surface-inverse-disabled: var(--td-color-gray-200);
-  --td-color-surface-neutral: var(--td-color-gray-300);
+  --td-color-surface-placeholder: var(--td-color-gray-300);
   --td-color-surface-subtle: var(--td-color-gray-100);
-  --td-color-surface-disabled: var(--td-color-gray-100);
 
-  /* Semantic: background interaction colors */
-  --td-color-bg-hover: var(--td-color-gray-100);
-  --td-color-bg-pressed: var(--td-color-gray-200);
+  /* Semantic: state colors */
+  --td-color-state-disabled: var(--td-color-gray-100);
+  --td-color-state-hover: var(--td-color-gray-100);
+  --td-color-state-inverse-disabled: var(--td-color-gray-200);
+  --td-color-state-inverse-hover: var(--td-color-gray-800);
+  --td-color-state-inverse-pressed: var(--td-color-black);
+  --td-color-state-pressed: var(--td-color-gray-200);
+  --td-color-state-selected: var(--td-color-gray-200);
 
   /* Primitive: font families */
   --td-font-family-sans: var(--font-asta-sans), Arial, sans-serif;
