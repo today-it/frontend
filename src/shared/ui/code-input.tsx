@@ -6,13 +6,13 @@ import { useState } from 'react';
 import { cn } from '@/shared/lib';
 
 /**
- * 인증 코드를 영문·숫자 6자리와 `XXX - XXX` 형식으로 변환합니다.
+ * 인증 코드를 숫자 6자리와 `000 - 000` 형식으로 변환합니다.
  *
  * @param value 변환할 인증 코드
  * @returns 포맷팅된 인증 코드
  */
 function formatCode(value = '') {
-  const characters = value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 6);
+  const characters = value.replace(/\D/g, '').slice(0, 6);
 
   if (characters.length <= 3) {
     return characters;
@@ -55,7 +55,7 @@ export interface CodeInputProps extends Omit<
  * @example
  * ```tsx
  * <CodeInput aria-label="인증 코드" />
- * <CodeInput aria-label="인증 코드" defaultValue="ABC123" timerSeconds={179} />
+ * <CodeInput aria-label="인증 코드" defaultValue="123456" timerSeconds={179} />
  * <CodeInput aria-invalid aria-label="인증 코드" defaultValue="123456" timerSeconds={179} />
  * ```
  */
@@ -101,7 +101,7 @@ export function CodeInput({
         className="size-full bg-transparent text-center text-body-b1 [color:var(--td-color-text-primary)] outline-none placeholder:[color:var(--td-color-text-muted)] disabled:cursor-not-allowed disabled:[color:var(--td-color-text-muted)] disabled:opacity-100"
         data-slot="code-input-control"
         disabled={disabled}
-        inputMode="text"
+        inputMode="numeric"
         maxLength={9}
         onValueChange={(nextValue, eventDetails) => {
           const formattedNextValue = formatCode(nextValue);
