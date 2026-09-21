@@ -10,6 +10,8 @@ export type { CodeInputProps } from './code-input';
 export { CodeInput } from './code-input';
 export type { DividerProps } from './divider';
 export { Divider } from './divider';
+export type { DropdownOption, DropdownProps } from './dropdown';
+export { Dropdown } from './dropdown';
 export type { IconName, IconProps, IconTone } from './icon';
 export { Icon } from './icon';
 export type { IconButtonProps } from './icon-button';
