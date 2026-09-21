@@ -78,7 +78,6 @@ export function Dropdown({
             tone="inherit"
           />
         </Select.Icon>
-        ㅁ
       </Select.Trigger>
 
       <Select.Portal>
