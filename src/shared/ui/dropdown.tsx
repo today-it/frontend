@@ -94,7 +94,16 @@ export function Dropdown({
             <Select.List className="max-h-[var(--available-height)] overflow-y-auto outline-none">
               {options.map((option) => (
                 <Select.Item
-                  className="flex h-option-row w-full cursor-pointer items-center justify-between px-8 outline-none select-none data-highlighted:bg-state-hover data-disabled:cursor-default data-disabled:[color:var(--td-color-text-disabled)]"
+                  className={({ highlighted, selected }) =>
+                    cn(
+                      'flex h-option-row w-full cursor-pointer items-center justify-between px-8 outline-none select-none data-disabled:cursor-default data-disabled:[color:var(--td-color-text-disabled)]',
+                      selected
+                        ? 'bg-state-selected'
+                        : highlighted
+                          ? 'bg-state-hover'
+                          : 'bg-surface-default',
+                    )
+                  }
                   disabled={option.disabled}
                   key={option.value}
                   value={option.value}
