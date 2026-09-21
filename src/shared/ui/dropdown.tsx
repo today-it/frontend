@@ -60,7 +60,7 @@ export function Dropdown({
       <Select.Trigger
         aria-label={label}
         className={cn(
-          'group flex h-dropdown w-dropdown-width max-w-full cursor-pointer items-center justify-between gap-8 rounded-xl border-(length:--td-border-width-sm) border-border-default bg-surface-default px-20 py-16 text-caption-c1 [color:var(--td-color-text-primary)] outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-popup-open:border-border-focus data-disabled:cursor-default data-disabled:bg-state-disabled data-disabled:[color:var(--td-color-text-muted)]',
+          'group flex h-dropdown w-dropdown-width max-w-full cursor-pointer items-center justify-between gap-4 rounded-xl border-(length:--td-border-width-sm) border-border-default bg-surface-default px-10 py-8 text-caption-c1 [color:var(--td-color-text-primary)] outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-popup-open:border-border-active data-disabled:cursor-default data-disabled:bg-surface-disabled data-disabled:[color:var(--td-color-text-muted)]',
           className,
         )}
         data-slot="dropdown-trigger"
@@ -74,6 +74,7 @@ export function Dropdown({
             tone="inherit"
           />
         </Select.Icon>
+        ㅁ
       </Select.Trigger>
 
       <Select.Portal>
@@ -84,28 +85,19 @@ export function Dropdown({
           sideOffset={4}
         >
           <Select.Popup
-            className="w-[var(--anchor-width)] overflow-hidden rounded-xl border-(length:--td-border-width-sm) border-border-default bg-surface-default py-8 text-caption-c1 [color:var(--td-color-text-primary)] shadow-dropdown outline-none"
+            className="w-[var(--anchor-width)] overflow-hidden rounded-xl border-(length:--td-border-width-sm) border-border-default bg-surface-default py-4 text-caption-c1 [color:var(--td-color-text-primary)] outline-none"
             data-slot="dropdown-popup"
           >
             <Select.List className="max-h-[var(--available-height)] overflow-y-auto outline-none">
               {options.map((option) => (
                 <Select.Item
-                  className={({ highlighted, selected }) =>
-                    cn(
-                      'flex h-option-row w-full cursor-pointer items-center justify-between px-16 outline-none select-none data-disabled:cursor-default data-disabled:[color:var(--td-color-text-disabled)]',
-                      selected
-                        ? 'bg-state-selected'
-                        : highlighted
-                          ? 'bg-state-hover'
-                          : 'bg-surface-default',
-                    )
-                  }
+                  className="flex h-dropdown-option w-full cursor-pointer items-center justify-between px-8 outline-none select-none data-highlighted:bg-bg-hover data-disabled:cursor-default data-disabled:[color:var(--td-color-text-disabled)]"
                   disabled={option.disabled}
                   key={option.value}
                   value={option.value}
                 >
                   <Select.ItemText className="min-w-0 truncate">{option.label}</Select.ItemText>
-                  <Select.ItemIndicator className="ml-8 flex shrink-0 text-icon-default">
+                  <Select.ItemIndicator className="ml-4 flex shrink-0 text-icon-default">
                     <Icon name="check" size={24} tone="inherit" />
                   </Select.ItemIndicator>
                 </Select.Item>
