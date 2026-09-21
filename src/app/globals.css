@@ -110,6 +110,9 @@
   --spacing-button-lg: var(--td-size-button-lg);
   --spacing-social-button: var(--td-size-social-button);
   --spacing-social-logo: var(--td-size-social-logo);
+  --spacing-dropdown: var(--td-size-dropdown);
+  --spacing-dropdown-width: var(--td-size-dropdown-width);
+  --spacing-dropdown-option: var(--td-size-dropdown-option);
   --spacing-divider: var(--td-size-divider);
   --spacing-divider-label: var(--td-size-divider-label);
   --spacing-divider-label-width: var(--td-size-divider-label-width);
@@ -248,6 +251,9 @@
   --td-size-button-lg: var(--td-number-60);
   --td-size-social-button: var(--td-number-60);
   --td-size-social-logo: var(--td-number-40);
+  --td-size-dropdown: var(--td-number-52);
+  --td-size-dropdown-width: var(--td-number-280);
+  --td-size-dropdown-option: var(--td-number-44);
   --td-size-divider: var(--td-number-1);
   --td-size-divider-label: var(--td-number-18);
   --td-size-divider-label-width: var(--td-number-280);
