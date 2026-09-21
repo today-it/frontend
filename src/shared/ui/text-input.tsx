@@ -21,7 +21,7 @@ export function TextInput({ className, ...props }: TextInputProps) {
   return (
     <InputPrimitive
       className={cn(
-        'h-input w-form-width max-w-full rounded-full border-(length:--td-border-width-sm) border-border-default bg-surface-default px-12 text-caption-c1 [color:var(--td-color-text-primary)] transition-colors outline-none placeholder:[color:var(--td-color-text-muted)] focus:border-border-active disabled:cursor-not-allowed disabled:border-border-default disabled:bg-surface-disabled disabled:[color:var(--td-color-text-muted)] disabled:opacity-100 aria-invalid:border-system-error aria-invalid:focus:border-system-error disabled:aria-invalid:border-border-default data-focused:border-border-active disabled:data-focused:border-border-default data-invalid:border-system-error disabled:data-invalid:border-border-default',
+        'h-input w-form-width max-w-full rounded-full border-(length:--td-border-width-sm) border-border-default bg-surface-default px-12 text-caption-c1 [color:var(--td-color-text-primary)] transition-colors outline-none placeholder:[color:var(--td-color-text-muted)] focus:border-border-active disabled:cursor-not-allowed disabled:border-border-default disabled:bg-state-disabled disabled:[color:var(--td-color-text-muted)] disabled:opacity-100 aria-invalid:border-system-error aria-invalid:focus:border-system-error disabled:aria-invalid:border-border-default data-focused:border-border-active disabled:data-focused:border-border-default data-invalid:border-system-error disabled:data-invalid:border-border-default',
         className,
       )}
       data-slot="text-input"
