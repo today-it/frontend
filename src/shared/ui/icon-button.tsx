@@ -27,7 +27,7 @@ export function IconButton({ className, icon, label, ...props }: IconButtonProps
     <ButtonPrimitive
       aria-label={label}
       className={cn(
-        'inline-flex size-icon-button shrink-0 cursor-pointer items-center justify-center rounded-lg bg-surface-default p-0 text-icon-default transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 enabled:hover:bg-bg-hover enabled:active:bg-bg-pressed disabled:pointer-events-none disabled:cursor-default',
+        'inline-flex size-icon-button shrink-0 cursor-pointer items-center justify-center rounded-lg bg-surface-default p-0 text-icon-default transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 enabled:hover:bg-state-hover enabled:active:bg-state-pressed disabled:pointer-events-none disabled:cursor-default',
         className,
       )}
       data-slot="icon-button"

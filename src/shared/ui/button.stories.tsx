@@ -5,8 +5,8 @@ import { Button } from './button';
 const buttonSizes = ['lg', 'md', 'sm'] as const;
 const buttonStates = [
   { label: 'Default', className: 'pointer-events-none' },
-  { label: 'Hover', className: 'pointer-events-none bg-surface-inverse-hover' },
-  { label: 'Pressed', className: 'pointer-events-none bg-surface-inverse-pressed' },
+  { label: 'Hover', className: 'pointer-events-none bg-state-inverse-hover' },
+  { label: 'Pressed', className: 'pointer-events-none bg-state-inverse-pressed' },
   { label: 'Disabled', className: 'pointer-events-none', disabled: true },
 ] as const;
 

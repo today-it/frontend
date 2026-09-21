@@ -57,7 +57,7 @@ export function PasswordInput({
           ? 'border-system-error focus-within:border-system-error'
           : 'border-border-default focus-within:border-border-active',
         disabled &&
-          'cursor-not-allowed border-border-default bg-surface-disabled focus-within:border-border-default',
+          'cursor-not-allowed border-border-default bg-state-disabled focus-within:border-border-default',
         className,
       )}
       data-disabled={disabled ? '' : undefined}
