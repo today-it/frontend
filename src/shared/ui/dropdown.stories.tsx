@@ -28,12 +28,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const Open: Story = {
-  args: {
-    defaultOpen: true,
-  },
-};
-
 export const Selected: Story = {
   args: {
     defaultValue: 'seoul',
