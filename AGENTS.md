@@ -20,6 +20,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 3. 현재 코드·테스트·README
 
 - 디자인 토큰: @src/app/globals.css
+- 공용 UI/구조 컨벤션: @docs/UI_CONVENTION.md
 
 위 경로는 프로젝트의 실제 문서 및 파일 위치에 맞춘다.
 문서나 코드가 없으면 있다고 가정하지 않는다.
@@ -49,7 +50,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - 관련 없는 변경을 포함하는 `git add .` 명령은 제공하지 않는다.
 - 대용량 임시 데이터·분석 산출물·디버깅 파일을 소스 변경에 섞지 않는다.
 - 다시 생성할 수 있는 대용량 산출물은 별도 보관하고 Git에서 제외한다.
-  필요한 생성 코드·간결한 결과 요약·재현 방법은 유지한다.s
+  필요한 생성 코드·간결한 결과 요약·재현 방법은 유지한다.
 
 ## 프론트엔드 구현
 
