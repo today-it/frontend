@@ -27,15 +27,13 @@ export interface ButtonProps extends ButtonPrimitive.Props, VariantProps<typeof 
 /**
  * 공용 Button 컴포넌트입니다.
  *
- * `<button>`대신 다른 엘리먼트나 컴포넌트를 렌더링하게 할 경우,  
- * `render`속성과 `nativeButton={false}`를 지정합니다.
+ * 버튼 동작에 사용합니다. 화면 이동에는 링크를 사용하고, 버튼 모양의 이동 링크는 `ButtonLink`를 사용합니다.
  *
  * @example
  * ```tsx
  * <Button>저장</Button>
  * <Button size="md">다음</Button>
  * <Button size="sm" disabled>삭제</Button>
- * <Button render={<a href="/login" />} nativeButton={false}>로그인</Button>
  * ```
  */
 export function Button({ className, size = 'lg', ...props }: ButtonProps) {
