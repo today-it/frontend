@@ -31,7 +31,7 @@ export const Default: Story = {};
 
 export const AllSizes: Story = {
   render: () => (
-    <div className="flex items-center gap-32">
+    <div className="flex items-center gap-64">
       {avatarSizes.map((size) => (
         <Avatar key={size} initials="TI" size={size} />
       ))}

@@ -4,9 +4,9 @@ const buttonBaseStyles =
   'inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-md bg-surface-inverse [color:var(--td-color-text-inverse)] transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2';
 
 const buttonSizeVariants = {
-  lg: 'h-button-lg px-20 text-heading-h3',
-  md: 'h-button-md px-14 text-body-b2',
-  sm: 'h-button-sm px-10 text-caption-c1',
+  lg: 'h-button-lg px-40 text-heading-h3',
+  md: 'h-button-md px-28 text-body-b2',
+  sm: 'h-button-sm px-20 text-caption-c1',
 } as const;
 
 const buttonVariantConfig = {

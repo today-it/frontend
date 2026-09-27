@@ -49,7 +49,7 @@ export const Disabled: Story = {
 
 export const AllSizes: Story = {
   render: () => (
-    <div className="flex items-center gap-8">
+    <div className="flex items-center gap-16">
       {buttonSizes.map((size) => (
         <Button key={size} size={size}>
           Button
@@ -65,7 +65,7 @@ export const StateMatrix: Story = {
     layout: 'padded',
   },
   render: () => (
-    <table className="border-separate border-spacing-x-8 border-spacing-y-4">
+    <table className="border-separate border-spacing-x-16 border-spacing-y-8">
       <thead>
         <tr>
           <th className="text-left text-caption-c1 text-text-secondary">Size</th>

@@ -34,7 +34,7 @@ export const Disabled: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex items-center gap-32">
+    <div className="flex items-center gap-64">
       <Chip>기본</Chip>
       <Chip defaultPressed>선택됨</Chip>
       <Chip disabled>비활성화됨</Chip>
