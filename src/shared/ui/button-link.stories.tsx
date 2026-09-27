@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { ButtonLink } from './button-link';
+import { iconNames } from './icon';
 
 const buttonSizes = ['lg', 'md', 'sm'] as const;
 const buttonStates = [
@@ -19,7 +20,7 @@ const meta = {
     docs: {
       description: {
         component:
-          '화면 이동에 사용하는 링크입니다. 버튼 모양을 유지하면서 링크의 시맨틱과 키보드 동작을 제공합니다.',
+          '화면 이동에 사용하는 링크입니다. icon을 지정하면 텍스트 앞에 아이콘이 표시됩니다. 버튼 모양을 유지하면서 링크의 시맨틱과 키보드 동작을 제공합니다.',
       },
     },
   },
@@ -32,6 +33,10 @@ const meta = {
     size: {
       control: { type: 'select' },
       options: buttonSizes,
+    },
+    icon: {
+      control: { type: 'select' },
+      options: iconNames,
     },
   },
 } satisfies Meta<typeof ButtonLink>;
@@ -58,6 +63,26 @@ export const AllSizes: Story = {
       ))}
     </div>
   ),
+};
+
+export const WithIcon: Story = {
+  args: { icon: 'check' },
+};
+
+export const IconAllSizes: Story = {
+  render: () => (
+    <div className="flex items-center gap-16">
+      {buttonSizes.map((size) => (
+        <ButtonLink href="/" icon="check" key={size} size={size}>
+          Button link
+        </ButtonLink>
+      ))}
+    </div>
+  ),
+};
+
+export const IconDisabled: Story = {
+  args: { disabled: true, icon: 'check' },
 };
 
 export const StateMatrix: Story = {
