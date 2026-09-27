@@ -52,7 +52,7 @@ export function PasswordInput({
   return (
     <div
       className={cn(
-        'flex h-input w-form-width max-w-full items-center gap-4 rounded-full border-(length:--td-border-width-sm) bg-surface-default px-12 transition-colors',
+        'flex h-input w-form-width max-w-full items-center gap-8 rounded-full border-(length:--td-border-width-sm) bg-surface-default px-24 transition-colors',
         isInvalid
           ? 'border-border-error focus-within:border-border-error'
           : 'border-border-default focus-within:border-border-focus',
@@ -75,7 +75,7 @@ export function PasswordInput({
       />
       <TogglePrimitive
         aria-label={isVisible ? '비밀번호 숨기기' : '비밀번호 보기'}
-        className="inline-flex size-12 shrink-0 cursor-pointer items-center justify-center p-0 text-icon-default outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-default"
+        className="inline-flex size-24 shrink-0 cursor-pointer items-center justify-center p-0 text-icon-default outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-default"
         data-slot="password-input-toggle"
         disabled={disabled}
         onPressedChange={handleVisibleChange}
