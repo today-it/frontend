@@ -24,15 +24,14 @@
 
 - `src/app/**/page.tsx`는 Server Component를 우선한다.
 - `page.tsx`는 다음과 같은 라우트 책임에 집중한다.
-    - metadata
-    - server data fetching
-    - redirect
-    - route composition
+  - metadata
+  - server data fetching
+  - redirect
+  - route composition
 - 특정 라우트에서만 사용하는 코드는 해당 라우트의 private 폴더에 배치한다.
-    - `_components`: 페이지 전용 UI
-    - `_model`: 페이지 전용 상태, 검증, 비즈니스 규칙
-    - `_api`: 페이지 전용 데이터 요청
-- 클라이언트 인터랙션이 필요한 컴포넌트는 `.client.tsx`로 구분한다.
+  - `_components`: 페이지 전용 UI
+  - `_model`: 페이지 전용 상태, 검증, 비즈니스 규칙
+  - `_api`: 페이지 전용 데이터 요청
 - **라우트 private 폴더의 코드는 다른 라우트에서 직접 import하지 않는다.**
 - 전역 Provider는 `src/app/providers`에 배치한다.
 
@@ -40,10 +39,10 @@
 
 - `app/*`: Next.js 라우팅, 전역 Provider, 전역 스타일 및 화면 조립
 - `shared/*`: 비즈니스 규칙이 없는 공용 기반
-    - `ui`: 공용 UI 컴포넌트
-    - `lib`: 범용 함수와 재사용 가능한 기술 코드
-    - `api`: 공통 API 클라이언트와 범용 요청 기반
-    - `config`: 환경 설정과 공통 설정
+  - `ui`: 공용 UI 컴포넌트
+  - `lib`: 범용 함수와 재사용 가능한 기술 코드
+  - `api`: 공통 API 클라이언트와 범용 요청 기반
+  - `config`: 환경 설정과 공통 설정
 - `features/*`: 여러 화면에서 실제 재사용되는 사용자 행동
 - `entities/*`: 여러 화면이나 feature에서 재사용되는 안정적인 도메인 모델
 - `features`와 `entities`는 필요한 경우에만 생성한다.
@@ -71,11 +70,9 @@
 - 공유 기술 코드는 `shared/lib`에 배치한다.
 - `utils.ts`, `helpers.ts`, `types.ts`처럼 범위가 모호한 파일명을 지양한다.
 - 파일명은 담당 도메인이나 목적이 드러나게 작성한다.
-    - `cn.ts`
-    - `format-date.ts`
-    - `query-provider.tsx`
-    - `login-form.client.tsx`
-- `.client.tsx`는 Client Component 경계를 표시할 때 사용한다.
+  - `cn.ts`
+  - `format-date.ts`
+  - `query-provider.tsx`
 - `.constants.ts`는 상수의 소유 대상이 명확할 때만 사용한다.
 - 기술적 역할만 나타내는 접미사는 남용하지 않는다.
 
@@ -102,8 +99,8 @@
 ### 4.3 예시
 
 ```tsx
-export { Icon } from "./icon";
-export type { IconName, IconProps, IconTone } from "./icon";
+export { Icon } from './icon';
+export type { IconName, IconProps, IconTone } from './icon';
 ```
 
 ---
