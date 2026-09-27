@@ -5,7 +5,10 @@ import { cn } from '@/shared/lib';
 
 import { type ButtonSize, buttonVariants } from './button-variants';
 
-export interface ButtonProps extends ButtonPrimitive.Props, VariantProps<typeof buttonVariants> {
+export interface ButtonProps
+  extends
+    Omit<ButtonPrimitive.Props, 'render' | 'nativeButton'>,
+    VariantProps<typeof buttonVariants> {
   /** 버튼의 크기. 기본값은 `lg`입니다. */
   size?: ButtonSize;
 }
