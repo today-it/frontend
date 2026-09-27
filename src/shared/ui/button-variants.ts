@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const buttonBaseStyles =
-  'inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-md bg-surface-inverse [color:var(--td-color-text-inverse)] transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2';
+  'inline-flex shrink-0 cursor-pointer items-center justify-center gap-8 whitespace-nowrap rounded-md bg-surface-inverse [color:var(--td-color-text-inverse)] transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2';
 
 const buttonSizeVariants = {
   lg: 'h-button-lg px-40 text-heading-h3',

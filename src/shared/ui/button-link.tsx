@@ -6,12 +6,15 @@ import type { ComponentProps, MouseEvent } from 'react';
 import { cn } from '@/shared/lib';
 
 import { buttonLinkVariants, type ButtonSize } from './button-variants';
+import { Icon, type IconName } from './icon';
 
 export interface ButtonLinkProps extends ComponentProps<typeof Link> {
   /** 버튼의 크기. 기본값은 `lg`입니다. */
   size?: ButtonSize;
   /** 링크를 비활성화합니다. */
   disabled?: boolean;
+  /** 텍스트 앞에 표시할 장식용 아이콘. */
+  icon?: IconName;
 }
 
 /**
@@ -24,11 +27,14 @@ export interface ButtonLinkProps extends ComponentProps<typeof Link> {
  * <ButtonLink href="/signup">회원가입</ButtonLink>
  * <ButtonLink href="/login" size="md">로그인</ButtonLink>
  * <ButtonLink href="/settings" disabled>설정</ButtonLink>
+ * <ButtonLink href="/signup" icon="check">가입 완료</ButtonLink>
  * ```
  */
 export function ButtonLink({
+  children,
   className,
   disabled = false,
+  icon,
   onClick,
   prefetch,
   size = 'lg',
@@ -54,6 +60,9 @@ export function ButtonLink({
       prefetch={disabled ? false : prefetch}
       tabIndex={disabled ? -1 : tabIndex}
       {...props}
-    />
+    >
+      {icon && <Icon name={icon} size={size === 'sm' ? 16 : 20} tone="inherit" />}
+      {children}
+    </Link>
   );
 }
