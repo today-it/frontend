@@ -73,11 +73,11 @@ export const Accessible: Story = {
 
 export const AllIcons: Story = {
   render: () => (
-    <div className="grid grid-cols-3 gap-8">
+    <div className="grid grid-cols-3 gap-16">
       {iconNames.map((name) => (
         <div
           key={name}
-          className="flex flex-col items-center gap-2 text-caption-c2 text-text-secondary"
+          className="flex flex-col items-center gap-4 text-caption-c2 text-text-secondary"
         >
           <Icon name={name} />
           <span>{name}</span>

@@ -49,7 +49,7 @@ export const Disabled: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="grid grid-cols-4 gap-8">
+    <div className="grid grid-cols-4 gap-16">
       <PasswordInput
         aria-label="기본 비밀번호"
         defaultVisible

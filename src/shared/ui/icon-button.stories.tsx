@@ -42,7 +42,7 @@ export const Pressed: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="flex items-center gap-32">
+    <div className="flex items-center gap-64">
       <IconButton icon="close" label="기본 닫기" />
       <IconButton className="bg-state-hover" icon="close" label="호버 닫기" />
       <IconButton className="bg-state-pressed" icon="close" label="눌린 닫기" />
