@@ -5,11 +5,11 @@ import type { ComponentProps, MouseEvent } from 'react';
 
 import { cn } from '@/shared/lib';
 
-import { type ButtonProps, buttonVariants } from './button';
+import { buttonLinkVariants, type ButtonSize } from './button-variants';
 
 export interface ButtonLinkProps extends ComponentProps<typeof Link> {
   /** 버튼의 크기. 기본값은 `lg`입니다. */
-  size?: ButtonProps['size'];
+  size?: ButtonSize;
   /** 링크를 비활성화합니다. */
   disabled?: boolean;
 }
@@ -47,11 +47,7 @@ export function ButtonLink({
   return (
     <Link
       aria-disabled={disabled || undefined}
-      className={cn(
-        buttonVariants({ size }),
-        'hover:bg-state-inverse-hover active:bg-state-inverse-pressed aria-disabled:pointer-events-none aria-disabled:cursor-default aria-disabled:bg-state-inverse-disabled aria-disabled:[color:var(--td-color-text-muted)]',
-        className,
-      )}
+      className={cn(buttonLinkVariants({ size }), className)}
       data-size={size}
       data-slot="button-link"
       onClick={handleClick}
