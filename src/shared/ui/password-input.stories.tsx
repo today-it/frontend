@@ -57,7 +57,7 @@ export const AllStates: Story = {
       />
       <PasswordInput
         aria-label="포커스된 비밀번호"
-        className="border-border-active"
+        className="border-border-focus"
         defaultValue="password"
         defaultVisible
       />
@@ -76,7 +76,7 @@ export const AllStates: Story = {
       <PasswordInput aria-label="기본 비밀번호 숨김" placeholder="비밀번호를 입력해주세요" />
       <PasswordInput
         aria-label="포커스된 비밀번호 숨김"
-        className="border-border-active"
+        className="border-border-focus"
         defaultValue="password"
       />
       <PasswordInput aria-invalid aria-label="오류 비밀번호 숨김" defaultValue="password" />

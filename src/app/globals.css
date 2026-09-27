@@ -19,19 +19,23 @@
   --color-text-muted: var(--td-color-text-muted);
   --color-text-disabled: var(--td-color-text-disabled);
   --color-text-inverse: var(--td-color-text-inverse);
-  --color-text-brand: var(--td-color-text-brand);
   --color-text-error: var(--td-color-text-error);
   --color-border-default: var(--td-color-border-default);
   --color-border-active: var(--td-color-border-active);
+  --color-border-focus: var(--td-color-border-focus);
+  --color-border-error: var(--td-color-border-error);
   --color-border-disabled: var(--td-color-border-disabled);
   --color-border-inverse: var(--td-color-border-inverse);
   --color-icon-default: var(--td-color-icon-default);
   --color-icon-muted: var(--td-color-icon-muted);
   --color-icon-disabled: var(--td-color-icon-disabled);
+  --color-icon-error: var(--td-color-icon-error);
+  --color-icon-success: var(--td-color-icon-success);
   --color-surface-default: var(--td-color-surface-default);
   --color-surface-inverse: var(--td-color-surface-inverse);
   --color-surface-placeholder: var(--td-color-surface-placeholder);
   --color-surface-subtle: var(--td-color-surface-subtle);
+  --color-overlay-scrim: var(--td-color-overlay-scrim);
   --color-state-disabled: var(--td-color-state-disabled);
   --color-state-hover: var(--td-color-state-hover);
   --color-state-inverse-disabled: var(--td-color-state-inverse-disabled);
@@ -47,35 +51,35 @@
 
   /* Semantic: typography */
   --text-heading-h1: var(--td-typography-heading-h1);
-  --text-heading-h1--line-height: var(--td-line-height-100);
+  --text-heading-h1--line-height: var(--td-line-height-auto);
   --text-heading-h1--letter-spacing: var(--td-letter-spacing-1);
   --text-heading-h1--font-weight: var(--td-font-weight-bold);
   --text-heading-h2: var(--td-typography-heading-h2);
-  --text-heading-h2--line-height: var(--td-line-height-100);
+  --text-heading-h2--line-height: var(--td-line-height-auto);
   --text-heading-h2--letter-spacing: var(--td-letter-spacing-1);
   --text-heading-h2--font-weight: var(--td-font-weight-semibold);
   --text-heading-h3: var(--td-typography-heading-h3);
-  --text-heading-h3--line-height: var(--td-line-height-100);
+  --text-heading-h3--line-height: var(--td-line-height-auto);
   --text-heading-h3--letter-spacing: var(--td-letter-spacing-1);
   --text-heading-h3--font-weight: var(--td-font-weight-semibold);
   --text-body-b1: var(--td-typography-body-b1);
-  --text-body-b1--line-height: var(--td-line-height-100);
+  --text-body-b1--line-height: var(--td-line-height-auto);
   --text-body-b1--letter-spacing: var(--td-letter-spacing-1);
   --text-body-b1--font-weight: var(--td-font-weight-medium);
   --text-body-b2: var(--td-typography-body-b2);
-  --text-body-b2--line-height: var(--td-line-height-100);
+  --text-body-b2--line-height: var(--td-line-height-auto);
   --text-body-b2--letter-spacing: var(--td-letter-spacing-1);
   --text-body-b2--font-weight: var(--td-font-weight-medium);
   --text-body-b3: var(--td-typography-body-b3);
-  --text-body-b3--line-height: var(--td-line-height-100);
+  --text-body-b3--line-height: var(--td-line-height-auto);
   --text-body-b3--letter-spacing: var(--td-letter-spacing-1);
   --text-body-b3--font-weight: var(--td-font-weight-regular);
   --text-caption-c1: var(--td-typography-caption-c1);
-  --text-caption-c1--line-height: var(--td-line-height-100);
+  --text-caption-c1--line-height: var(--td-line-height-auto);
   --text-caption-c1--letter-spacing: var(--td-letter-spacing-1);
   --text-caption-c1--font-weight: var(--td-font-weight-medium);
   --text-caption-c2: var(--td-typography-caption-c2);
-  --text-caption-c2--line-height: var(--td-line-height-100);
+  --text-caption-c2--line-height: var(--td-line-height-auto);
   --text-caption-c2--letter-spacing: var(--td-letter-spacing-1);
   --text-caption-c2--font-weight: var(--td-font-weight-regular);
 
@@ -169,7 +173,6 @@
   --color-card: var(--card);
 
   /* Semantic: border radii */
-  --radius-none: var(--td-radius-none);
   --radius-xs: var(--td-radius-xs);
   --radius-sm: var(--td-radius-sm);
   --radius-md: var(--td-radius-md);
@@ -178,6 +181,11 @@
   --radius-2xl: var(--td-radius-2xl);
   --radius-3xl: var(--td-radius-3xl);
   --radius-full: var(--td-radius-full);
+
+  /* Effect styles mapped from Figma */
+  --shadow-dropdown: 0 4px 12px 0 rgb(0 0 0 / 12%);
+  --shadow-toast: 0 8px 24px 0 rgb(0 0 0 / 16%);
+  --shadow-modal: 0 16px 40px 0 rgb(0 0 0 / 20%);
 }
 
 :root {
@@ -197,13 +205,11 @@
   --td-number-22: 22px;
   --td-number-24: 24px;
   --td-number-28: 28px;
-  --td-number-30: 30px;
   --td-number-32: 32px;
   --td-number-36: 36px;
   --td-number-40: 40px;
   --td-number-44: 44px;
   --td-number-48: 48px;
-  --td-number-50: 50px;
   --td-number-52: 52px;
   --td-number-60: 60px;
   --td-number-64: 64px;
@@ -221,7 +227,7 @@
   --td-font-weight-medium: 500;
   --td-font-weight-semibold: 600;
   --td-font-weight-bold: 700;
-  --td-line-height-100: 1;
+  --td-line-height-auto: normal;
   --td-letter-spacing-1: 0.01em;
 
   /* Semantic: typography */
@@ -293,7 +299,6 @@
   --td-border-width-lg: var(--td-number-4);
 
   /* Semantic: border radii */
-  --td-radius-none: var(--td-number-0);
   --td-radius-xs: var(--td-number-2);
   --td-radius-sm: var(--td-number-4);
   --td-radius-md: var(--td-number-6);
@@ -306,6 +311,11 @@
   /* Primitive: base colors */
   --td-color-black: #000000;
   --td-color-white: #ffffff;
+
+  /* Primitive: alpha colors */
+  --td-color-alpha-20: rgba(57, 57, 57, 0.2);
+  --td-color-alpha-40: rgba(57, 57, 57, 0.4);
+  --td-color-alpha-60: rgba(57, 57, 57, 0.6);
 
   /* Primitive: gray colors */
   --td-color-gray-100: #e2e2e2;
@@ -351,17 +361,18 @@
 
   /* Semantic: text colors */
   --td-color-text-primary: var(--td-color-gray-900);
-  --td-color-text-secondary: var(--td-color-gray-600);
-  --td-color-text-tertiary: var(--td-color-gray-700);
+  --td-color-text-secondary: var(--td-color-gray-700);
+  --td-color-text-tertiary: var(--td-color-gray-500);
   --td-color-text-muted: var(--td-color-gray-400);
   --td-color-text-disabled: var(--td-color-gray-300);
   --td-color-text-inverse: var(--td-color-white);
-  --td-color-text-brand: var(--td-color-black);
   --td-color-text-error: var(--td-color-error-500);
 
   /* Semantic: border colors */
   --td-color-border-default: var(--td-color-gray-200);
   --td-color-border-active: var(--td-color-gray-900);
+  --td-color-border-focus: var(--td-color-gray-900);
+  --td-color-border-error: var(--td-color-system-error);
   --td-color-border-disabled: var(--td-color-gray-100);
   --td-color-border-inverse: var(--td-color-white);
 
@@ -369,12 +380,17 @@
   --td-color-icon-default: var(--td-color-gray-600);
   --td-color-icon-muted: var(--td-color-gray-200);
   --td-color-icon-disabled: var(--td-color-gray-100);
+  --td-color-icon-error: var(--td-color-system-error);
+  --td-color-icon-success: var(--td-color-system-success);
 
   /* Semantic: surface colors */
   --td-color-surface-default: var(--td-color-white);
   --td-color-surface-inverse: var(--td-color-gray-900);
   --td-color-surface-placeholder: var(--td-color-gray-300);
   --td-color-surface-subtle: var(--td-color-gray-100);
+
+  /* Semantic: overlay colors */
+  --td-color-overlay-scrim: var(--td-color-alpha-40);
 
   /* Semantic: state colors */
   --td-color-state-disabled: var(--td-color-gray-100);
@@ -434,10 +450,6 @@
 
 /* Shadcn dark theme */
 .dark {
-  /* Semantic: dark mode colors */
-  --td-color-text-primary: var(--td-color-white);
-  --td-color-icon-default: var(--td-color-white);
-
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);

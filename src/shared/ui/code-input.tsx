@@ -82,10 +82,10 @@ export function CodeInput({
       className={cn(
         'relative flex h-input w-form-width max-w-full items-center rounded-full border-(length:--td-border-width-sm) bg-surface-default px-12 transition-colors',
         isInvalid
-          ? 'border-system-error focus-within:border-system-error'
+          ? 'border-border-error focus-within:border-border-error'
           : isFilled
             ? 'border-border-active'
-            : 'border-border-default focus-within:border-border-active',
+            : 'border-border-default focus-within:border-border-focus',
         disabled &&
           'cursor-not-allowed border-border-default bg-state-disabled focus-within:border-border-default',
         className,
@@ -120,7 +120,7 @@ export function CodeInput({
       {formattedTimer !== undefined ? (
         <span
           aria-label={`남은 시간 ${formattedTimer}`}
-          className="absolute right-12 text-caption-c2 [color:var(--td-color-system-error)]"
+          className="absolute right-12 text-caption-c2 [color:var(--td-color-text-error)]"
           data-slot="code-input-timer"
         >
           {formattedTimer}
