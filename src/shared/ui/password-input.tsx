@@ -54,8 +54,8 @@ export function PasswordInput({
       className={cn(
         'flex h-input w-form-width max-w-full items-center gap-4 rounded-full border-(length:--td-border-width-sm) bg-surface-default px-12 transition-colors',
         isInvalid
-          ? 'border-system-error focus-within:border-system-error'
-          : 'border-border-default focus-within:border-border-active',
+          ? 'border-border-error focus-within:border-border-error'
+          : 'border-border-default focus-within:border-border-focus',
         disabled &&
           'cursor-not-allowed border-border-default bg-state-disabled focus-within:border-border-default',
         className,
