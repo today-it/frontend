@@ -20,7 +20,16 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  parameters: {
+    docs: {
+      story: {
+        inline: false,
+        iframeHeight: '160px',
+      },
+    },
+  },
+};
 
 export const Hover: Story = {
   args: {
