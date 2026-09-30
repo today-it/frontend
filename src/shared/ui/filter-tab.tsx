@@ -23,19 +23,25 @@ export function FilterTab({ className, label, ...props }: FilterTabProps) {
   return (
     <TogglePrimitive
       className={cn(
-        'group inline-flex h-filter-tab-height min-w-0 flex-1 cursor-pointer items-center justify-between gap-16 bg-surface-default px-24 text-body-b1 text-text-secondary transition-colors outline-none select-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 enabled:hover:not-data-pressed:bg-state-hover data-pressed:bg-surface-inverse data-pressed:text-text-inverse enabled:hover:data-pressed:bg-state-inverse-hover enabled:active:data-pressed:bg-state-inverse-pressed data-disabled:pointer-events-none data-disabled:cursor-default data-disabled:bg-state-disabled data-disabled:text-text-disabled',
+        'group inline-flex h-filter-tab-height min-w-0 flex-1 cursor-pointer items-center justify-between gap-16 rounded-full bg-transparent px-32 text-body-b1 transition-colors outline-none select-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-pressed:bg-surface-inverse data-disabled:pointer-events-none data-disabled:cursor-default',
         className,
       )}
       data-slot="filter-tab"
       {...props}
     >
-      <span className="min-w-0 truncate">{label}</span>
+      <span className="min-w-0 truncate text-text-primary group-data-pressed:text-text-inverse group-data-disabled:text-text-disabled">
+        {label}
+      </span>
       <span className="relative flex size-icon-2xl shrink-0 items-center justify-center">
-        <Icon className="group-data-pressed:hidden" name="keyboard-arrow-down" tone="inherit" />
         <Icon
-          className="absolute hidden group-data-pressed:inline-block"
+          className="group-data-pressed:hidden group-data-pressed:text-icon-inverse group-data-disabled:text-icon-disabled"
+          name="keyboard-arrow-down"
+          tone="default"
+        />
+        <Icon
+          className="absolute hidden group-data-pressed:inline-block group-data-pressed:text-icon-inverse group-data-disabled:text-icon-disabled"
           name="keyboard-arrow-up"
-          tone="inherit"
+          tone="default"
         />
       </span>
     </TogglePrimitive>
