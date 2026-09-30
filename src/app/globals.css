@@ -128,6 +128,17 @@
   --spacing-icon-lg: var(--td-size-icon-lg);
   --spacing-icon-xl: var(--td-size-icon-xl);
   --spacing-icon-2xl: var(--td-size-icon-2xl);
+  --spacing-icon-3xl: var(--td-size-icon-3xl);
+  --spacing-place-card-width: var(--td-size-place-card-width);
+  --spacing-place-card-thumbnail-height: var(--td-size-place-card-thumbnail-height);
+  --spacing-header-width: var(--td-size-header-width);
+  --spacing-header-height: var(--td-size-header-height);
+  --spacing-tab-width: var(--td-size-tab-width);
+  --spacing-tab-height: var(--td-size-tab-height);
+  --spacing-search-bar-width: var(--td-size-search-bar-width);
+  --spacing-search-bar-height: var(--td-size-search-bar-height);
+  --spacing-section-header-width: var(--td-size-section-header-width);
+  --spacing-button-scroll-top: var(--td-size-button-scroll-top);
   --spacing-modal-width: var(--td-size-modal-width);
   --spacing-profile-chip: var(--td-size-profile-chip);
   --spacing-profile-chip-width: var(--td-size-profile-chip-width);
@@ -187,6 +198,9 @@
   --shadow-dropdown: 0 4px 12px 0 rgb(0 0 0 / 12%);
   --shadow-toast: 0 8px 24px 0 rgb(0 0 0 / 16%);
   --shadow-modal: 0 16px 40px 0 rgb(0 0 0 / 20%);
+  --shadow-sm: var(--shadow-dropdown);
+  --shadow-md: var(--shadow-toast);
+  --shadow-lg: var(--shadow-modal);
 }
 
 :root {
@@ -214,14 +228,23 @@
   --td-number-52: 52px;
   --td-number-60: 60px;
   --td-number-64: 64px;
+  --td-number-70: 70px;
+  --td-number-72: 72px;
+  --td-number-74: 74px;
   --td-number-96: 96px;
   --td-number-100: 100px;
+  --td-number-114: 114px;
+  --td-number-122: 122px;
   --td-number-140: 140px;
   --td-number-212: 212px;
+  --td-number-252: 252px;
   --td-number-264: 264px;
   --td-number-280: 280px;
+  --td-number-336: 336px;
   --td-number-440: 440px;
   --td-number-480: 480px;
+  --td-number-900: 900px;
+  --td-number-1440: 1440px;
 
   /* Primitive: typography values */
   --td-font-weight-regular: 400;
@@ -286,6 +309,17 @@
   --td-size-icon-lg: var(--td-number-20);
   --td-size-icon-xl: var(--td-number-22);
   --td-size-icon-2xl: var(--td-number-24);
+  --td-size-icon-3xl: var(--td-number-36);
+  --td-size-place-card-width: var(--td-number-336);
+  --td-size-place-card-thumbnail-height: var(--td-number-252);
+  --td-size-header-width: var(--td-number-1440);
+  --td-size-header-height: var(--td-number-114);
+  --td-size-tab-width: var(--td-number-122);
+  --td-size-tab-height: var(--td-number-74);
+  --td-size-search-bar-width: var(--td-number-900);
+  --td-size-search-bar-height: var(--td-number-70);
+  --td-size-section-header-width: var(--td-number-1440);
+  --td-size-button-scroll-top: var(--td-number-72);
   --td-size-modal-width: var(--td-number-480);
   --td-size-profile-chip: var(--td-number-40);
   --td-size-profile-chip-width: var(--td-number-140);
