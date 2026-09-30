@@ -27,6 +27,7 @@
   --color-border-disabled: var(--td-color-border-disabled);
   --color-border-inverse: var(--td-color-border-inverse);
   --color-icon-default: var(--td-color-icon-default);
+  --color-icon-inverse: var(--td-color-icon-inverse);
   --color-icon-muted: var(--td-color-icon-muted);
   --color-icon-disabled: var(--td-color-icon-disabled);
   --color-icon-error: var(--td-color-icon-error);
@@ -416,6 +417,7 @@
 
   /* Semantic: icon colors */
   --td-color-icon-default: var(--td-color-gray-600);
+  --td-color-icon-inverse: var(--td-color-white);
   --td-color-icon-muted: var(--td-color-gray-200);
   --td-color-icon-disabled: var(--td-color-gray-100);
   --td-color-icon-error: var(--td-color-system-error);
