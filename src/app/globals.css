@@ -135,6 +135,7 @@
   --spacing-header-height: var(--td-size-header-height);
   --spacing-tab-width: var(--td-size-tab-width);
   --spacing-tab-height: var(--td-size-tab-height);
+  --spacing-filter-tab-height: var(--td-size-filter-tab-height);
   --spacing-search-bar-width: var(--td-size-search-bar-width);
   --spacing-search-bar-height: var(--td-size-search-bar-height);
   --spacing-section-header-width: var(--td-size-section-header-width);
@@ -316,6 +317,7 @@
   --td-size-header-height: var(--td-number-114);
   --td-size-tab-width: var(--td-number-122);
   --td-size-tab-height: var(--td-number-74);
+  --td-size-filter-tab-height: var(--td-number-70);
   --td-size-search-bar-width: var(--td-number-900);
   --td-size-search-bar-height: var(--td-number-70);
   --td-size-section-header-width: var(--td-number-1440);
