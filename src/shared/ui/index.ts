@@ -22,6 +22,8 @@ export type { PasswordInputProps } from './password-input';
 export { PasswordInput } from './password-input';
 export type { SocialLoginButtonProps } from './social-login-button';
 export { SocialLoginButton } from './social-login-button';
+export type { TagProps } from './tag';
+export { Tag } from './tag';
 export type { TextInputProps } from './text-input';
 export { TextInput } from './text-input';
 export type { TextLinkProps } from './text-link';
