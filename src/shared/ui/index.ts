@@ -22,6 +22,8 @@ export type { IconButtonProps } from './icon-button';
 export { IconButton } from './icon-button';
 export type { PasswordInputProps } from './password-input';
 export { PasswordInput } from './password-input';
+export type { ScrollTopButtonProps } from './scroll-top-button';
+export { ScrollTopButton } from './scroll-top-button';
 export type { SocialLoginButtonProps } from './social-login-button';
 export { SocialLoginButton } from './social-login-button';
 export type { TabProps } from './tab';
