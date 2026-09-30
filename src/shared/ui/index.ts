@@ -14,6 +14,8 @@ export type { DividerProps } from './divider';
 export { Divider } from './divider';
 export type { DropdownOption, DropdownProps } from './dropdown';
 export { Dropdown } from './dropdown';
+export type { FilterTabProps } from './filter-tab';
+export { FilterTab } from './filter-tab';
 export type { IconName, IconProps, IconTone } from './icon';
 export { Icon } from './icon';
 export type { IconButtonProps } from './icon-button';

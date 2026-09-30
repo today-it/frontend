@@ -1,0 +1,43 @@
+import { Toggle as TogglePrimitive } from '@base-ui/react/toggle';
+
+import { cn } from '@/shared/lib';
+import { Icon } from '@/shared/ui/icon';
+
+export interface FilterTabProps extends Omit<TogglePrimitive.Props, 'children'> {
+  /** Filter Tab에 표시할 필터 이름 */
+  label: string;
+  /** Filter Tab에 추가할 클래스 이름 */
+  className?: string;
+}
+
+/**
+ * 지역이나 카테고리 같은 필터 패널을 여닫는 토글입니다.
+ *
+ * @example
+ * ```tsx
+ * <FilterTab label="지역" />
+ * <FilterTab defaultPressed label="분류" />
+ * ```
+ */
+export function FilterTab({ className, label, ...props }: FilterTabProps) {
+  return (
+    <TogglePrimitive
+      className={cn(
+        'group inline-flex h-filter-tab-height min-w-0 flex-1 cursor-pointer items-center justify-between gap-16 bg-surface-default px-24 text-body-b1 text-text-secondary transition-colors outline-none select-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 enabled:hover:not-data-pressed:bg-state-hover data-pressed:bg-surface-inverse data-pressed:text-text-inverse enabled:hover:data-pressed:bg-state-inverse-hover enabled:active:data-pressed:bg-state-inverse-pressed data-disabled:pointer-events-none data-disabled:cursor-default data-disabled:bg-state-disabled data-disabled:text-text-disabled',
+        className,
+      )}
+      data-slot="filter-tab"
+      {...props}
+    >
+      <span className="min-w-0 truncate">{label}</span>
+      <span className="relative flex size-icon-2xl shrink-0 items-center justify-center">
+        <Icon className="group-data-pressed:hidden" name="keyboard-arrow-down" tone="inherit" />
+        <Icon
+          className="absolute hidden group-data-pressed:inline-block"
+          name="keyboard-arrow-up"
+          tone="inherit"
+        />
+      </span>
+    </TogglePrimitive>
+  );
+}
