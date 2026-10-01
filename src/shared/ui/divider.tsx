@@ -28,10 +28,7 @@ export function Divider({
     <div
       aria-label={accessibleLabel}
       aria-orientation="horizontal"
-      className={cn(
-        'flex h-divider-label w-divider-label-width max-w-full items-center gap-12',
-        className,
-      )}
+      className={cn('flex h-divider-label w-full max-w-full items-center gap-12', className)}
       data-slot="divider"
       role="separator"
       {...props}

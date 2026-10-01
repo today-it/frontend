@@ -6,6 +6,13 @@ const meta = {
   title: 'Shared/UI/Divider',
   component: Divider,
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <div className="w-form-width max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     layout: 'centered',
   },
