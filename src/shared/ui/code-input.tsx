@@ -84,7 +84,7 @@ export function CodeInput({
         isInvalid
           ? 'border-border-error focus-within:border-border-error'
           : isFilled
-            ? 'border-border-active'
+            ? 'border-border-focus'
             : 'border-border-default focus-within:border-border-focus',
         disabled &&
           'cursor-not-allowed border-border-default bg-state-disabled focus-within:border-border-default',
