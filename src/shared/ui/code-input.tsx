@@ -43,6 +43,8 @@ export interface CodeInputProps extends Omit<
   defaultValue?: string;
   /** 인증 코드 */
   value?: string;
+  /** 인증 검증에 성공했는지 여부 */
+  success?: boolean;
   /** 남은 인증 시간(초) */
   timerSeconds?: number;
   /** CodeInput에 추가할 클래스 이름 */
@@ -67,6 +69,7 @@ export function CodeInput({
   disabled,
   onValueChange,
   placeholder = '000 - 000',
+  success = false,
   timerSeconds,
   value,
   ...props
@@ -76,6 +79,7 @@ export function CodeInput({
   const formattedTimer = timerSeconds === undefined ? undefined : formatTimer(timerSeconds);
   const isFilled = formattedValue.length > 0;
   const isInvalid = ariaInvalid !== undefined && ariaInvalid !== false && ariaInvalid !== 'false';
+  const isSuccess = success && !isInvalid;
 
   return (
     <div
@@ -83,9 +87,11 @@ export function CodeInput({
         'relative flex h-input w-form-width max-w-full items-center rounded-full border-(length:--td-border-width-sm) bg-surface-default px-24 transition-colors',
         isInvalid
           ? 'border-border-error focus-within:border-border-error'
-          : isFilled
-            ? 'border-border-focus'
-            : 'border-border-default focus-within:border-border-focus',
+          : isSuccess
+            ? 'border-border-success focus-within:border-border-success'
+            : isFilled
+              ? 'border-border-focus'
+              : 'border-border-default focus-within:border-border-focus',
         disabled &&
           'cursor-not-allowed border-border-default bg-state-disabled focus-within:border-border-default',
         className,
@@ -93,6 +99,7 @@ export function CodeInput({
       data-disabled={disabled ? '' : undefined}
       data-filled={isFilled ? '' : undefined}
       data-invalid={isInvalid ? '' : undefined}
+      data-success={isSuccess ? '' : undefined}
       data-slot="code-input"
     >
       <InputPrimitive
@@ -120,7 +127,12 @@ export function CodeInput({
       {formattedTimer !== undefined ? (
         <span
           aria-label={`남은 시간 ${formattedTimer}`}
-          className="absolute right-12 text-caption-c2 [color:var(--td-color-text-error)]"
+          className={cn(
+            'absolute right-12 text-caption-c2',
+            isSuccess
+              ? '[color:var(--td-color-text-secondary)]'
+              : '[color:var(--td-color-text-error)]',
+          )}
           data-slot="code-input-timer"
           role="timer"
         >
