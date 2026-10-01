@@ -53,7 +53,7 @@ export function ButtonLink({
   return (
     <Link
       aria-disabled={disabled || undefined}
-      className={cn(buttonLinkVariants({ size }), className)}
+      className={cn('group/button-link', buttonLinkVariants({ size }), className)}
       data-size={size}
       data-slot="button-link"
       onClick={handleClick}
@@ -61,7 +61,14 @@ export function ButtonLink({
       tabIndex={disabled ? -1 : tabIndex}
       {...props}
     >
-      {icon && <Icon name={icon} size={size === 'sm' ? 16 : 20} tone="inherit" />}
+      {icon && (
+        <Icon
+          name={icon}
+          size={size === 'sm' ? 16 : 20}
+          tone="inherit"
+          className="text-icon-inverse group-aria-disabled/button-link:text-text-muted"
+        />
+      )}
       {children}
     </Link>
   );
