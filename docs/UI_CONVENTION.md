@@ -193,3 +193,8 @@ export type { IconName, IconProps, IconTone } from './icon';
 - 키보드 및 접근성 기본 동작을 검증한다.
 - 신규 또는 변경 공용 UI의 Storybook 스토리를 확인한다.
 - 후속 페이지 기능에서 즉시 사용할 수 있는지 확인한다.
+
+### CTA 버튼
+
+- 주요 CTA에는 `Button variant="cta"`를 사용하며 화면당 최대 하나만 배치한다.
+- 폼 제출과 일반 동작은 기본 `Button`을 사용한다.
