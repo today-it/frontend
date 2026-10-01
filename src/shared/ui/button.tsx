@@ -32,12 +32,19 @@ export interface ButtonProps
 export function Button({ children, className, icon, size = 'lg', ...props }: ButtonProps) {
   return (
     <ButtonPrimitive
-      className={cn(buttonVariants({ size, className }))}
+      className={cn('group/button', buttonVariants({ size, className }))}
       data-size={size}
       data-slot="button"
       {...props}
     >
-      {icon && <Icon name={icon} size={size === 'sm' ? 16 : 20} tone="inherit" />}
+      {icon && (
+        <Icon
+          name={icon}
+          size={size === 'sm' ? 16 : 20}
+          tone="inherit"
+          className="text-icon-inverse group-disabled/button:text-text-muted"
+        />
+      )}
       {children}
     </ButtonPrimitive>
   );
