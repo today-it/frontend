@@ -12,6 +12,8 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   /** 버튼의 크기. 기본값은 `lg`입니다. */
   size?: ButtonSize;
+  /** 버튼의 용도. 기본값은 `primary`이며 주요 CTA에는 `cta`를 사용합니다. */
+  variant?: 'primary' | 'cta';
   /** 텍스트 앞에 표시할 장식용 아이콘. */
   icon?: IconName;
 }
@@ -29,10 +31,18 @@ export interface ButtonProps
  * <Button icon="check">완료</Button>
  * ```
  */
-export function Button({ children, className, icon, size = 'lg', ...props }: ButtonProps) {
+export function Button({
+  children,
+  className,
+  icon,
+  size = 'lg',
+  variant = 'primary',
+  ...props
+}: ButtonProps) {
   return (
     <ButtonPrimitive
-      className={cn('group/button', buttonVariants({ size, className }))}
+      className={cn('group/button', buttonVariants({ size, variant, className }))}
+      data-variant={variant}
       data-size={size}
       data-slot="button"
       {...props}
@@ -42,7 +52,10 @@ export function Button({ children, className, icon, size = 'lg', ...props }: But
           name={icon}
           size={size === 'sm' ? 16 : 20}
           tone="inherit"
-          className="text-icon-inverse group-disabled/button:text-text-muted"
+          className={cn(
+            variant === 'primary' && 'text-icon-inverse',
+            'group-disabled/button:text-text-muted',
+          )}
         />
       )}
       {children}

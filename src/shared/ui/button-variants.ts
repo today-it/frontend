@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const buttonBaseStyles =
-  'inline-flex shrink-0 cursor-pointer items-center justify-center gap-8 whitespace-nowrap rounded-md bg-surface-inverse [color:var(--td-color-text-inverse)] transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2';
+  'inline-flex shrink-0 cursor-pointer items-center justify-center gap-8 whitespace-nowrap rounded-md transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2';
 
 const buttonSizeVariants = {
   lg: 'h-button-lg px-40 text-heading-h3',
@@ -19,12 +19,22 @@ const buttonVariantConfig = {
 };
 
 export const buttonVariants = cva(
-  `${buttonBaseStyles} enabled:hover:bg-state-inverse-hover enabled:active:bg-state-inverse-pressed disabled:pointer-events-none disabled:bg-state-inverse-disabled disabled:[color:var(--td-color-text-muted)]`,
-  buttonVariantConfig,
+  `${buttonBaseStyles} disabled:pointer-events-none disabled:bg-state-inverse-disabled disabled:[color:var(--td-color-text-muted)]`,
+  {
+    variants: {
+      size: buttonSizeVariants,
+      variant: {
+        primary:
+          'bg-surface-inverse [color:var(--td-color-text-inverse)] enabled:hover:bg-state-inverse-hover enabled:active:bg-state-inverse-pressed',
+        cta: 'bg-surface-cta [color:var(--td-color-text-primary)] enabled:hover:bg-state-cta-hover enabled:hover:[color:var(--td-color-text-inverse)] enabled:active:bg-state-cta-pressed enabled:active:[color:var(--td-color-text-inverse)]',
+      },
+    },
+    defaultVariants: { size: 'lg', variant: 'primary' },
+  },
 );
 
 export const buttonLinkVariants = cva(
-  `${buttonBaseStyles} hover:bg-state-inverse-hover active:bg-state-inverse-pressed aria-disabled:pointer-events-none aria-disabled:cursor-default aria-disabled:bg-state-inverse-disabled aria-disabled:[color:var(--td-color-text-muted)]`,
+  `${buttonBaseStyles} bg-surface-inverse [color:var(--td-color-text-inverse)] hover:bg-state-inverse-hover active:bg-state-inverse-pressed aria-disabled:pointer-events-none aria-disabled:cursor-default aria-disabled:bg-state-inverse-disabled aria-disabled:[color:var(--td-color-text-muted)]`,
   buttonVariantConfig,
 );
 
