@@ -3,15 +3,27 @@ import type { SVGProps } from 'react';
 import { cn } from '@/shared/lib';
 
 export const iconNames = [
+  'bookmark',
+  'bookmark-filled',
+  'chevron-down',
+  'chevron-left',
+  'chevron-right',
+  'chevron-up',
+  'close',
+  'event',
+  'favorite',
+  'favorite-filled',
+  'info',
+  'map',
+  'menu',
+  'navigation',
+  'refresh',
+  'review',
+  'search',
+  'share',
   'visibility',
   'visibility-off',
-  'close',
   'check',
-  'chevron-forward',
-  'chevron-backward',
-  'keyboard-arrow-down',
-  'keyboard-arrow-up',
-  'add',
 ] as const;
 
 export type IconName = (typeof iconNames)[number];

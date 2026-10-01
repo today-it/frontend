@@ -67,14 +67,10 @@ export function Dropdown({
       >
         <Select.Value className="min-w-0 truncate" placeholder={placeholder} />
         <Select.Icon className="text-icon-default group-data-disabled:text-icon-muted">
-          <Icon
-            className="group-data-popup-open:hidden"
-            name="keyboard-arrow-down"
-            tone="inherit"
-          />
+          <Icon className="group-data-popup-open:hidden" name="chevron-down" tone="inherit" />
           <Icon
             className="hidden group-data-popup-open:inline-block"
-            name="keyboard-arrow-up"
+            name="chevron-up"
             tone="inherit"
           />
         </Select.Icon>

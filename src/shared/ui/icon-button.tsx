@@ -19,7 +19,7 @@ export interface IconButtonProps extends ButtonPrimitive.Props {
  * @example
  * ```tsx
  * <IconButton icon="close" label="닫기" />
- * <IconButton icon="add" label="추가" />
+ * <IconButton icon="search" label="검색" />
  * ```
  */
 export function IconButton({ className, icon, label, ...props }: IconButtonProps) {

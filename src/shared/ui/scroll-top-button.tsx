@@ -54,7 +54,7 @@ export function ScrollTopButton({
       onClick={handleClick}
       {...props}
     >
-      <Icon name="keyboard-arrow-up" size={24} tone="inherit" />
+      <Icon name="chevron-up" size={24} tone="inherit" />
       <span className="text-caption-c1 leading-[normal]">TOP</span>
     </ButtonPrimitive>
   );

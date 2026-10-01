@@ -35,12 +35,12 @@ export function FilterTab({ className, label, ...props }: FilterTabProps) {
       <span className="relative flex size-icon-2xl shrink-0 items-center justify-center">
         <Icon
           className="group-data-pressed:hidden group-data-pressed:text-icon-inverse group-data-disabled:text-icon-disabled"
-          name="keyboard-arrow-down"
+          name="chevron-down"
           tone="default"
         />
         <Icon
           className="absolute hidden group-data-pressed:inline-block group-data-pressed:text-icon-inverse group-data-disabled:text-icon-disabled"
-          name="keyboard-arrow-up"
+          name="chevron-up"
           tone="default"
         />
       </span>
