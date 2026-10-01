@@ -34,6 +34,14 @@ export const Error: Story = {
   },
 };
 
+export const Success: Story = {
+  args: {
+    success: true,
+    defaultValue: 'user@example.com',
+    'aria-label': '검증 성공 이메일',
+  },
+};
+
 export const Disabled: Story = {
   args: {
     disabled: true,
@@ -46,7 +54,26 @@ export const AllStates: Story = {
       <TextInput aria-label="기본 입력창" placeholder="이메일을 입력해주세요" />
       <TextInput aria-label="포커스된 입력창" autoFocus defaultValue="이메일을 입력해주세요" />
       <TextInput aria-invalid aria-label="오류 입력창" defaultValue="이메일을 입력해주세요" />
+      <TextInput success aria-label="검증 성공 입력창" defaultValue="user@example.com" />
       <TextInput aria-label="비활성 입력창" disabled placeholder="이메일을 입력해주세요" />
     </div>
   ),
+};
+
+export const SuccessWithError: Story = {
+  args: {
+    success: true,
+    'aria-invalid': true,
+    defaultValue: 'user@example.com',
+    'aria-label': '성공과 오류가 함께 설정된 입력창',
+  },
+};
+
+export const SuccessDisabled: Story = {
+  args: {
+    success: true,
+    disabled: true,
+    defaultValue: 'user@example.com',
+    'aria-label': '비활성 검증 성공 입력창',
+  },
 };
