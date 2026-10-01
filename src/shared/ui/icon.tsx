@@ -63,7 +63,7 @@ const toneClassNames: Record<IconTone, string | undefined> = {
  * <Icon name="check" />
  * <Icon name="visibility-off" tone="muted" size={20} />
  * <Icon name="close" label="닫기" />
- * <Icon name="check" tone="inherit" className="text-system-success" />
+ * <Icon name="check" tone="inherit" className="text-icon-success" />
  * ```
  */
 export function Icon({ name, tone = 'default', size = 24, label, className, ...props }: IconProps) {

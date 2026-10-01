@@ -60,7 +60,7 @@ export const Disabled: Story = {
 
 export const CustomColor: Story = {
   args: {
-    className: 'text-system-success',
+    className: 'text-icon-success',
     tone: 'inherit',
   },
 };
