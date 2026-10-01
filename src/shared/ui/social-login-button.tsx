@@ -50,9 +50,7 @@ export function SocialLoginButton({
       <Image
         alt=""
         aria-hidden
-        className={
-          isKakao ? 'h-[34px] w-[36px] object-contain' : 'h-[40.96px] w-social-logo object-contain'
-        }
+        className={isKakao ? 'h-[34px] w-[36px] object-contain' : 'size-social-logo object-contain'}
         height={isKakao ? 306 : 256}
         loading="eager"
         src={isKakao ? '/images/social/kakao.png' : '/images/social/google.png'}
