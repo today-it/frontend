@@ -47,14 +47,19 @@ export function ScrollTopButton({
     <ButtonPrimitive
       aria-label={label}
       className={cn(
-        'fixed right-24 bottom-24 z-50 inline-flex size-button-scroll-top shrink-0 cursor-pointer flex-col items-center justify-center gap-2 rounded-full bg-surface-inverse p-0 text-text-inverse shadow-md transition-colors transition-shadow outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 enabled:hover:bg-state-inverse-hover enabled:hover:shadow-lg enabled:active:bg-state-inverse-pressed enabled:active:shadow-sm disabled:pointer-events-none disabled:cursor-default disabled:bg-state-disabled disabled:text-text-disabled disabled:shadow-none',
+        'group/scroll-top fixed right-24 bottom-24 z-50 inline-flex size-button-scroll-top shrink-0 cursor-pointer flex-col items-center justify-center gap-2 rounded-full bg-surface-inverse p-0 text-text-inverse shadow-md transition-colors transition-shadow outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 enabled:hover:bg-state-inverse-hover enabled:hover:shadow-lg enabled:active:bg-state-inverse-pressed enabled:active:shadow-sm disabled:pointer-events-none disabled:cursor-default disabled:bg-state-disabled disabled:text-text-disabled disabled:shadow-none',
         className,
       )}
       data-slot="scroll-top-button"
       onClick={handleClick}
       {...props}
     >
-      <Icon name="chevron-up" size={24} tone="inherit" />
+      <Icon
+        name="chevron-up"
+        size={24}
+        tone="inherit"
+        className="text-icon-inverse group-disabled/scroll-top:text-text-disabled"
+      />
       <span className="text-caption-c1 leading-[normal]">TOP</span>
     </ButtonPrimitive>
   );
