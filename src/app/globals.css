@@ -30,8 +30,6 @@
   --color-secondary-700: var(--td-color-secondary-700);
   --color-secondary-800: var(--td-color-secondary-800);
   --color-secondary-900: var(--td-color-secondary-900);
-  --color-system-error: var(--td-color-system-error);
-  --color-system-success: var(--td-color-system-success);
   --color-brand-kakao: var(--td-color-brand-kakao);
   --color-text-primary: var(--td-color-text-primary);
   --color-text-secondary: var(--td-color-text-secondary);
@@ -41,13 +39,13 @@
   --color-text-inverse: var(--td-color-text-inverse);
   --color-text-error: var(--td-color-text-error);
   --color-text-success: var(--td-color-text-success);
-  --color-text-selected: var(--td-color-text-selected);
+  --color-text-primary-subtle-selected: var(--td-color-text-primary-subtle-selected);
   --color-border-default: var(--td-color-border-default);
   --color-border-active: var(--td-color-border-active);
   --color-border-focus: var(--td-color-border-focus);
   --color-border-error: var(--td-color-border-error);
   --color-border-success: var(--td-color-border-success);
-  --color-border-selected: var(--td-color-border-selected);
+  --color-border-primary-subtle-selected: var(--td-color-border-primary-subtle-selected);
   --color-border-disabled: var(--td-color-border-disabled);
   --color-border-inverse: var(--td-color-border-inverse);
   --color-icon-default: var(--td-color-icon-default);
@@ -61,7 +59,7 @@
   --color-surface-inverse: var(--td-color-surface-inverse);
   --color-surface-placeholder: var(--td-color-surface-placeholder);
   --color-surface-subtle: var(--td-color-surface-subtle);
-  --color-surface-selected: var(--td-color-surface-selected);
+  --color-state-primary-subtle-selected: var(--td-color-state-primary-subtle-selected);
   --color-surface-cta: var(--td-color-surface-cta);
   --color-overlay-scrim: var(--td-color-overlay-scrim);
   --color-state-disabled: var(--td-color-state-disabled);
@@ -74,7 +72,7 @@
   --color-state-checked: var(--td-color-state-checked);
   --color-state-cta-hover: var(--td-color-state-cta-hover);
   --color-state-cta-pressed: var(--td-color-state-cta-pressed);
-  --color-state-select-hover: var(--td-color-state-select-hover);
+  --color-state-primary-subtle-hover: var(--td-color-state-primary-subtle-hover);
 
   /* Semantic: fonts */
   --font-sans: var(--td-font-family-sans);
@@ -176,8 +174,6 @@
   --spacing-modal-width: var(--td-size-modal-width);
   --spacing-profile-chip: var(--td-size-profile-chip);
   --spacing-profile-chip-width: var(--td-size-profile-chip-width);
-  --spacing-timer-badge: var(--td-size-timer-badge);
-  --spacing-toast-content-width: var(--td-size-toast-content-width);
   --spacing-divider: var(--td-size-divider);
   --spacing-divider-label: var(--td-size-divider-label);
   --spacing-divider-label-width: var(--td-size-divider-label-width);
@@ -375,8 +371,6 @@
   --td-size-modal-width: var(--td-number-480);
   --td-size-profile-chip: var(--td-number-40);
   --td-size-profile-chip-width: var(--td-number-140);
-  --td-size-timer-badge: var(--td-number-44);
-  --td-size-toast-content-width: var(--td-number-264);
   --td-size-divider: var(--td-number-1);
   --td-size-divider-label: var(--td-number-18);
   --td-size-divider-label-width: var(--td-number-280);
@@ -478,10 +472,6 @@
   /* Primitive: brand colors */
   --td-color-brand-kakao: #f7e600;
 
-  /* Semantic: system colors */
-  --td-color-system-error: var(--td-color-error-500);
-  --td-color-system-success: var(--td-color-success-500);
-
   /* Semantic: text colors */
   --td-color-text-primary: var(--td-color-gray-900);
   --td-color-text-secondary: var(--td-color-gray-700);
@@ -491,15 +481,15 @@
   --td-color-text-inverse: var(--td-color-white);
   --td-color-text-error: var(--td-color-error-500);
   --td-color-text-success: var(--td-color-success-800);
-  --td-color-text-selected: var(--td-color-primary-700);
+  --td-color-text-primary-subtle-selected: var(--td-color-primary-700);
 
   /* Semantic: border colors */
   --td-color-border-default: var(--td-color-gray-200);
   --td-color-border-active: var(--td-color-gray-900);
   --td-color-border-focus: var(--td-color-gray-900);
-  --td-color-border-error: var(--td-color-system-error);
+  --td-color-border-error: var(--td-color-error-500);
   --td-color-border-success: var(--td-color-success-700);
-  --td-color-border-selected: var(--td-color-primary-700);
+  --td-color-border-primary-subtle-selected: var(--td-color-primary-700);
   --td-color-border-disabled: var(--td-color-gray-100);
   --td-color-border-inverse: var(--td-color-white);
 
@@ -508,7 +498,7 @@
   --td-color-icon-inverse: var(--td-color-white);
   --td-color-icon-muted: var(--td-color-gray-200);
   --td-color-icon-disabled: var(--td-color-gray-100);
-  --td-color-icon-error: var(--td-color-system-error);
+  --td-color-icon-error: var(--td-color-error-500);
   --td-color-icon-success: var(--td-color-success-700);
   --td-color-icon-liked: var(--td-color-secondary-500);
 
@@ -517,7 +507,6 @@
   --td-color-surface-inverse: var(--td-color-gray-900);
   --td-color-surface-placeholder: var(--td-color-gray-300);
   --td-color-surface-subtle: var(--td-color-gray-100);
-  --td-color-surface-selected: var(--td-color-primary-100);
   --td-color-surface-cta: var(--td-color-primary-500);
 
   /* Semantic: overlay colors */
@@ -531,10 +520,11 @@
   --td-color-state-inverse-pressed: var(--td-color-black);
   --td-color-state-pressed: var(--td-color-gray-200);
   --td-color-state-selected: var(--td-color-gray-200);
+  --td-color-state-primary-subtle-selected: var(--td-color-primary-100);
   --td-color-state-checked: var(--td-color-gray-900);
   --td-color-state-cta-hover: var(--td-color-primary-700);
   --td-color-state-cta-pressed: var(--td-color-primary-800);
-  --td-color-state-select-hover: var(--td-color-primary-50);
+  --td-color-state-primary-subtle-hover: var(--td-color-primary-50);
 
   /* Primitive: font families */
   --td-font-family-sans: var(--font-asta-sans), Arial, sans-serif;

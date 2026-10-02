@@ -33,7 +33,8 @@ export const Selected: Story = {
 
 export const Hover: Story = {
   args: {
-    className: 'pointer-events-none bg-state-select-hover [color:var(--td-color-text-primary)]',
+    className:
+      'pointer-events-none bg-state-primary-subtle-hover [color:var(--td-color-text-primary)]',
   },
 };
 
@@ -47,7 +48,7 @@ export const AllStates: Story = {
   render: () => (
     <div className="flex items-center gap-64">
       <Chip>기본</Chip>
-      <Chip className="pointer-events-none bg-state-select-hover [color:var(--td-color-text-primary)]">
+      <Chip className="pointer-events-none bg-state-primary-subtle-hover [color:var(--td-color-text-primary)]">
         호버
       </Chip>
       <Chip defaultPressed>선택됨</Chip>
