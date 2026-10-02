@@ -127,12 +127,7 @@ export function CodeInput({
       {formattedTimer !== undefined && !isSuccess ? (
         <span
           aria-label={`남은 시간 ${formattedTimer}`}
-          className={cn(
-            'absolute right-12 text-caption-c2',
-            isSuccess
-              ? '[color:var(--td-color-text-secondary)]'
-              : '[color:var(--td-color-text-error)]',
-          )}
+          className="absolute right-12 text-caption-c2 [color:var(--td-color-text-error)]"
           data-slot="code-input-timer"
           role="timer"
         >
