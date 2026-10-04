@@ -1,10 +1,15 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useId } from 'react';
+import { type SubmitEvent, useId, useRef } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
-import { loginSchema, type LoginValues } from '@/app/_model/login';
+import {
+  loginErrorMessages,
+  loginSchema,
+  type LoginServerError,
+  type LoginValues,
+} from '@/app/_model/login';
 import {
   Button,
   Divider,
@@ -23,13 +28,27 @@ export interface LoginStepProps {
   onPasswordReset: () => void;
   /** 검증을 통과한 입력값으로 로그인을 요청합니다. */
   onSubmit: (values: LoginValues) => void | Promise<void>;
+  /** 외부 로그인 결과로 받은 오류 */
+  loginError?: LoginServerError;
+  /** 외부에서 전달한 로그인 실패 횟수 */
+  failureCount?: number;
+  /** 실패 횟수 표시의 분모. 제출 제한 정책을 적용하지 않습니다. */
+  failureCountTotal?: number;
 }
 
-export function LoginStep({ onPasswordReset, onSignup, onSocialLogin, onSubmit }: LoginStepProps) {
+export function LoginStep({
+  failureCount,
+  failureCountTotal,
+  loginError,
+  onPasswordReset,
+  onSignup,
+  onSocialLogin,
+  onSubmit,
+}: LoginStepProps) {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -43,10 +62,35 @@ export function LoginStep({ onPasswordReset, onSignup, onSocialLogin, onSubmit }
     name: ['email', 'password'],
   });
 
-  const isSubmitDisabled = email.trim() === '' || password === '';
+  const isSubmitDisabled = isSubmitting || email.trim() === '' || password === '';
 
   const emailErrorId = useId();
   const passwordErrorId = useId();
+  const loginErrorId = useId();
+  const loginErrorMessage = loginError ? loginErrorMessages[loginError] : undefined;
+
+  const failureCountText =
+    failureCount !== undefined && failureCountTotal !== undefined
+      ? ` (${failureCount}/${failureCountTotal})`
+      : '';
+
+  const submitLockRef = useRef(false);
+
+  async function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (submitLockRef.current) {
+      return;
+    }
+
+    submitLockRef.current = true;
+
+    try {
+      await handleSubmit(onSubmit)(event);
+    } finally {
+      submitLockRef.current = false;
+    }
+  }
 
   return (
     <>
@@ -55,7 +99,7 @@ export function LoginStep({ onPasswordReset, onSignup, onSocialLogin, onSubmit }
         오늘을 특별하게 만드는 우리다운 선택, Today It
       </p>
 
-      <form className="contents" noValidate onSubmit={handleSubmit(onSubmit)}>
+      <form className="contents" noValidate onSubmit={handleFormSubmit}>
         <Controller
           control={control}
           name="email"
@@ -72,8 +116,10 @@ export function LoginStep({ onPasswordReset, onSignup, onSocialLogin, onSubmit }
               ref={field.ref}
               type="email"
               value={field.value}
-              aria-describedby={errors.email ? emailErrorId : undefined}
-              aria-invalid={Boolean(errors.email)}
+              aria-describedby={
+                errors.email ? emailErrorId : loginErrorMessage ? loginErrorId : undefined
+              }
+              aria-invalid={Boolean(errors.email || loginErrorMessage)}
             />
           )}
         />
@@ -101,8 +147,10 @@ export function LoginStep({ onPasswordReset, onSignup, onSocialLogin, onSubmit }
               placeholder="비밀번호를 입력해주세요"
               ref={field.ref}
               value={field.value}
-              aria-describedby={errors.password ? passwordErrorId : undefined}
-              aria-invalid={Boolean(errors.password)}
+              aria-describedby={
+                errors.password ? passwordErrorId : loginErrorMessage ? loginErrorId : undefined
+              }
+              aria-invalid={Boolean(errors.password || loginErrorMessage)}
             />
           )}
         />
@@ -113,6 +161,16 @@ export function LoginStep({ onPasswordReset, onSignup, onSocialLogin, onSubmit }
             role="alert"
           >
             {errors.password.message}
+          </p>
+        ) : null}
+        {loginErrorMessage ? (
+          <p
+            className="text-caption-c1 [color:var(--td-color-text-error)]"
+            id={loginErrorId}
+            role="alert"
+          >
+            {loginErrorMessage}
+            {failureCountText}
           </p>
         ) : null}
 
@@ -126,7 +184,12 @@ export function LoginStep({ onPasswordReset, onSignup, onSocialLogin, onSubmit }
           </button>
         </div>
 
-        <Button className="w-full" disabled={isSubmitDisabled} type="submit">
+        <Button
+          aria-busy={isSubmitting}
+          className="w-full"
+          disabled={isSubmitDisabled}
+          type="submit"
+        >
           로그인
         </Button>
       </form>
