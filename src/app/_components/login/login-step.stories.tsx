@@ -96,6 +96,57 @@ export const Default: Story = {
   ),
 };
 
+export const Filled: Story = {
+  render: (args) => (
+    <Modal defaultOpen logo={<Logo />}>
+      <LoginStep {...args} />
+    </Modal>
+  ),
+  play: async ({ args }) => {
+    const dialog = await screen.findByRole('dialog');
+    const fields = within(dialog);
+    const email = fields.getByRole('textbox', { name: '이메일' });
+    const password = fields.getByLabelText('비밀번호', { exact: true });
+    const submit = fields.getByRole('button', { name: '로그인' });
+
+    await expect(submit).toBeDisabled();
+
+    await userEvent.type(email, 'test@example.com');
+    await expect(submit).toBeDisabled();
+
+    await userEvent.type(password, 'test1234');
+
+    await expect(submit).toBeEnabled();
+    await expect(fields.queryByRole('alert')).not.toBeInTheDocument();
+    await expect(args.onSubmit).not.toHaveBeenCalled();
+  },
+};
+
+export const EmailFormatError: Story = {
+  render: (args) => (
+    <Modal defaultOpen logo={<Logo />}>
+      <LoginStep {...args} />
+    </Modal>
+  ),
+  play: async ({ args }) => {
+    const dialog = await screen.findByRole('dialog');
+    const fields = within(dialog);
+    const email = fields.getByRole('textbox', { name: '이메일' });
+    const password = fields.getByLabelText('비밀번호', { exact: true });
+    const submit = fields.getByRole('button', { name: '로그인' });
+
+    await userEvent.type(email, 'invalid-email');
+    await userEvent.type(password, 'test1234');
+    await userEvent.click(submit);
+
+    await expect(await fields.findByRole('alert')).toHaveTextContent(
+      '이메일 형식이 올바르지 않아요.',
+    );
+    await expect(email).toHaveAttribute('aria-invalid', 'true');
+    await expect(args.onSubmit).not.toHaveBeenCalled();
+  },
+};
+
 export const InvalidCredentials: Story = {
   args: {
     loginError: 'invalid',
@@ -353,5 +404,62 @@ export const ReopenWhileSubmitting: Story = {
     );
 
     await expect(reopenedDialog).toHaveAttribute('data-open');
+  },
+};
+
+export const PasswordVisibility: Story = {
+  render: (args) => (
+    <Modal defaultOpen logo={<Logo />}>
+      <LoginStep {...args} />
+    </Modal>
+  ),
+  play: async ({ args }) => {
+    const dialog = await screen.findByRole('dialog');
+    const fields = within(dialog);
+    const password = fields.getByLabelText('비밀번호', { exact: true });
+
+    await userEvent.type(password, 'test1234');
+
+    await expect(password).toHaveAttribute('type', 'password');
+    await expect(password).toHaveValue('test1234');
+
+    await userEvent.click(fields.getByRole('button', { name: '비밀번호 보기' }));
+
+    await expect(password).toHaveAttribute('type', 'text');
+    await expect(password).toHaveValue('test1234');
+
+    await userEvent.click(fields.getByRole('button', { name: '비밀번호 숨기기' }));
+
+    await expect(password).toHaveAttribute('type', 'password');
+    await expect(password).toHaveValue('test1234');
+    await expect(args.onSubmit).not.toHaveBeenCalled();
+  },
+};
+
+export const ActionCallbacks: Story = {
+  render: (args) => (
+    <Modal defaultOpen logo={<Logo />}>
+      <LoginStep {...args} />
+    </Modal>
+  ),
+  play: async ({ args }) => {
+    const dialog = await screen.findByRole('dialog');
+    const fields = within(dialog);
+
+    await userEvent.click(fields.getByRole('button', { name: 'Google로 로그인' }));
+    await expect(args.onSocialLogin).toHaveBeenNthCalledWith(1, 'google');
+
+    await userEvent.click(fields.getByRole('button', { name: '카카오로 로그인' }));
+    await expect(args.onSocialLogin).toHaveBeenNthCalledWith(2, 'kakao');
+    await expect(args.onSocialLogin).toHaveBeenCalledTimes(2);
+
+    await userEvent.click(fields.getByRole('button', { name: '회원가입' }));
+    await expect(args.onSignup).toHaveBeenCalledTimes(1);
+
+    await userEvent.click(fields.getByRole('button', { name: '비밀번호를 잊으셨나요?' }));
+    await expect(args.onPasswordReset).toHaveBeenCalledTimes(1);
+
+    await expect(args.onSubmit).not.toHaveBeenCalled();
+    await expect(args.onComplete).not.toHaveBeenCalled();
   },
 };
