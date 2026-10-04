@@ -1,14 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test';
 
-import { Logo, Modal } from '@/shared/ui';
+import { Button, Logo, Modal } from '@/shared/ui';
 
 import { LoginStep, type LoginStepProps } from './login-step';
+
+type LoginStoryArgs = LoginStepProps & {
+  onComplete: () => void;
+};
 
 const meta = {
   title: 'App/Login/LoginStep',
   component: LoginStep,
+  render: (args: LoginStoryArgs) => <SuccessInModal {...args} />,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -18,8 +23,9 @@ const meta = {
     onSignup: fn(),
     onSocialLogin: fn(),
     onSubmit: fn(),
+    onComplete: fn(),
   },
-} satisfies Meta<typeof LoginStep>;
+} satisfies Meta<LoginStoryArgs>;
 
 export default meta;
 
@@ -44,6 +50,41 @@ function FailureInModal(args: LoginStepProps) {
         }}
       />
     </Modal>
+  );
+}
+
+function SuccessInModal({ onComplete, ...args }: LoginStoryArgs) {
+  const [open, setOpen] = useState(false);
+  const openCycleRef = useRef(0);
+
+  return (
+    <>
+      <Button
+        onClick={() => {
+          openCycleRef.current += 1;
+          setOpen(true);
+        }}
+      >
+        로그인
+      </Button>
+
+      <Modal logo={<Logo />} onOpenChange={setOpen} open={open}>
+        <LoginStep
+          {...args}
+          onSubmit={async (values) => {
+            const openCycle = openCycleRef.current;
+
+            await args.onSubmit(values);
+
+            if (openCycle === openCycleRef.current) {
+              setOpen(false);
+            }
+
+            onComplete();
+          }}
+        />
+      </Modal>
+    </>
   );
 }
 
@@ -169,5 +210,148 @@ export const FailureAndRetry: Story = {
       expect(submit).toBeEnabled();
       expect(args.onSubmit).toHaveBeenCalledTimes(2);
     });
+  },
+};
+
+export const Success: Story = {
+  args: {
+    onSubmit: fn(async () => {
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 500);
+      });
+    }),
+  },
+  render: (args: LoginStoryArgs) => <SuccessInModal {...args} />,
+  play: async ({ args }) => {
+    await expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    const openButton = screen.getByRole('button', { name: '로그인' });
+    await userEvent.click(openButton);
+
+    const dialog = await screen.findByRole('dialog');
+    const fields = within(dialog);
+
+    await userEvent.type(fields.getByRole('textbox', { name: '이메일' }), 'test@example.com');
+    await userEvent.type(fields.getByLabelText('비밀번호', { exact: true }), 'test1234');
+    await userEvent.click(fields.getByRole('button', { name: '로그인' }));
+
+    await waitFor(
+      () => {
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(args.onSubmit).toHaveBeenCalledTimes(1);
+        expect(args.onComplete).toHaveBeenCalledTimes(1);
+      },
+      { timeout: 3000 },
+    );
+  },
+};
+
+export const CloseAndReopen: Story = {
+  render: (args) => <SuccessInModal {...args} />,
+  play: async ({ args }) => {
+    const openButton = screen.getByRole('button', { name: '로그인' });
+
+    await userEvent.click(openButton);
+
+    const dialog = await screen.findByRole('dialog');
+    const fields = within(dialog);
+
+    await userEvent.type(fields.getByRole('textbox', { name: '이메일' }), 'test@example.com');
+    await userEvent.keyboard('{Escape}');
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(openButton).toHaveFocus();
+    });
+
+    await userEvent.click(openButton);
+
+    const reopenedDialog = await screen.findByRole('dialog');
+    const reopenedFields = within(reopenedDialog);
+
+    await expect(reopenedFields.getByRole('textbox', { name: '이메일' })).toHaveValue('');
+    await expect(reopenedFields.getByLabelText('비밀번호', { exact: true })).toHaveValue('');
+
+    await userEvent.click(reopenedFields.getByRole('button', { name: '닫기' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(openButton).toHaveFocus();
+    });
+
+    await expect(args.onSubmit).not.toHaveBeenCalled();
+    await expect(args.onComplete).not.toHaveBeenCalled();
+  },
+};
+
+export const KeyboardNavigation: Story = {
+  render: (args) => <SuccessInModal {...args} />,
+  play: async () => {
+    await userEvent.click(screen.getByRole('button', { name: '로그인' }));
+
+    const dialog = await screen.findByRole('dialog');
+    const email = within(dialog).getByRole('textbox', { name: '이메일' });
+
+    await waitFor(() => {
+      expect(email).toHaveFocus();
+    });
+
+    for (let index = 0; index < 12; index += 1) {
+      await userEvent.tab();
+      await expect(dialog.contains(dialog.ownerDocument.activeElement)).toBe(true);
+    }
+
+    for (let index = 0; index < 12; index += 1) {
+      await userEvent.tab({ shift: true });
+      await expect(dialog.contains(dialog.ownerDocument.activeElement)).toBe(true);
+    }
+  },
+};
+
+export const ReopenWhileSubmitting: Story = {
+  args: {
+    onSubmit: fn(async () => {
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 2000);
+      });
+    }),
+  },
+  render: (args) => <SuccessInModal {...args} />,
+  play: async ({ args }) => {
+    const openButton = screen.getByRole('button', { name: '로그인' });
+
+    await userEvent.click(openButton);
+
+    const dialog = await screen.findByRole('dialog');
+    const fields = within(dialog);
+
+    await userEvent.type(fields.getByRole('textbox', { name: '이메일' }), 'test@example.com');
+    await userEvent.type(fields.getByLabelText('비밀번호', { exact: true }), 'test1234');
+
+    const submit = fields.getByRole('button', { name: '로그인' });
+    await userEvent.click(submit);
+
+    await waitFor(() => {
+      expect(submit).toBeDisabled();
+      expect(args.onSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    await userEvent.keyboard('{Escape}');
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    await userEvent.click(openButton);
+    const reopenedDialog = await screen.findByRole('dialog');
+
+    await waitFor(
+      () => {
+        expect(args.onComplete).toHaveBeenCalledTimes(1);
+      },
+      { timeout: 3000 },
+    );
+
+    await expect(reopenedDialog).toHaveAttribute('data-open');
   },
 };
