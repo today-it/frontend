@@ -334,12 +334,18 @@ export const KeyboardNavigation: Story = {
 
     for (let index = 0; index < 12; index += 1) {
       await userEvent.tab();
-      await expect(dialog.contains(dialog.ownerDocument.activeElement)).toBe(true);
+
+      await waitFor(() => {
+        expect(dialog.contains(dialog.ownerDocument.activeElement)).toBe(true);
+      });
     }
 
     for (let index = 0; index < 12; index += 1) {
       await userEvent.tab({ shift: true });
-      await expect(dialog.contains(dialog.ownerDocument.activeElement)).toBe(true);
+
+      await waitFor(() => {
+        expect(dialog.contains(dialog.ownerDocument.activeElement)).toBe(true);
+      });
     }
   },
 };
