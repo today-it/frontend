@@ -3,6 +3,7 @@ import { z } from 'zod';
 /** 외부 로그인 결과로 표시하는 이메일·비밀번호 불일치 오류 */
 export type LoginServerError = 'invalid';
 
+/** 임시 확인 화면에서 사용하는 mock 로그인 제출 결과입니다. */
 export type LoginSubmitResult =
   | { status: 'success' }
   | {
@@ -18,6 +19,10 @@ export const loginErrorMessages = {
   invalid: '이메일 또는 비밀번호가 일치하지 않아요.',
 } as const;
 
+/**
+ * 로그인 입력 검증입니다. 이메일은 앞뒤 공백을 제거한 뒤 필수·형식을 확인합니다.
+ * 비밀번호는 필수 여부만 확인하며, 신규 비밀번호 생성 규칙은 적용하지 않습니다.
+ */
 export const loginSchema = z.object({
   email: z
     .string()
