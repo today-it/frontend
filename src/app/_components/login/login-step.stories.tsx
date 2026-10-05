@@ -13,7 +13,7 @@ type LoginStoryArgs = LoginStepProps & {
 const meta = {
   title: 'App/Login/LoginStep',
   component: LoginStep,
-  render: (args: LoginStoryArgs) => <SuccessInModal {...args} />,
+  render: (args: LoginStoryArgs) => <StepInModal {...args} />,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -30,6 +30,14 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
+function StepInModal(args: LoginStepProps) {
+  return (
+    <Modal defaultOpen logo={<Logo />}>
+      <LoginStep {...args} />
+    </Modal>
+  );
+}
 
 function FailureInModal(args: LoginStepProps) {
   const [failureCount, setFailureCount] = useState(0);
@@ -76,10 +84,11 @@ function SuccessInModal({ onComplete, ...args }: LoginStoryArgs) {
 
             await args.onSubmit(values);
 
-            if (openCycle === openCycleRef.current) {
-              setOpen(false);
+            if (openCycle !== openCycleRef.current) {
+              return;
             }
 
+            setOpen(false);
             onComplete();
           }}
         />
@@ -88,20 +97,13 @@ function SuccessInModal({ onComplete, ...args }: LoginStoryArgs) {
   );
 }
 
-export const Default: Story = {
-  render: (args) => (
-    <Modal defaultOpen logo={<Logo />}>
-      <LoginStep {...args} />
-    </Modal>
-  ),
-};
+const render: Story['render'] = (args) => <StepInModal {...args} />;
+const renderSuccess: Story['render'] = (args) => <SuccessInModal {...args} />;
+
+export const Default: Story = { render };
 
 export const Filled: Story = {
-  render: (args) => (
-    <Modal defaultOpen logo={<Logo />}>
-      <LoginStep {...args} />
-    </Modal>
-  ),
+  render,
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
     const fields = within(dialog);
@@ -123,11 +125,7 @@ export const Filled: Story = {
 };
 
 export const EmailFormatError: Story = {
-  render: (args) => (
-    <Modal defaultOpen logo={<Logo />}>
-      <LoginStep {...args} />
-    </Modal>
-  ),
+  render,
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
     const fields = within(dialog);
@@ -153,26 +151,16 @@ export const InvalidCredentials: Story = {
     failureCount: 1,
     failureCountTotal: 5,
   },
-  render: (args) => (
-    <Modal defaultOpen logo={<Logo />}>
-      <LoginStep {...args} />
-    </Modal>
-  ),
+  render,
 };
 
 export const Loading: Story = {
   args: {
     onSubmit: fn(async () => {
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, 2000);
-      });
+      await new Promise<void>((resolve) => setTimeout(resolve, 2000));
     }),
   },
-  render: (args) => (
-    <Modal defaultOpen logo={<Logo />}>
-      <LoginStep {...args} />
-    </Modal>
-  ),
+  render,
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
     const fields = within(dialog);
@@ -224,9 +212,7 @@ export const Loading: Story = {
 export const FailureAndRetry: Story = {
   args: {
     onSubmit: fn(async () => {
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, 500);
-      });
+      await new Promise<void>((resolve) => setTimeout(resolve, 500));
     }),
   },
   render: (args) => <FailureInModal {...args} />,
@@ -267,16 +253,15 @@ export const FailureAndRetry: Story = {
 export const Success: Story = {
   args: {
     onSubmit: fn(async () => {
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, 500);
-      });
+      await new Promise<void>((resolve) => setTimeout(resolve, 500));
     }),
   },
-  render: (args: LoginStoryArgs) => <SuccessInModal {...args} />,
+  render: renderSuccess,
   play: async ({ args }) => {
     await expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
     const openButton = screen.getByRole('button', { name: '로그인' });
+
     await userEvent.click(openButton);
 
     const dialog = await screen.findByRole('dialog');
@@ -298,7 +283,7 @@ export const Success: Story = {
 };
 
 export const CloseAndReopen: Story = {
-  render: (args) => <SuccessInModal {...args} />,
+  render: renderSuccess,
   play: async ({ args }) => {
     const openButton = screen.getByRole('button', { name: '로그인' });
 
@@ -336,7 +321,7 @@ export const CloseAndReopen: Story = {
 };
 
 export const KeyboardNavigation: Story = {
-  render: (args) => <SuccessInModal {...args} />,
+  render: renderSuccess,
   play: async () => {
     await userEvent.click(screen.getByRole('button', { name: '로그인' }));
 
@@ -362,12 +347,10 @@ export const KeyboardNavigation: Story = {
 export const ReopenWhileSubmitting: Story = {
   args: {
     onSubmit: fn(async () => {
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, 2000);
-      });
+      await new Promise<void>((resolve) => setTimeout(resolve, 2000));
     }),
   },
-  render: (args) => <SuccessInModal {...args} />,
+  render: renderSuccess,
   play: async ({ args }) => {
     const openButton = screen.getByRole('button', { name: '로그인' });
 
@@ -380,6 +363,7 @@ export const ReopenWhileSubmitting: Story = {
     await userEvent.type(fields.getByLabelText('비밀번호', { exact: true }), 'test1234');
 
     const submit = fields.getByRole('button', { name: '로그인' });
+
     await userEvent.click(submit);
 
     await waitFor(() => {
@@ -394,25 +378,18 @@ export const ReopenWhileSubmitting: Story = {
     });
 
     await userEvent.click(openButton);
+
     const reopenedDialog = await screen.findByRole('dialog');
 
-    await waitFor(
-      () => {
-        expect(args.onComplete).toHaveBeenCalledTimes(1);
-      },
-      { timeout: 3000 },
-    );
+    await args.onSubmit.mock.results[0].value;
 
+    await expect(args.onComplete).not.toHaveBeenCalled();
     await expect(reopenedDialog).toHaveAttribute('data-open');
   },
 };
 
 export const PasswordVisibility: Story = {
-  render: (args) => (
-    <Modal defaultOpen logo={<Logo />}>
-      <LoginStep {...args} />
-    </Modal>
-  ),
+  render,
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
     const fields = within(dialog);
@@ -437,11 +414,7 @@ export const PasswordVisibility: Story = {
 };
 
 export const ActionCallbacks: Story = {
-  render: (args) => (
-    <Modal defaultOpen logo={<Logo />}>
-      <LoginStep {...args} />
-    </Modal>
-  ),
+  render,
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
     const fields = within(dialog);
