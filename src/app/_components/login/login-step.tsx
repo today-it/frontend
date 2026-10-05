@@ -36,6 +36,24 @@ export interface LoginStepProps {
   failureCountTotal?: number;
 }
 
+/**
+ * 로그인 모달의 입력 화면입니다. `Modal` 안에서 사용합니다.
+ *
+ * 이메일 필수·형식과 비밀번호 필수 여부를 검증한 뒤 `onSubmit`을 호출합니다.
+ * 로그인 불일치 오류와 실패 횟수는 외부에서 전달받아 표시합니다.
+ * 모달 열기·닫기와 성공 후 처리는 부모 컴포넌트에서 담당합니다.
+ *
+ * @example
+ * ```tsx
+ * <Modal open={open} onOpenChange={setOpen}>
+ *   <LoginStep
+ *     onPasswordReset={handlePasswordReset}
+ *     onSignup={handleSignup}
+ *     onSubmit={handleLogin}
+ *   />
+ * </Modal>
+ * ```
+ */
 export function LoginStep({
   failureCount,
   failureCountTotal,
@@ -99,6 +117,7 @@ export function LoginStep({
         오늘을 특별하게 만드는 우리다운 선택, Today It
       </p>
 
+      {/* form은 Modal의 세로 배치를 유지하면서 Enter 키와 버튼 제출을 처리합니다. */}
       <form className="contents" noValidate onSubmit={handleFormSubmit}>
         <Controller
           control={control}
