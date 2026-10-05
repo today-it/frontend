@@ -1,22 +1,27 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { useState } from 'react';
 import { expect, fn, screen, userEvent, within } from 'storybook/test';
 
+import { SIGNUP_CODE_EXPIRES_SECONDS } from '@/features/signup/model/signup-email';
 import { Logo, Modal } from '@/shared/ui';
 
-import { SignupEmailStep, type SignupEmailStepProps } from './signup-email-step';
+import { SignupEmailStep } from './signup-email-step';
 
 const meta = {
-  title: 'App/Signup/SignupEmailStep',
+  title: 'Features/Signup/SignupEmailStep',
   component: SignupEmailStep,
   tags: ['autodocs'],
+  decorators: [
+    (StoryComponent) => (
+      <Modal defaultOpen logo={<Logo />}>
+        <StoryComponent />
+      </Modal>
+    ),
+  ],
   parameters: {
     layout: 'fullscreen',
   },
   args: {
     phase: 'email',
-    email: '',
-    code: '',
     loginHref: '/login',
     onEmailChange: fn(),
     onCodeChange: fn(),
@@ -31,40 +36,13 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-function StepInModal({ code: initialCode, email: initialEmail, ...args }: SignupEmailStepProps) {
-  const [email, setEmail] = useState(initialEmail);
-  const [code, setCode] = useState(initialCode);
-
-  return (
-    <Modal defaultOpen logo={<Logo />}>
-      <SignupEmailStep
-        {...args}
-        code={code}
-        email={email}
-        onCodeChange={(nextCode) => {
-          setCode(nextCode);
-          args.onCodeChange(nextCode);
-        }}
-        onEmailChange={(nextEmail) => {
-          setEmail(nextEmail);
-          args.onEmailChange(nextEmail);
-        }}
-      />
-    </Modal>
-  );
-}
-
-const render: Story['render'] = (args) => <StepInModal {...args} />;
-
-export const Default: Story = { render };
+export const Default: Story = {};
 
 export const EmailFilled: Story = {
-  args: { email: 'wowowoooo@gmail.com' },
-  render,
+  args: { defaultEmail: 'wowowoooo@gmail.com' },
 };
 
 export const EmailFormatError: Story = {
-  render,
   play: async () => {
     const dialog = await screen.findByRole('dialog');
     const email = within(dialog).getByRole('textbox', { name: '이메일' });
@@ -87,7 +65,6 @@ export const EmailFormatError: Story = {
 };
 
 export const RequestCode: Story = {
-  render,
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
 
@@ -96,55 +73,61 @@ export const RequestCode: Story = {
       'wowowoooo@gmail.com{Enter}',
     );
 
-    await expect(args.onRequestCode).toHaveBeenCalledTimes(1);
+    await expect(args.onRequestCode).toHaveBeenCalledWith('wowowoooo@gmail.com');
   },
 };
 
 export const EmailAlreadyRegistered: Story = {
-  args: { email: 'poppop@gmail.com', emailError: 'registered' },
-  render,
+  args: { defaultEmail: 'poppop@gmail.com', emailError: 'registered' },
 };
 
 export const EmailRegisteredWithSocial: Story = {
-  args: { email: 'poppop@gmail.com', emailError: 'social' },
-  render,
+  args: { defaultEmail: 'poppop@gmail.com', emailError: 'social' },
 };
 
 export const CodeRequested: Story = {
-  args: { phase: 'code', email: 'wowowoooo@gmail.com', timerSeconds: 300 },
-  render,
+  args: {
+    phase: 'code',
+    defaultEmail: 'wowowoooo@gmail.com',
+    timerSeconds: SIGNUP_CODE_EXPIRES_SECONDS,
+  },
 };
 
 export const CodeFilled: Story = {
-  args: { phase: 'code', email: 'wowowoooo@gmail.com', code: '123456', timerSeconds: 272 },
-  render,
+  args: {
+    phase: 'code',
+    defaultEmail: 'wowowoooo@gmail.com',
+    defaultCode: '123456',
+    timerSeconds: 272,
+  },
 };
 
 export const CodeInvalid: Story = {
   args: {
     phase: 'code',
-    email: 'wowowoooo@gmail.com',
-    code: '010000',
+    defaultEmail: 'wowowoooo@gmail.com',
+    defaultCode: '010000',
     codeError: 'invalid',
     timerSeconds: 272,
   },
-  render,
 };
 
 export const CodeExpired: Story = {
   args: {
     phase: 'code',
-    email: 'wowowoooo@gmail.com',
-    code: '000000',
+    defaultEmail: 'wowowoooo@gmail.com',
+    defaultCode: '000000',
     codeError: 'expired',
     timerSeconds: 0,
   },
-  render,
 };
 
 export const VerifyCode: Story = {
-  args: { phase: 'code', email: 'wowowoooo@gmail.com', timerSeconds: 300 },
-  render,
+  args: {
+    phase: 'code',
+    defaultEmail: 'wowowoooo@gmail.com',
+    timerSeconds: SIGNUP_CODE_EXPIRES_SECONDS,
+  },
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
     const next = within(dialog).getByRole('button', { name: '다음' });
@@ -160,9 +143,18 @@ export const VerifyCode: Story = {
     await expect(next).toBeEnabled();
 
     await userEvent.click(next);
-    await expect(args.onVerifyCode).toHaveBeenCalledTimes(1);
+    await expect(args.onVerifyCode).toHaveBeenCalledWith('123 - 456');
 
     await userEvent.click(within(dialog).getByRole('button', { name: '재전송' }));
     await expect(args.onResendCode).toHaveBeenCalledTimes(1);
+    await expect(code).toHaveValue('');
   },
+};
+
+export const Submitting: Story = {
+  args: { defaultEmail: 'wowowoooo@gmail.com', isSubmitting: true },
+};
+
+export const RequestError: Story = {
+  args: { defaultEmail: 'wowowoooo@gmail.com', requestError: true },
 };

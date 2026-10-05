@@ -1,6 +1,6 @@
 import { TextLink } from '@/shared/ui';
 
-export interface SignupLoginLinkProps {
+interface SignupLoginLinkProps {
   /** 로그인 경로 */
   href: string;
 }

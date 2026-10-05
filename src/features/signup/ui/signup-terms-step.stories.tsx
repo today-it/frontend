@@ -1,23 +1,26 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { useState } from 'react';
 import { expect, fn, screen, userEvent, within } from 'storybook/test';
 
-import { type SignupTermId } from '@/app/_model/signup-terms';
 import { Logo, Modal } from '@/shared/ui';
 
-import { SignupTermsStep, type SignupTermsStepProps } from './signup-terms-step';
+import { SignupTermsStep } from './signup-terms-step';
 
 const meta = {
-  title: 'App/Signup/SignupTermsStep',
+  title: 'Features/Signup/SignupTermsStep',
   component: SignupTermsStep,
   tags: ['autodocs'],
+  decorators: [
+    (StoryComponent) => (
+      <Modal defaultOpen logo={<Logo />}>
+        <StoryComponent />
+      </Modal>
+    ),
+  ],
   parameters: {
     layout: 'fullscreen',
   },
   args: {
-    agreedIds: [],
     loginHref: '/login',
-    onAgreedIdsChange: fn(),
     onNext: fn(),
     onViewTerms: fn(),
   },
@@ -27,39 +30,17 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-function StepInModal({ agreedIds: initialAgreedIds, ...args }: SignupTermsStepProps) {
-  const [agreedIds, setAgreedIds] = useState<SignupTermId[]>([...initialAgreedIds]);
-
-  return (
-    <Modal defaultOpen logo={<Logo />}>
-      <SignupTermsStep
-        {...args}
-        agreedIds={agreedIds}
-        onAgreedIdsChange={(nextAgreedIds) => {
-          setAgreedIds(nextAgreedIds);
-          args.onAgreedIdsChange(nextAgreedIds);
-        }}
-      />
-    </Modal>
-  );
-}
-
-const render: Story['render'] = (args) => <StepInModal {...args} />;
-
-export const Default: Story = { render };
+export const Default: Story = {};
 
 export const RequiredAgreed: Story = {
-  args: { agreedIds: ['service', 'privacy'] },
-  render,
+  args: { defaultAgreedIds: ['service', 'privacy'] },
 };
 
 export const AllAgreed: Story = {
-  args: { agreedIds: ['service', 'privacy', 'profile-image', 'preference'] },
-  render,
+  args: { defaultAgreedIds: ['service', 'privacy', 'profile-image', 'preference'] },
 };
 
 export const AgreeAll: Story = {
-  render,
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
     const next = within(dialog).getByRole('button', { name: '다음' });
@@ -80,7 +61,6 @@ export const AgreeAll: Story = {
 };
 
 export const RequiredOnly: Story = {
-  render,
   play: async () => {
     const dialog = await screen.findByRole('dialog');
     const next = within(dialog).getByRole('button', { name: '다음' });
@@ -101,8 +81,7 @@ export const RequiredOnly: Story = {
 };
 
 export const UncheckOptionalReleasesAll: Story = {
-  args: { agreedIds: ['service', 'privacy', 'profile-image', 'preference'] },
-  render,
+  args: { defaultAgreedIds: ['service', 'privacy', 'profile-image', 'preference'] },
   play: async () => {
     const dialog = await screen.findByRole('dialog');
     const all = within(dialog).getByRole('checkbox', { name: '전체 동의합니다' });
@@ -121,7 +100,6 @@ export const UncheckOptionalReleasesAll: Story = {
 };
 
 export const ViewTerms: Story = {
-  render,
   play: async ({ args }) => {
     const dialog = await screen.findByRole('dialog');
 
