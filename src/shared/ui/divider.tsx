@@ -34,9 +34,7 @@ export function Divider({
       {...props}
     >
       <span aria-hidden className="h-divider min-w-px flex-1 bg-border-default" />
-      <span className="shrink-0 text-caption-c1 whitespace-nowrap [color:var(--td-color-text-muted)]">
-        {label}
-      </span>
+      <span className="shrink-0 text-caption-c1 whitespace-nowrap text-text-tertiary">{label}</span>
       <span aria-hidden className="h-divider min-w-px flex-1 bg-border-default" />
     </div>
   );
