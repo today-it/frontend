@@ -30,6 +30,9 @@
   --color-secondary-700: var(--td-color-secondary-700);
   --color-secondary-800: var(--td-color-secondary-800);
   --color-secondary-900: var(--td-color-secondary-900);
+  --color-decoration-confetti-strong: var(--td-color-decoration-confetti-strong);
+  --color-decoration-confetti-medium: var(--td-color-decoration-confetti-medium);
+  --color-decoration-confetti-light: var(--td-color-decoration-confetti-light);
   --color-brand-kakao: var(--td-color-brand-kakao);
   --color-text-primary: var(--td-color-text-primary);
   --color-text-secondary: var(--td-color-text-secondary);
@@ -503,6 +506,11 @@
   --td-color-icon-error: var(--td-color-error-500);
   --td-color-icon-success: var(--td-color-success-700);
   --td-color-icon-liked: var(--td-color-secondary-500);
+
+  /* Semantic: decoration colors */
+  --td-color-decoration-confetti-strong: var(--td-color-secondary-500);
+  --td-color-decoration-confetti-medium: var(--td-color-secondary-300);
+  --td-color-decoration-confetti-light: var(--td-color-secondary-200);
 
   /* Semantic: surface colors */
   --td-color-surface-default: var(--td-color-white);
