@@ -31,9 +31,6 @@
   --color-secondary-800: var(--td-color-secondary-800);
   --color-secondary-900: var(--td-color-secondary-900);
   --color-brand-kakao: var(--td-color-brand-kakao);
-  --color-decoration-confetti-strong: var(--td-color-decoration-confetti-strong);
-  --color-decoration-confetti-medium: var(--td-color-decoration-confetti-medium);
-  --color-decoration-confetti-light: var(--td-color-decoration-confetti-light);
   --color-text-primary: var(--td-color-text-primary);
   --color-text-secondary: var(--td-color-text-secondary);
   --color-text-tertiary: var(--td-color-text-tertiary);
@@ -61,6 +58,8 @@
   --color-surface-default: var(--td-color-surface-default);
   --color-surface-inverse: var(--td-color-surface-inverse);
   --color-surface-placeholder: var(--td-color-surface-placeholder);
+  --color-surface-brand-light: var(--td-color-surface-brand-light);
+  --color-surface-brand-placeholder: var(--td-color-surface-brand-placeholder);
   --color-surface-subtle: var(--td-color-surface-subtle);
   --color-state-primary-subtle-selected: var(--td-color-state-primary-subtle-selected);
   --color-surface-cta: var(--td-color-surface-cta);
@@ -475,11 +474,6 @@
   /* Primitive: brand colors */
   --td-color-brand-kakao: #f7e600;
 
-  /* Semantic: decoration colors */
-  --td-color-decoration-confetti-strong: var(--td-color-secondary-500);
-  --td-color-decoration-confetti-medium: var(--td-color-secondary-300);
-  --td-color-decoration-confetti-light: var(--td-color-secondary-200);
-
   /* Semantic: text colors */
   --td-color-text-primary: var(--td-color-gray-900);
   --td-color-text-secondary: var(--td-color-gray-700);
@@ -514,6 +508,8 @@
   --td-color-surface-default: var(--td-color-white);
   --td-color-surface-inverse: var(--td-color-gray-900);
   --td-color-surface-placeholder: var(--td-color-gray-300);
+  --td-color-surface-brand-light: var(--td-color-primary-100);
+  --td-color-surface-brand-placeholder: var(--td-color-primary-400);
   --td-color-surface-subtle: var(--td-color-gray-100);
   --td-color-surface-cta: var(--td-color-primary-500);
 
