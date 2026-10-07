@@ -31,6 +31,9 @@
   --color-secondary-800: var(--td-color-secondary-800);
   --color-secondary-900: var(--td-color-secondary-900);
   --color-brand-kakao: var(--td-color-brand-kakao);
+  --color-decoration-confetti-strong: var(--td-color-decoration-confetti-strong);
+  --color-decoration-confetti-medium: var(--td-color-decoration-confetti-medium);
+  --color-decoration-confetti-light: var(--td-color-decoration-confetti-light);
   --color-text-primary: var(--td-color-text-primary);
   --color-text-secondary: var(--td-color-text-secondary);
   --color-text-tertiary: var(--td-color-text-tertiary);
@@ -415,7 +418,7 @@
   --td-color-gray-200: #c6c6c6;
   --td-color-gray-300: #ababab;
   --td-color-gray-400: #919191;
-  --td-color-gray-500: #777777;
+  --td-color-gray-500: #757575;
   --td-color-gray-600: #5e5e5e;
   --td-color-gray-700: #474747;
   --td-color-gray-800: #303030;
@@ -471,6 +474,11 @@
 
   /* Primitive: brand colors */
   --td-color-brand-kakao: #f7e600;
+
+  /* Semantic: decoration colors */
+  --td-color-decoration-confetti-strong: var(--td-color-secondary-500);
+  --td-color-decoration-confetti-medium: var(--td-color-secondary-300);
+  --td-color-decoration-confetti-light: var(--td-color-secondary-200);
 
   /* Semantic: text colors */
   --td-color-text-primary: var(--td-color-gray-900);
