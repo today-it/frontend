@@ -26,7 +26,7 @@ export const buttonVariants = cva(
       variant: {
         primary:
           'bg-surface-inverse [color:var(--td-color-text-inverse)] enabled:hover:bg-state-inverse-hover enabled:active:bg-state-inverse-pressed',
-        cta: 'bg-surface-cta [color:var(--td-color-text-primary)] enabled:hover:bg-state-cta-hover enabled:hover:[color:var(--td-color-text-inverse)] enabled:active:bg-state-cta-pressed enabled:active:[color:var(--td-color-text-inverse)]',
+        cta: 'bg-surface-cta [color:var(--td-color-text-primary)] enabled:hover:bg-state-cta-hover enabled:active:bg-state-cta-pressed',
       },
     },
     defaultVariants: { size: 'lg', variant: 'primary' },

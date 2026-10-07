@@ -15,11 +15,11 @@ const ctaStates = [
   { label: 'Default', className: 'pointer-events-none' },
   {
     label: 'Hover',
-    className: 'pointer-events-none bg-state-cta-hover [color:var(--td-color-text-inverse)]',
+    className: 'pointer-events-none bg-state-cta-hover [color:var(--td-color-text-primary)]',
   },
   {
     label: 'Pressed',
-    className: 'pointer-events-none bg-state-cta-pressed [color:var(--td-color-text-inverse)]',
+    className: 'pointer-events-none bg-state-cta-pressed [color:var(--td-color-text-primary)]',
   },
   { label: 'Disabled', className: 'pointer-events-none', disabled: true },
 ] as const;
