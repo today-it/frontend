@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Avatar">
+<g clip-path="url(#clip0_0_14)">
+<path d="M0 24C0 10.7452 10.7452 0 24 0V0C37.2548 0 48 10.7452 48 24V24C48 37.2548 37.2548 48 24 48V48C10.7452 48 0 37.2548 0 24V24Z" fill="#E2F3FD"/>
+<g id="Silhouette">
+<path d="M24 30C33.3888 30 41 37.1634 41 46C41 54.8366 33.3888 62 24 62C14.6112 62 7 54.8366 7 46C7 37.1634 14.6112 30 24 30Z" fill="#64BFEA"/>
+<path d="M24 10C28.9706 10 33 14.0294 33 19C33 23.9706 28.9706 28 24 28C19.0294 28 15 23.9706 15 19C15 14.0294 19.0294 10 24 10Z" fill="#64BFEA"/>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_14">
+<path d="M0 24C0 10.7452 10.7452 0 24 0V0C37.2548 0 48 10.7452 48 24V24C48 37.2548 37.2548 48 24 48V48C10.7452 48 0 37.2548 0 24V24Z" fill="white"/>
+</clipPath>
+</defs>
+</svg>

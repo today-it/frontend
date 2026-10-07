@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/shared/lib';
 
 const avatarVariants = cva(
-  'inline-flex shrink-0 items-center justify-center overflow-hidden bg-surface-placeholder [color:var(--td-color-text-secondary)] select-none',
+  'inline-flex shrink-0 items-center justify-center overflow-hidden bg-surface-brand-light [color:var(--td-color-surface-brand-placeholder)] select-none',
   {
     variants: {
       size: {
@@ -20,12 +20,12 @@ const avatarVariants = cva(
   },
 );
 
+const avatarAssetSizes = { xl: 96, lg: 64, md: 48, sm: 32 } as const;
+
 export interface AvatarProps
   extends AvatarPrimitive.Root.Props, VariantProps<typeof avatarVariants> {
-  /** 프로필 이미지의 대체 텍스트. 기본값은 `initials`입니다. */
+  /** 프로필 이미지의 대체 텍스트. 기본값은 `기본 프로필 이미지`입니다. */
   alt?: string;
-  /** 이미지가 없거나 불러오지 못했을 때 표시할 이니셜 */
-  initials?: string;
   /** 프로필 이미지 주소 */
   src?: string;
   /** Avatar의 크기. 기본값은 `xl`입니다. */
@@ -40,19 +40,16 @@ export interface AvatarProps
  *
  * @example
  * ```tsx
- * <Avatar initials="TI" />
- * <Avatar size="md" initials="김민준" />
- * <Avatar src="/profile.jpg" alt="김민준 프로필" initials="김민준" />
+ * <Avatar />
+ * <Avatar size="md" />
+ * <Avatar src="/profile.jpg" alt="김민준 프로필" />
  * ```
  */
-export function Avatar({
-  alt,
-  className,
-  initials = 'TI',
-  size = 'xl',
-  src,
-  ...props
-}: AvatarProps) {
+export function Avatar({ alt, className, size = 'xl', src, ...props }: AvatarProps) {
+  const resolvedSize = size ?? 'xl';
+  const assetSize = avatarAssetSizes[resolvedSize];
+  const accessibleAlt = alt ?? '기본 프로필 이미지';
+
   return (
     <AvatarPrimitive.Root
       className={cn(avatarVariants({ size, className }))}
@@ -62,17 +59,29 @@ export function Avatar({
     >
       {src ? (
         <AvatarPrimitive.Image
-          alt={alt ?? initials}
+          alt={accessibleAlt}
           className="size-full object-cover"
           data-slot="avatar-image"
           src={src}
         />
       ) : null}
       <AvatarPrimitive.Fallback
-        className="flex size-full items-center justify-center"
+        className="relative flex size-full items-center justify-center"
         data-slot="avatar-fallback"
       >
-        {initials}
+        <span
+          aria-hidden={!accessibleAlt || undefined}
+          aria-label={accessibleAlt || undefined}
+          className="absolute inset-0 block"
+          role={accessibleAlt ? 'img' : undefined}
+          style={{
+            width: assetSize,
+            height: assetSize,
+            backgroundImage: `url(/images/avatar-placeholder-${resolvedSize}.svg)`,
+            backgroundSize: `${assetSize}px ${assetSize}px`,
+            backgroundRepeat: 'no-repeat',
+          }}
+        />
       </AvatarPrimitive.Fallback>
     </AvatarPrimitive.Root>
   );
