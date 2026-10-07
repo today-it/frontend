@@ -10,6 +10,8 @@ export type { ChipProps } from './chip';
 export { Chip } from './chip';
 export type { CodeInputProps } from './code-input';
 export { CodeInput } from './code-input';
+export type { ConfettiProps } from './confetti';
+export { Confetti } from './confetti';
 export type { DividerProps } from './divider';
 export { Divider } from './divider';
 export type { DropdownOption, DropdownProps } from './dropdown';
