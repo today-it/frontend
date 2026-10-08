@@ -20,6 +20,7 @@ export const iconNames = [
   'refresh',
   'review',
   'search',
+  'search-off',
   'share',
   'visibility',
   'visibility-off',
