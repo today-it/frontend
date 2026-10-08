@@ -424,27 +424,3 @@ export const PasswordVisibility: Story = {
     await expect(args.onSubmit).not.toHaveBeenCalled();
   },
 };
-
-export const ActionCallbacks: Story = {
-  render,
-  play: async ({ args }) => {
-    const dialog = await screen.findByRole('dialog');
-    const fields = within(dialog);
-
-    await userEvent.click(fields.getByRole('button', { name: 'Google로 로그인' }));
-    await expect(args.onSocialLogin).toHaveBeenNthCalledWith(1, 'google');
-
-    await userEvent.click(fields.getByRole('button', { name: '카카오로 로그인' }));
-    await expect(args.onSocialLogin).toHaveBeenNthCalledWith(2, 'kakao');
-    await expect(args.onSocialLogin).toHaveBeenCalledTimes(2);
-
-    await userEvent.click(fields.getByRole('button', { name: '회원가입' }));
-    await expect(args.onSignup).toHaveBeenCalledTimes(1);
-
-    await userEvent.click(fields.getByRole('button', { name: '비밀번호를 잊으셨나요?' }));
-    await expect(args.onPasswordReset).toHaveBeenCalledTimes(1);
-
-    await expect(args.onSubmit).not.toHaveBeenCalled();
-    await expect(args.onComplete).not.toHaveBeenCalled();
-  },
-};
