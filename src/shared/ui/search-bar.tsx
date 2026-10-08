@@ -63,7 +63,7 @@ export function SearchBar({
         aria-label="검색어"
         autoFocus={autoFocus}
         autoComplete="off"
-        className="min-w-0 flex-1 border-0 bg-transparent text-body-b1 text-text-primary outline-none placeholder:text-text-muted focus:placeholder:text-text-primary"
+        className="min-w-0 flex-1 border-0 bg-transparent text-body-b1 text-text-primary outline-none placeholder:text-text-muted"
         defaultValue={defaultValue}
         onChange={onValueChange ? (event) => onValueChange(event.currentTarget.value) : undefined}
         placeholder={placeholder}

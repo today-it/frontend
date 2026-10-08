@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { TextInput } from './text-input';
 
@@ -23,9 +24,28 @@ export const Default: Story = {};
 export const Focused: Story = {
   args: {
     autoFocus: true,
-    defaultValue: '이메일을 입력해주세요',
+  },
+  render: (args) => <TextInput {...args} data-focused="" />,
+  play: async ({ canvasElement }) => {
+    const input = within(canvasElement).getByRole('textbox');
+    await userEvent.click(input);
+    await expect(input).toHaveFocus();
+    await expect(input).toHaveValue('');
   },
 };
+
+export const Typing: Story = {
+  args: { autoFocus: true, defaultValue: 'user@' },
+  render: (args) => <TextInput {...args} data-focused="" />,
+  play: async ({ canvasElement }) => {
+    const input = within(canvasElement).getByRole('textbox');
+    await userEvent.clear(input);
+    await userEvent.type(input, 'user@');
+    await expect(input).toHaveFocus();
+    await expect(input).toHaveValue('user@');
+  },
+};
+export const Filled: Story = { args: { defaultValue: 'user@example.com' } };
 
 export const Error: Story = {
   args: {
@@ -52,7 +72,8 @@ export const AllStates: Story = {
   render: () => (
     <div className="flex flex-wrap items-center gap-16">
       <TextInput aria-label="기본 입력창" placeholder="이메일을 입력해주세요" />
-      <TextInput aria-label="포커스된 입력창" autoFocus defaultValue="이메일을 입력해주세요" />
+      <TextInput aria-label="포커스된 입력창" autoFocus placeholder="이메일을 입력해주세요" />
+      <TextInput aria-label="값이 있는 입력창" defaultValue="user@example.com" />
       <TextInput aria-invalid aria-label="오류 입력창" defaultValue="이메일을 입력해주세요" />
       <TextInput success aria-label="검증 성공 입력창" defaultValue="user@example.com" />
       <TextInput aria-label="비활성 입력창" disabled placeholder="이메일을 입력해주세요" />

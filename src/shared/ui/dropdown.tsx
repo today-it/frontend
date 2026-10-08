@@ -65,7 +65,10 @@ export function Dropdown({
         )}
         data-slot="dropdown-trigger"
       >
-        <Select.Value className="min-w-0 truncate" placeholder={placeholder} />
+        <Select.Value
+          className="min-w-0 truncate data-placeholder:[color:var(--td-color-text-muted)]"
+          placeholder={placeholder}
+        />
         <Select.Icon className="text-icon-default group-data-disabled:text-icon-muted">
           <Icon className="group-data-popup-open:hidden" name="chevron-down" tone="inherit" />
           <Icon
