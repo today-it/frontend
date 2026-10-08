@@ -1,3 +1,4 @@
+import { TempLoginPreview } from './_components/temp-login-preview';
 import { TempTermsPreview } from './_components/temp-terms-preview';
 
 export default function Home() {
@@ -5,6 +6,7 @@ export default function Home() {
     <>
       <h1>Home</h1>
       <TempTermsPreview />
+      <TempLoginPreview />
     </>
   );
 }
