@@ -60,7 +60,7 @@ export function Dropdown({
       <Select.Trigger
         aria-label={label}
         className={cn(
-          'group flex h-dropdown w-dropdown-width max-w-full cursor-pointer items-center justify-between gap-8 rounded-xl border-(length:--td-border-width-sm) border-border-default bg-surface-default px-20 py-16 text-caption-c1 [color:var(--td-color-text-primary)] outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-popup-open:border-border-focus data-disabled:cursor-default data-disabled:bg-state-disabled data-disabled:[color:var(--td-color-text-muted)]',
+          'group flex h-dropdown w-dropdown-width max-w-full cursor-pointer items-center justify-between gap-8 rounded-xl border-(length:--td-border-width-sm) border-border-default bg-surface-default px-20 py-16 text-body-b2 [color:var(--td-color-text-primary)] outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-popup-open:border-border-focus data-disabled:cursor-default data-disabled:bg-state-disabled data-disabled:[color:var(--td-color-text-muted)]',
           className,
         )}
         data-slot="dropdown-trigger"
