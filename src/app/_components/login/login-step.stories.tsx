@@ -17,6 +17,12 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
+    docs: {
+      story: {
+        inline: false,
+        height: '800px',
+      },
+    },
   },
   args: {
     onPasswordReset: fn(),
