@@ -14,9 +14,12 @@ export const iconNames = [
   'favorite',
   'favorite-filled',
   'info',
+  'indoor',
   'map',
   'menu',
   'navigation',
+  'parking',
+  'pets',
   'refresh',
   'review',
   'search',
@@ -24,6 +27,7 @@ export const iconNames = [
   'share',
   'visibility',
   'visibility-off',
+  'walk-in',
   'check',
 ] as const;
 
