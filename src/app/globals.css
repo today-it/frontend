@@ -62,6 +62,7 @@
   --color-surface-inverse: var(--td-color-surface-inverse);
   --color-surface-placeholder: var(--td-color-surface-placeholder);
   --color-surface-brand-light: var(--td-color-surface-brand-light);
+  --color-surface-brand-subtle: var(--td-color-surface-brand-subtle);
   --color-surface-brand-placeholder: var(--td-color-surface-brand-placeholder);
   --color-surface-subtle: var(--td-color-surface-subtle);
   --color-surface-cta: var(--td-color-surface-cta);
@@ -517,6 +518,7 @@
   --td-color-surface-inverse: var(--td-color-gray-900);
   --td-color-surface-placeholder: var(--td-color-gray-300);
   --td-color-surface-brand-light: var(--td-color-primary-100);
+  --td-color-surface-brand-subtle: var(--td-color-primary-50);
   --td-color-surface-brand-placeholder: var(--td-color-primary-400);
   --td-color-surface-subtle: var(--td-color-gray-100);
   --td-color-surface-cta: var(--td-color-primary-400);
