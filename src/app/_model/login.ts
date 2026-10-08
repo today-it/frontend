@@ -13,23 +13,17 @@ export type LoginSubmitResult =
     };
 
 export const loginErrorMessages = {
-  emailRequired: '이메일을 입력해주세요.',
   emailFormat: '이메일 형식이 올바르지 않아요.',
-  passwordRequired: '비밀번호를 입력해주세요.',
   invalid: '이메일 또는 비밀번호가 일치하지 않아요.',
 } as const;
 
 /**
- * 로그인 입력 검증입니다. 이메일은 앞뒤 공백을 제거한 뒤 필수·형식을 확인합니다.
- * 비밀번호는 필수 여부만 확인하며, 신규 비밀번호 생성 규칙은 적용하지 않습니다.
+ * 로그인 이메일은 앞뒤 공백을 제거한 뒤 형식을 확인합니다.
+ * 빈 입력은 로그인 버튼 비활성화로 처리합니다.
  */
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, loginErrorMessages.emailRequired)
-    .pipe(z.email(loginErrorMessages.emailFormat)),
-  password: z.string().min(1, loginErrorMessages.passwordRequired),
+  email: z.string().trim().pipe(z.email(loginErrorMessages.emailFormat)),
+  password: z.string(),
 });
 
 export type LoginValues = z.infer<typeof loginSchema>;

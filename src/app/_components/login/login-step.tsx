@@ -39,7 +39,7 @@ export interface LoginStepProps {
 /**
  * 로그인 모달의 입력 화면입니다. `Modal` 안에서 사용합니다.
  *
- * 이메일 필수·형식과 비밀번호 필수 여부를 검증한 뒤 `onSubmit`을 호출합니다.
+ * 빈 입력은 제출을 막고, 이메일 형식을 검증한 뒤 `onSubmit`을 호출합니다.
  * 로그인 불일치 오류와 실패 횟수는 외부에서 전달받아 표시합니다.
  * 모달 열기·닫기와 성공 후 처리는 부모 컴포넌트에서 담당합니다.
  *
@@ -83,7 +83,6 @@ export function LoginStep({
   const isSubmitDisabled = isSubmitting || email.trim() === '' || password === '';
 
   const emailErrorId = useId();
-  const passwordErrorId = useId();
   const loginErrorId = useId();
   const loginErrorMessage = loginError ? loginErrorMessages[loginError] : undefined;
 
@@ -97,7 +96,7 @@ export function LoginStep({
   async function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (submitLockRef.current) {
+    if (isSubmitDisabled || submitLockRef.current) {
       return;
     }
 
@@ -166,22 +165,11 @@ export function LoginStep({
               placeholder="비밀번호를 입력해주세요"
               ref={field.ref}
               value={field.value}
-              aria-describedby={
-                errors.password ? passwordErrorId : loginErrorMessage ? loginErrorId : undefined
-              }
-              aria-invalid={Boolean(errors.password || loginErrorMessage)}
+              aria-describedby={loginErrorMessage ? loginErrorId : undefined}
+              aria-invalid={Boolean(loginErrorMessage)}
             />
           )}
         />
-        {errors.password ? (
-          <p
-            className="text-caption-c1 [color:var(--td-color-text-error)]"
-            id={passwordErrorId}
-            role="alert"
-          >
-            {errors.password.message}
-          </p>
-        ) : null}
         {loginErrorMessage ? (
           <p
             className="text-caption-c1 [color:var(--td-color-text-error)]"
