@@ -5,7 +5,7 @@ import { Button } from './button';
 
 export interface LoadMoreButtonProps extends Omit<
   ButtonProps,
-  'children' | 'disabled' | 'icon' | 'size' | 'variant'
+  'children' | 'icon' | 'size' | 'variant'
 > {
   /** 버튼에 표시할 문구 */
   label?: string;

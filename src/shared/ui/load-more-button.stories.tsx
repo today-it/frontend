@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect, fn, within } from 'storybook/test';
 
 import { LoadMoreButton } from './load-more-button';
 
@@ -71,5 +71,21 @@ export const CountHidden: Story = {
 
     await expect(canvas.getByRole('button', { name: '더 불러오기' })).toBeVisible();
     await expect(canvas.queryByText('8 / 20')).not.toBeInTheDocument();
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+    onClick: fn(),
+  },
+  play: async ({ args, canvasElement }) => {
+    const button = within(canvasElement).getByRole<HTMLButtonElement>('button', {
+      name: '더 불러오기 8 / 20',
+    });
+
+    await expect(button).toBeDisabled();
+    button.click();
+    await expect(args.onClick).not.toHaveBeenCalled();
   },
 };
