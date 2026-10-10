@@ -67,7 +67,7 @@ export function PasswordInput({
     >
       <InputPrimitive
         aria-invalid={ariaInvalid}
-        className="min-w-0 flex-1 bg-transparent text-caption-c1 [color:var(--td-color-text-primary)] outline-none placeholder:[color:var(--td-color-text-muted)] disabled:cursor-not-allowed disabled:[color:var(--td-color-text-muted)] disabled:opacity-100"
+        className="min-w-0 flex-1 bg-transparent text-body-b2 [color:var(--td-color-text-primary)] outline-none placeholder:[color:var(--td-color-text-muted)] disabled:cursor-not-allowed disabled:[color:var(--td-color-text-muted)] disabled:opacity-100"
         data-slot="password-input-control"
         disabled={disabled}
         type={isVisible ? 'text' : 'password'}

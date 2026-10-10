@@ -15,7 +15,7 @@ const meta = {
     },
   },
   args: {
-    children: '카페',
+    children: '태그',
   },
 } satisfies Meta<typeof Tag>;
 
@@ -25,8 +25,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const LongLabel: Story = {
+export const Category: Story = {
   args: {
-    children: '브런치와 디저트를 함께 즐길 수 있는 카페',
+    type: 'category',
   },
 };

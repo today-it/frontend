@@ -3,6 +3,8 @@ import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from '@/shared/lib';
 
 export interface TagProps extends HTMLAttributes<HTMLSpanElement> {
+  /** Tag 유형 */
+  type?: 'default' | 'category';
   /** Tag에 표시할 내용 */
   children: ReactNode;
   /** Tag에 추가할 클래스 이름 */
@@ -18,11 +20,14 @@ export interface TagProps extends HTMLAttributes<HTMLSpanElement> {
  * <Tag>카페</Tag>
  * ```
  */
-export function Tag({ children, className, ...props }: TagProps) {
+export function Tag({ children, className, type = 'default', ...props }: TagProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center justify-center rounded-sm bg-surface-subtle px-8 py-4 text-caption-c1 leading-[normal] whitespace-nowrap text-text-secondary',
+        'inline-flex items-center justify-center rounded-sm px-8 py-4 text-caption-c1 leading-[normal] whitespace-nowrap',
+        type === 'category'
+          ? 'bg-surface-brand-light text-text-brand'
+          : 'bg-surface-subtle text-text-secondary',
         className,
       )}
       data-slot="tag"
