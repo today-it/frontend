@@ -93,7 +93,7 @@ export function CodeInput({
               ? 'border-border-focus'
               : 'border-border-default focus-within:border-border-focus',
         disabled &&
-          'bg-surface-disabled cursor-not-allowed border-border-default focus-within:border-border-default',
+          'cursor-not-allowed border-border-default bg-state-disabled focus-within:border-border-default',
         className,
       )}
       data-disabled={disabled ? '' : undefined}
