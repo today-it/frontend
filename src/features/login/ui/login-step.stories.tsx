@@ -11,7 +11,7 @@ type LoginStoryArgs = LoginStepProps & {
 };
 
 const meta = {
-  title: 'App/Login/LoginStep',
+  title: 'Features/Login/LoginStep',
   component: LoginStep,
   render: (args: LoginStoryArgs) => <StepInModal {...args} />,
   tags: ['autodocs'],

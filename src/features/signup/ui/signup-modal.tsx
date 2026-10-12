@@ -20,6 +20,10 @@ export interface SignupModalProps {
   onOpenChange: (open: boolean) => void;
   /** 이미 계정이 있는 사용자가 이동할 로그인 경로 */
   loginHref: string;
+  /** 로그인 모달로 전환할 때 호출합니다. */
+  onLogin?: () => void;
+  /** 닫힘 애니메이션과 단계 초기화가 끝나면 호출합니다. */
+  onCloseComplete?: () => void;
   /** 가입 과정에서 호출하는 서버 요청. 생략하면 임시 응답을 사용합니다. */
   api?: SignupApi;
   /** 가입 완료 안내에서 나중에 설정하거나, 선호 지역·컨셉을 저장하거나 건너뛰어 가입이 끝났을 때 호출되는 함수 */
@@ -36,7 +40,15 @@ export interface SignupModalProps {
  * <SignupModal loginHref="/login" onOpenChange={setOpen} open={open} />
  * ```
  */
-export function SignupModal({ api, loginHref, onComplete, onOpenChange, open }: SignupModalProps) {
+export function SignupModal({
+  api,
+  loginHref,
+  onCloseComplete,
+  onComplete,
+  onLogin,
+  onOpenChange,
+  open,
+}: SignupModalProps) {
   // api를 생략했을 때 렌더마다 새로 만들지 않도록 한 번만 만듭니다.
   const [mockApi] = useState(() => createMockSignupApi());
   const flow = useSignupSteps({
@@ -54,6 +66,7 @@ export function SignupModal({ api, loginHref, onComplete, onOpenChange, open }: 
       onOpenChangeComplete={(nextOpen) => {
         if (!nextOpen) {
           flow.reset();
+          onCloseComplete?.();
         }
       }}
       open={open}
@@ -62,6 +75,7 @@ export function SignupModal({ api, loginHref, onComplete, onOpenChange, open }: 
         <SignupTermsStep
           defaultAgreedIds={flow.agreedIds}
           loginHref={loginHref}
+          onLogin={onLogin}
           onNext={flow.agreeTerms}
         />
       ) : null}
@@ -75,6 +89,7 @@ export function SignupModal({ api, loginHref, onComplete, onOpenChange, open }: 
           loginHref={loginHref}
           onCodeChange={flow.changeCode}
           onEmailChange={flow.changeEmail}
+          onLogin={onLogin}
           onRequestCode={flow.requestCode}
           onResendCode={flow.resendCode}
           onVerifyCode={flow.verifyCode}

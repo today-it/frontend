@@ -9,7 +9,7 @@ import {
   loginSchema,
   type LoginServerError,
   type LoginValues,
-} from '@/app/_model/login';
+} from '@/features/login/model/login';
 import {
   Button,
   Divider,

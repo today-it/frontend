@@ -54,6 +54,8 @@ export interface SignupEmailStepProps {
   requestError?: boolean;
   /** 이미 계정이 있는 사용자가 이동할 로그인 경로 */
   loginHref: string;
+  /** 로그인 모달로 전환할 때 호출합니다. */
+  onLogin?: () => void;
 }
 
 /**
@@ -69,6 +71,7 @@ export function SignupEmailStep({
   loginHref,
   onCodeChange,
   onEmailChange,
+  onLogin,
   onRequestCode,
   onResendCode,
   onSocialLogin,
@@ -228,7 +231,7 @@ export function SignupEmailStep({
         <SignupFieldMessage className="text-center">{socialErrorMessage}</SignupFieldMessage>
       ) : null}
 
-      <SignupLoginLink href={loginHref} />
+      <SignupLoginLink href={loginHref} onLogin={onLogin} />
     </>
   );
 }

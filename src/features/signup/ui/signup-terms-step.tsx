@@ -26,12 +26,15 @@ export interface SignupTermsStepProps {
   onNext: (agreedIds: SignupTermId[]) => void;
   /** 이미 계정이 있는 사용자가 이동할 로그인 경로 */
   loginHref: string;
+  /** 로그인 모달로 전환할 때 호출합니다. */
+  onLogin?: () => void;
 }
 
 /** 회원가입 모달의 약관 동의 단계입니다. 필수 약관에 동의해야 다음으로 진행할 수 있습니다. */
 export function SignupTermsStep({
   defaultAgreedIds = [],
   loginHref,
+  onLogin,
   onNext,
 }: SignupTermsStepProps) {
   const allLabelId = useId();
@@ -134,7 +137,7 @@ export function SignupTermsStep({
         </Button>
       </form>
 
-      <SignupLoginLink href={loginHref} />
+      <SignupLoginLink href={loginHref} onLogin={onLogin} />
     </>
   );
 }
