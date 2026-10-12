@@ -84,7 +84,13 @@
 
 - 외부에서 사용하는 모듈은 공개 API인 `index.ts`를 통해 export한다.
 - `index.ts`에는 외부에 공개할 항목만 명시적으로 export한다.
-- slice 내부에서는 상대경로 import를 사용한다.
+- 같은 slice 내부에서는 상대경로로 파일을 직접 참조한다.
+- slice 외부에서는 `@/` 절대경로로 공개 API를 참조한다.
+- slice 내부에서는 자기 slice의 공개 API인 `index.ts`, `index.server.ts`를 참조하지 않는다.
+- 상대경로로 slice 경계를 넘어가지 않는다.
+- 같은 레이어의 다른 slice를 직접 참조하지 않는다.
+- `app` 내부 파일끼리, 또는 `shared` 내부 파일끼리 참조할 때는 상대경로와 절대경로 모두 허용한다. 다른 레이어에서 참조할 때는 의존 방향과 공개 API 규칙을 따른다.
+- `shared` 외부에서는 `@/` 절대경로로 segment의 공개 API를 사용한다. `shared` 내부에서는 다른 segment의 파일도 직접 참조할 수 있다.
 - 외부에서는 slice 내부의 `ui`, `model`, `api` 파일을 직접 import하지 않는다.
 - 서버 전용 공개 API가 필요하면 `index.server.ts`로 분리한다.
 
@@ -102,6 +108,40 @@
 export { Icon } from './icon';
 export type { IconName, IconProps, IconTone } from './icon';
 ```
+
+```tsx
+// features/login/ui/login-step.tsx: 같은 slice 내부
+import { loginSchema } from '../model/login';
+
+// app에서 feature의 공개 API 참조
+import { LoginStep } from '@/features/login';
+
+// 금지: slice 내부에서 자기 공개 API 참조
+import { loginSchema } from '@/features/login';
+
+// 금지: 외부에서 내부 파일 직접 참조
+import { loginSchema } from '@/features/login/model/login';
+
+// 금지: login에서 같은 레이어의 signup 참조
+import { SignupModal } from '@/features/signup';
+```
+
+### 4.4 자동 검사
+
+- `pnpm lint:fsd`로 Steiger와 공식 FSD 플러그인의 import 관련 규칙을 실행한다.
+  - `fsd/forbidden-imports`: 상위 레이어와 같은 레이어의 다른 slice 참조 제한
+  - `fsd/no-public-api-sidestep`: slice 공개 API를 우회하는 외부 참조 제한
+  - `fsd/import-locality`: 같은 slice 내부는 상대경로, 외부는 절대경로 사용
+- `app`과 `shared`는 slice로 나누지 않으므로 `fsd/import-locality`에서 제외한다. 이 설정에서는 해당 규칙이 `features`·`entities` 내부 및 상호 참조를 검사한다. 레이어 의존 방향과 slice 공개 API 검사는 유지한다.
+- `pnpm lint`는 기존 ESLint 코드 검사를 실행하며 FSD 경로 제한 규칙은 추가하지 않는다.
+- 다음 프로젝트 규칙은 Steiger가 모두 검사하지 못하므로 리뷰에서 확인한다.
+  - 외부에서 `shared/ui`, `shared/lib` 내부 파일 대신 segment의 공개 API를 사용하는지
+  - `app`·`shared`가 관련된 레이어 간 참조에서 절대경로를 사용하는지
+  - slice 내부에서 상대경로로 자기 공개 API인 `index.ts`, `index.server.ts`를 참조하지 않는지
+  - re-export가 레이어/slice 경계 또는 공개 API를 우회하지 않는지
+  - 변수로 조합한 동적 경로가 import 규칙을 위반하지 않는지
+- 이번 설정은 import 규칙에 한정한다. 재사용 여부, slice 책임, 네이밍과 라우트 private 폴더 경계는 리뷰에서 확인한다.
+- Steiger와 설치된 의존성을 실행하려면 Node.js 22.18 이상인 22.x 또는 24 이상이 필요하다. 실제 사용 버전은 잠금 파일을 따른다.
 
 ---
 
