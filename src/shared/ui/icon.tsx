@@ -3,6 +3,7 @@ import type { SVGProps } from 'react';
 import { cn } from '@/shared/lib';
 
 export const iconNames = [
+  'add',
   'bookmark',
   'bookmark-filled',
   'chevron-down',

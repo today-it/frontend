@@ -1,12 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
 /**
- * 만료 시각을 기준으로 줄어드는 카운트다운입니다. `start`를 호출하면 처음부터 다시 시작합니다.
- *
- * 비활성 탭이나 실행 지연으로 타이머가 늦게 실행돼도, 매번 현재 시각과 만료 시각의 차이로
- * 남은 시간을 계산하므로 시간이 밀리지 않습니다.
- *
- * @param initialSeconds 시작할 남은 시간(초)
+ * 만료 시각 기준으로 줄어드는 카운트다운입니다. 매번 현재 시각과의 차이로 계산해서 탭이 비활성이어도 밀리지 않습니다.
+ * `start`는 처음부터 다시 시작하고, `reset`은 멈추고 처음 상태로 돌립니다.
  */
 export function useCountdown(initialSeconds: number) {
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
@@ -41,5 +37,10 @@ export function useCountdown(initialSeconds: number) {
     setExpiresAt(Date.now() + initialSeconds * 1000);
   }, [initialSeconds]);
 
-  return { secondsLeft, isExpired: expiresAt !== null && secondsLeft <= 0, start };
+  const reset = useCallback(() => {
+    setSecondsLeft(initialSeconds);
+    setExpiresAt(null);
+  }, [initialSeconds]);
+
+  return { secondsLeft, isExpired: expiresAt !== null && secondsLeft <= 0, start, reset };
 }

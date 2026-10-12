@@ -1,5 +1,7 @@
 export type { AvatarProps } from './avatar';
 export { Avatar, avatarVariants } from './avatar';
+export type { AvatarUploaderProps } from './avatar-uploader';
+export { AvatarUploader } from './avatar-uploader';
 export type { ButtonProps } from './button';
 export { Button, buttonVariants } from './button';
 export type { ButtonLinkProps } from './button-link';
