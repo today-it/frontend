@@ -63,7 +63,6 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - 접근성과 반응형 동작을 구현 과정부터 고려한다.
 - 의존성 추가나 구조 변경 전 기존 기능으로 해결할 수 있는지 확인한다.
 
-
 ## Next.js 작업 기준
 
 - 설치된 Next.js 버전과 사용하는 라우터 구조를 먼저 확인한다.
