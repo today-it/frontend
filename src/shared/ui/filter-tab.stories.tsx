@@ -34,11 +34,20 @@ export const Active: Story = {
   render: (args) => <FilterTab className="w-[450px] flex-none" {...args} />,
 };
 
+export const Filled: Story = {
+  args: {
+    filled: true,
+    label: '성수',
+  },
+  render: (args) => <FilterTab className="w-[450px] flex-none" {...args} />,
+};
+
 export const AllStates: Story = {
   render: () => (
     <div className="flex flex-col gap-20">
       <FilterTab className="w-[450px] flex-none" label="기본" />
       <FilterTab className="w-[450px] flex-none" defaultPressed label="활성" />
+      <FilterTab className="w-[450px] flex-none" filled label="선택됨" />
     </div>
   ),
 };

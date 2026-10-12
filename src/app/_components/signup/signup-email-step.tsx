@@ -203,7 +203,7 @@ export function SignupEmailStep({
         </Button>
       </form>
 
-      <Divider className="w-full" />
+      <Divider className="w-full" type="label" />
 
       <div className="flex justify-center gap-20">
         <SocialLoginButton onClick={() => onSocialLogin?.('google')} provider="google" />

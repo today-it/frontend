@@ -26,6 +26,20 @@ export const Default: Story = {};
 
 export const CustomLabel: Story = {
   args: {
+    type: 'label',
     label: '계속하기',
   },
+};
+
+export const Vertical: Story = {
+  args: {
+    type: 'vertical',
+  },
+  decorators: [
+    (Story) => (
+      <div className="flex h-64 items-center">
+        <Story />
+      </div>
+    ),
+  ],
 };

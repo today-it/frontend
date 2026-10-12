@@ -30,6 +30,9 @@
   --color-secondary-700: var(--td-color-secondary-700);
   --color-secondary-800: var(--td-color-secondary-800);
   --color-secondary-900: var(--td-color-secondary-900);
+  --color-decoration-confetti-strong: var(--td-color-decoration-confetti-strong);
+  --color-decoration-confetti-medium: var(--td-color-decoration-confetti-medium);
+  --color-decoration-confetti-light: var(--td-color-decoration-confetti-light);
   --color-brand-kakao: var(--td-color-brand-kakao);
   --color-text-primary: var(--td-color-text-primary);
   --color-text-secondary: var(--td-color-text-secondary);
@@ -39,7 +42,7 @@
   --color-text-inverse: var(--td-color-text-inverse);
   --color-text-error: var(--td-color-text-error);
   --color-text-success: var(--td-color-text-success);
-  --color-text-primary-subtle-selected: var(--td-color-text-primary-subtle-selected);
+  --color-text-brand: var(--td-color-text-brand);
   --color-border-default: var(--td-color-border-default);
   --color-border-active: var(--td-color-border-active);
   --color-border-focus: var(--td-color-border-focus);
@@ -58,8 +61,10 @@
   --color-surface-default: var(--td-color-surface-default);
   --color-surface-inverse: var(--td-color-surface-inverse);
   --color-surface-placeholder: var(--td-color-surface-placeholder);
+  --color-surface-brand-light: var(--td-color-surface-brand-light);
+  --color-surface-brand-subtle: var(--td-color-surface-brand-subtle);
+  --color-surface-brand-placeholder: var(--td-color-surface-brand-placeholder);
   --color-surface-subtle: var(--td-color-surface-subtle);
-  --color-state-primary-subtle-selected: var(--td-color-state-primary-subtle-selected);
   --color-surface-cta: var(--td-color-surface-cta);
   --color-overlay-scrim: var(--td-color-overlay-scrim);
   --color-state-disabled: var(--td-color-state-disabled);
@@ -72,7 +77,6 @@
   --color-state-checked: var(--td-color-state-checked);
   --color-state-cta-hover: var(--td-color-state-cta-hover);
   --color-state-cta-pressed: var(--td-color-state-cta-pressed);
-  --color-state-primary-subtle-hover: var(--td-color-state-primary-subtle-hover);
 
   /* Semantic: fonts */
   --font-sans: var(--td-font-family-sans);
@@ -138,6 +142,7 @@
   --spacing-avatar-lg: var(--td-size-avatar-lg);
   --spacing-avatar-xl: var(--td-size-avatar-xl);
   --spacing-avatar-badge: var(--td-size-avatar-badge);
+  --spacing-carousel-button: var(--td-size-carousel-button);
   --spacing-icon-button: var(--td-size-icon-button);
   --spacing-checkbox: var(--td-size-checkbox);
   --spacing-chip: var(--td-size-chip);
@@ -335,6 +340,7 @@
   --td-size-avatar-lg: var(--td-number-64);
   --td-size-avatar-xl: var(--td-number-96);
   --td-size-avatar-badge: var(--td-number-28);
+  --td-size-carousel-button: var(--td-number-48);
   --td-size-icon-button: var(--td-number-32);
   --td-size-checkbox: var(--td-number-24);
   --td-size-chip: var(--td-number-36);
@@ -415,7 +421,7 @@
   --td-color-gray-200: #c6c6c6;
   --td-color-gray-300: #ababab;
   --td-color-gray-400: #919191;
-  --td-color-gray-500: #777777;
+  --td-color-gray-500: #757575;
   --td-color-gray-600: #5e5e5e;
   --td-color-gray-700: #474747;
   --td-color-gray-800: #303030;
@@ -481,7 +487,7 @@
   --td-color-text-inverse: var(--td-color-white);
   --td-color-text-error: var(--td-color-error-500);
   --td-color-text-success: var(--td-color-success-800);
-  --td-color-text-primary-subtle-selected: var(--td-color-primary-700);
+  --td-color-text-brand: var(--td-color-primary-700);
 
   /* Semantic: border colors */
   --td-color-border-default: var(--td-color-gray-200);
@@ -502,12 +508,20 @@
   --td-color-icon-success: var(--td-color-success-700);
   --td-color-icon-liked: var(--td-color-secondary-500);
 
+  /* Semantic: decoration colors */
+  --td-color-decoration-confetti-strong: var(--td-color-secondary-500);
+  --td-color-decoration-confetti-medium: var(--td-color-secondary-300);
+  --td-color-decoration-confetti-light: var(--td-color-secondary-200);
+
   /* Semantic: surface colors */
   --td-color-surface-default: var(--td-color-white);
   --td-color-surface-inverse: var(--td-color-gray-900);
   --td-color-surface-placeholder: var(--td-color-gray-300);
+  --td-color-surface-brand-light: var(--td-color-primary-100);
+  --td-color-surface-brand-subtle: var(--td-color-primary-50);
+  --td-color-surface-brand-placeholder: var(--td-color-primary-400);
   --td-color-surface-subtle: var(--td-color-gray-100);
-  --td-color-surface-cta: var(--td-color-primary-500);
+  --td-color-surface-cta: var(--td-color-primary-400);
 
   /* Semantic: overlay colors */
   --td-color-overlay-scrim: var(--td-color-alpha-40);
@@ -520,11 +534,9 @@
   --td-color-state-inverse-pressed: var(--td-color-black);
   --td-color-state-pressed: var(--td-color-gray-200);
   --td-color-state-selected: var(--td-color-gray-200);
-  --td-color-state-primary-subtle-selected: var(--td-color-primary-100);
   --td-color-state-checked: var(--td-color-gray-900);
-  --td-color-state-cta-hover: var(--td-color-primary-700);
-  --td-color-state-cta-pressed: var(--td-color-primary-800);
-  --td-color-state-primary-subtle-hover: var(--td-color-primary-50);
+  --td-color-state-cta-hover: var(--td-color-primary-300);
+  --td-color-state-cta-pressed: var(--td-color-primary-500);
 
   /* Primitive: font families */
   --td-font-family-sans: var(--font-asta-sans), Arial, sans-serif;

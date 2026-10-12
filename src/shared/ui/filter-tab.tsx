@@ -6,6 +6,8 @@ import { Icon } from '@/shared/ui/icon';
 export interface FilterTabProps extends Omit<TogglePrimitive.Props, 'children'> {
   /** Filter Tab에 표시할 필터 이름 */
   label: string;
+  /** 선택된 값을 표시하는 상태인지 여부 */
+  filled?: boolean;
   /** Filter Tab에 추가할 클래스 이름 */
   className?: string;
 }
@@ -19,7 +21,7 @@ export interface FilterTabProps extends Omit<TogglePrimitive.Props, 'children'> 
  * <FilterTab defaultPressed label="분류" />
  * ```
  */
-export function FilterTab({ className, label, ...props }: FilterTabProps) {
+export function FilterTab({ className, filled = false, label, ...props }: FilterTabProps) {
   return (
     <TogglePrimitive
       className={cn(
@@ -29,7 +31,12 @@ export function FilterTab({ className, label, ...props }: FilterTabProps) {
       data-slot="filter-tab"
       {...props}
     >
-      <span className="min-w-0 truncate text-text-primary group-data-pressed:text-text-inverse group-data-disabled:text-text-disabled">
+      <span
+        className={cn(
+          'min-w-0 truncate text-text-tertiary group-data-pressed:text-text-inverse group-data-disabled:text-text-disabled',
+          filled && 'text-text-primary',
+        )}
+      >
         {label}
       </span>
       <span className="relative flex size-icon-2xl shrink-0 items-center justify-center">

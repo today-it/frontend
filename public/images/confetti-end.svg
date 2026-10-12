@@ -1,0 +1,19 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="480" height="140" viewBox="0 0 480 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Confetti">
+<circle id="Piece 01" cx="44" cy="48" r="4" fill="#FFA986"/>
+<rect id="Piece 02" x="72" y="26" width="4" height="12" rx="2" transform="rotate(30 72 26)" fill="#F76843"/>
+<circle id="Piece 03" cx="107" cy="73" r="3" fill="#FFCDB6"/>
+<rect id="Piece 04" x="52" y="96" width="4" height="10" rx="2" transform="rotate(-40 52 96)" fill="#FFCDB6"/>
+<circle id="Piece 05" cx="135" cy="37" r="3" fill="#F76843"/>
+<rect id="Piece 06" x="104" y="100" width="4" height="12" rx="2" transform="rotate(60 104 100)" fill="#FFA986"/>
+<circle id="Piece 07" cx="422" cy="84" r="4" fill="#FFA986"/>
+<rect id="Piece 08" x="388" y="64" width="4" height="12" rx="2" transform="rotate(-30 388 64)" fill="#F76843"/>
+<circle id="Piece 09" cx="379" cy="77" r="3" fill="#FFCDB6"/>
+<rect id="Piece 10" x="426" y="98" width="4" height="10" rx="2" transform="rotate(40 426 98)" fill="#FFCDB6"/>
+<circle id="Piece 11" cx="347" cy="33" r="3" fill="#F76843"/>
+<rect id="Piece 12" x="372" y="104" width="4" height="12" rx="2" transform="rotate(-60 372 104)" fill="#FFA986"/>
+<circle id="Piece 13" cx="208" cy="24" r="2" fill="#FFA986"/>
+<circle id="Piece 14" cx="276" cy="22" r="2" fill="#F76843"/>
+<rect id="Piece 15" x="238" y="14" width="4" height="8" rx="2" transform="rotate(-90 238 14)" fill="#FFCDB6"/>
+</g>
+</svg>
