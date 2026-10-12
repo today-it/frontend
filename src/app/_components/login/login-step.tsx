@@ -118,68 +118,78 @@ export function LoginStep({
 
       {/* form은 Modal의 세로 배치를 유지하면서 Enter 키와 버튼 제출을 처리합니다. */}
       <form className="contents" noValidate onSubmit={handleFormSubmit}>
-        <Controller
-          control={control}
-          name="email"
-          render={({ field }) => (
-            <TextInput
-              aria-label="이메일"
-              autoComplete="email"
-              className="w-full"
-              inputMode="email"
-              name={field.name}
-              onBlur={field.onBlur}
-              onValueChange={field.onChange}
-              placeholder="이메일을 입력해주세요"
-              ref={field.ref}
-              type="email"
-              value={field.value}
-              aria-describedby={
-                errors.email ? emailErrorId : loginErrorMessage ? loginErrorId : undefined
-              }
-              aria-invalid={Boolean(errors.email || loginErrorMessage)}
-            />
-          )}
-        />
-        {errors.email ? (
-          <p
-            className="text-caption-c1 [color:var(--td-color-text-error)]"
-            id={emailErrorId}
-            role="alert"
-          >
-            {errors.email.message}
-          </p>
-        ) : null}
+        <div className="flex w-full flex-col gap-12">
+          <Controller
+            control={control}
+            name="email"
+            render={({ field }) => (
+              <TextInput
+                aria-label="이메일"
+                autoComplete="email"
+                className="w-full"
+                inputMode="email"
+                name={field.name}
+                onBlur={field.onBlur}
+                onValueChange={field.onChange}
+                placeholder="이메일을 입력해주세요"
+                ref={field.ref}
+                type="email"
+                value={field.value}
+                aria-describedby={
+                  errors.email ? emailErrorId : loginErrorMessage ? loginErrorId : undefined
+                }
+                aria-invalid={Boolean(errors.email || loginErrorMessage)}
+              />
+            )}
+          />
 
-        <Controller
-          control={control}
-          name="password"
-          render={({ field }) => (
-            <PasswordInput
-              aria-label="비밀번호"
-              autoComplete="current-password"
-              className="w-full"
-              name={field.name}
-              onBlur={field.onBlur}
-              onValueChange={field.onChange}
-              placeholder="비밀번호를 입력해주세요"
-              ref={field.ref}
-              value={field.value}
-              aria-describedby={loginErrorMessage ? loginErrorId : undefined}
-              aria-invalid={Boolean(loginErrorMessage)}
-            />
-          )}
-        />
-        {loginErrorMessage ? (
-          <p
-            className="text-caption-c1 [color:var(--td-color-text-error)]"
-            id={loginErrorId}
-            role="alert"
-          >
-            {loginErrorMessage}
-            {failureCountText}
-          </p>
-        ) : null}
+          <div className="h-20">
+            {errors.email ? (
+              <p
+                className="text-caption-c2 [color:var(--td-color-text-error)]"
+                id={emailErrorId}
+                role="alert"
+              >
+                {errors.email.message}
+              </p>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="flex w-full flex-col gap-12">
+          <Controller
+            control={control}
+            name="password"
+            render={({ field }) => (
+              <PasswordInput
+                aria-label="비밀번호"
+                autoComplete="current-password"
+                className="w-full"
+                name={field.name}
+                onBlur={field.onBlur}
+                onValueChange={field.onChange}
+                placeholder="비밀번호를 입력해주세요"
+                ref={field.ref}
+                value={field.value}
+                aria-describedby={loginErrorMessage ? loginErrorId : undefined}
+                aria-invalid={Boolean(loginErrorMessage)}
+              />
+            )}
+          />
+
+          <div className="h-20">
+            {loginErrorMessage ? (
+              <p
+                className="text-caption-c2 [color:var(--td-color-text-error)]"
+                id={loginErrorId}
+                role="alert"
+              >
+                {loginErrorMessage}
+                {failureCountText}
+              </p>
+            ) : null}
+          </div>
+        </div>
 
         <div className="flex justify-end">
           <button
@@ -201,7 +211,7 @@ export function LoginStep({
         </Button>
       </form>
 
-      <Divider />
+      <Divider type="label" />
 
       <div className="flex justify-center gap-24">
         <SocialLoginButton
