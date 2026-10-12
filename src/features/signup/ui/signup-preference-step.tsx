@@ -4,7 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useId } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
-import { signupRequestErrorMessage } from '@/features/signup/model/signup-api';
+import { Button, Chip, Dropdown, ModalTitle, TextLink } from '@/shared/ui';
+
+import { signupRequestErrorMessage } from '../model/signup-api';
 import {
   getDistrictOptions,
   setConceptSelected,
@@ -12,9 +14,7 @@ import {
   signupPreferenceSchema,
   type SignupPreferenceValues,
   signupRegions,
-} from '@/features/signup/model/signup-preference';
-import { Button, Chip, Dropdown, ModalTitle, TextLink } from '@/shared/ui';
-
+} from '../model/signup-preference';
 import { SignupFieldMessage } from './signup-field-message';
 
 export interface SignupPreferenceStepProps {

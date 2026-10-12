@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 
-import { type SignupApi } from '@/features/signup/model/signup-api';
-import { createMockSignupApi } from '@/features/signup/model/signup-mock-api';
-import { useSignupSteps } from '@/features/signup/model/use-signup-steps';
 import { Logo, Modal } from '@/shared/ui';
 
+import { type SignupApi } from '../model/signup-api';
+import { createMockSignupApi } from '../model/signup-mock-api';
+import { useSignupSteps } from '../model/use-signup-steps';
 import { SignupCompleteStep } from './signup-complete-step';
 import { SignupEmailStep } from './signup-email-step';
 import { SignupPreferenceStep } from './signup-preference-step';

@@ -5,12 +5,6 @@ import { type SubmitEvent, useId, useRef } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import {
-  loginErrorMessages,
-  loginSchema,
-  type LoginServerError,
-  type LoginValues,
-} from '@/features/login/model/login';
-import {
   Button,
   Divider,
   ModalTitle,
@@ -18,6 +12,13 @@ import {
   SocialLoginButton,
   TextInput,
 } from '@/shared/ui';
+
+import {
+  loginErrorMessages,
+  loginSchema,
+  type LoginServerError,
+  type LoginValues,
+} from '../model/login';
 
 export interface LoginStepProps {
   /** 소셜 로그인 버튼을 눌렀을 때 호출합니다. */

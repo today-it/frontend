@@ -4,7 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useId } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
-import { signupRequestErrorMessage } from '@/features/signup/model/signup-api';
+import { Button, CodeInput, Divider, ModalTitle, SocialLoginButton, TextInput } from '@/shared/ui';
+
+import { signupRequestErrorMessage } from '../model/signup-api';
 import {
   isCodeComplete,
   type SignupCodeError,
@@ -14,9 +16,7 @@ import {
   signupEmailSchema,
   type SignupEmailServerError,
   type SignupEmailValues,
-} from '@/features/signup/model/signup-email';
-import { Button, CodeInput, Divider, ModalTitle, SocialLoginButton, TextInput } from '@/shared/ui';
-
+} from '../model/signup-email';
 import { SignupFieldMessage } from './signup-field-message';
 import { SignupLoginLink } from './signup-login-link';
 

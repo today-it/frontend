@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, fn, screen, userEvent, within } from 'storybook/test';
 
-import { SIGNUP_CODE_EXPIRES_SECONDS } from '@/features/signup/model/signup-email';
 import { Logo, Modal } from '@/shared/ui';
 
+import { SIGNUP_CODE_EXPIRES_SECONDS } from '../model/signup-email';
 import { SignupEmailStep } from './signup-email-step';
 
 const meta = {

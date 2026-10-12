@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useId } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
+import { Button, Checkbox, Icon, ModalTitle } from '@/shared/ui';
+
 import {
   isAllTermsAgreed,
   isRequiredTermsAgreed,
@@ -14,9 +16,7 @@ import {
   signupTerms,
   signupTermsSchema,
   type SignupTermsValues,
-} from '@/features/signup/model/signup-terms';
-import { Button, Checkbox, Icon, ModalTitle } from '@/shared/ui';
-
+} from '../model/signup-terms';
 import { SignupLoginLink } from './signup-login-link';
 
 export interface SignupTermsStepProps {

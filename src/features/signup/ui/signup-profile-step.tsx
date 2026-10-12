@@ -4,7 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useId, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
-import { signupRequestErrorMessage } from '@/features/signup/model/signup-api';
+import { AvatarUploader, Button, ModalTitle, PasswordInput, TextInput } from '@/shared/ui';
+
+import { signupRequestErrorMessage } from '../model/signup-api';
 import {
   getNicknameFeedback,
   SIGNUP_PASSWORD_MAX_LENGTH,
@@ -13,10 +15,8 @@ import {
   type SignupPasswordServerError,
   signupProfileSchema,
   type SignupProfileValues,
-} from '@/features/signup/model/signup-profile';
-import { useNicknameCheckRequest } from '@/features/signup/model/use-nickname-check-request';
-import { AvatarUploader, Button, ModalTitle, PasswordInput, TextInput } from '@/shared/ui';
-
+} from '../model/signup-profile';
+import { useNicknameCheckRequest } from '../model/use-nickname-check-request';
 import { SignupFieldMessage } from './signup-field-message';
 
 export interface SignupProfileStepProps {

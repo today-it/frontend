@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test';
 
-import { signupRequestErrorMessage } from '@/features/signup/model/signup-api';
-import { createMockSignupApi } from '@/features/signup/model/signup-mock-api';
 import { Button } from '@/shared/ui';
 
+import { signupRequestErrorMessage } from '../model/signup-api';
+import { createMockSignupApi } from '../model/signup-mock-api';
 import { SignupModal, type SignupModalProps } from './signup-modal';
 
 const meta = {
