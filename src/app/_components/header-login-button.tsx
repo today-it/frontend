@@ -8,11 +8,10 @@ import {
   type LoginSubmitResult,
   type LoginValues,
 } from '@/features/login';
-import { Button, Logo, Modal } from '@/shared/ui';
+import { SignupModal } from '@/features/signup';
+import { Logo, Modal } from '@/shared/ui';
 
-import { TempTermsPreview } from './temp-terms-preview';
-
-interface TempLoginPreviewProps {
+interface HeaderLoginButtonProps {
   onComplete?: () => void;
   onPasswordReset?: LoginStepProps['onPasswordReset'];
   onSignup?: LoginStepProps['onSignup'];
@@ -33,13 +32,13 @@ async function mockLogin(values: LoginValues, failureCount: number): Promise<Log
   return { status: 'success' };
 }
 
-export function TempLoginPreview({
+export function HeaderLoginButton({
   onComplete,
   onPasswordReset,
   onSignup,
   onSocialLogin,
-}: TempLoginPreviewProps) {
-  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>('signup');
+}: HeaderLoginButtonProps) {
+  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
   const nextModalRef = useRef<'login' | 'signup' | null>(null);
   const [result, setResult] = useState<LoginSubmitResult>();
   const openCycleRef = useRef(0);
@@ -65,6 +64,8 @@ export function TempLoginPreview({
     if (nextModalRef.current) {
       setActiveModal(nextModalRef.current);
       nextModalRef.current = null;
+    } else {
+      triggerRef.current?.focus();
     }
   }
 
@@ -90,22 +91,28 @@ export function TempLoginPreview({
 
   return (
     <>
-      <TempTermsPreview
+      <SignupModal
+        loginHref="/login"
         onCloseComplete={handleCloseComplete}
         onLogin={() => switchModal('login')}
         onOpenChange={(open) => setActiveModal(open ? 'signup' : null)}
         open={activeModal === 'signup'}
       />
-      <Button onClick={() => handleOpenChange(true)} ref={triggerRef} size="md">
+      <button
+        aria-haspopup="dialog"
+        className="inline-flex cursor-pointer items-start text-body-b2 whitespace-nowrap text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
+        onClick={() => handleOpenChange(true)}
+        ref={triggerRef}
+        type="button"
+      >
         로그인
-      </Button>
+      </button>
 
       <Modal
         logo={<Logo />}
         onOpenChange={handleOpenChange}
         onOpenChangeComplete={(nextOpen) => {
           if (!nextOpen) {
-            triggerRef.current?.focus();
             handleCloseComplete();
           }
         }}
