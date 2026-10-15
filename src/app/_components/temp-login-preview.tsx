@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 
 import {
+  login,
   LoginStep,
   type LoginStepProps,
   type LoginSubmitResult,
@@ -17,20 +18,6 @@ interface TempLoginPreviewProps {
   onPasswordReset?: LoginStepProps['onPasswordReset'];
   onSignup?: LoginStepProps['onSignup'];
   onSocialLogin?: LoginStepProps['onSocialLogin'];
-}
-
-async function mockLogin(values: LoginValues, failureCount: number): Promise<LoginSubmitResult> {
-  await new Promise<void>((resolve) => setTimeout(resolve, 700));
-
-  if (values.email === 'invalid@test.com') {
-    return {
-      status: 'invalid',
-      failureCount: failureCount + 1,
-      failureCountTotal: 5,
-    };
-  }
-
-  return { status: 'success' };
 }
 
 export function TempLoginPreview({
@@ -70,21 +57,27 @@ export function TempLoginPreview({
 
   async function handleSubmit(values: LoginValues) {
     const openCycle = openCycleRef.current;
-    const failureCount = result?.status === 'invalid' ? result.failureCount : 0;
-
     setResult(undefined);
 
-    const nextResult = await mockLogin(values, failureCount);
+    let nextResult: LoginSubmitResult;
+
+    try {
+      nextResult = await login(values);
+    } catch {
+      // 통신 오류를 이메일·비밀번호 불일치로 표시하지 않습니다.
+      console.error('로그인 요청을 처리하지 못했습니다.');
+      return;
+    }
 
     if (openCycle !== openCycleRef.current) {
       return;
     }
 
-    setResult(nextResult);
-
     if (nextResult.status === 'success') {
       handleOpenChange(false);
       onComplete?.();
+    } else {
+      setResult(nextResult);
     }
   }
 

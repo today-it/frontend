@@ -3,12 +3,12 @@ import { z } from 'zod';
 /** 외부 로그인 결과로 표시하는 이메일·비밀번호 불일치 오류 */
 export type LoginServerError = 'invalid';
 
-/** 임시 확인 화면에서 사용하는 mock 로그인 제출 결과입니다. */
+/** 로그인 제출 결과입니다. 실패 횟수가 없으면 횟수 표시는 생략합니다. */
 export type LoginSubmitResult =
   | { status: 'success' }
   | {
       status: 'invalid';
-      failureCount: number;
+      failureCount?: number;
       failureCountTotal?: number;
     };
 
