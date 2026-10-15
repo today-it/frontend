@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 import {
   LoginStep,
@@ -9,9 +9,13 @@ import {
   type LoginValues,
 } from '@/features/login';
 import { SignupModal } from '@/features/signup';
+import { cn } from '@/shared/lib';
 import { Logo, Modal } from '@/shared/ui';
 
-interface HeaderLoginButtonProps {
+interface LoginModalTriggerProps {
+  children?: ReactNode;
+  className?: string;
+  ariaLabel?: string;
   onComplete?: () => void;
   onPasswordReset?: LoginStepProps['onPasswordReset'];
   onSignup?: LoginStepProps['onSignup'];
@@ -32,12 +36,15 @@ async function mockLogin(values: LoginValues, failureCount: number): Promise<Log
   return { status: 'success' };
 }
 
-export function HeaderLoginButton({
+export function LoginModalTrigger({
+  children = '로그인',
+  className,
+  ariaLabel,
   onComplete,
   onPasswordReset,
   onSignup,
   onSocialLogin,
-}: HeaderLoginButtonProps) {
+}: LoginModalTriggerProps) {
   const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
   const nextModalRef = useRef<'login' | 'signup' | null>(null);
   const [result, setResult] = useState<LoginSubmitResult>();
@@ -100,12 +107,16 @@ export function HeaderLoginButton({
       />
       <button
         aria-haspopup="dialog"
-        className="inline-flex cursor-pointer items-start text-body-b2 whitespace-nowrap text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
+        aria-label={ariaLabel}
+        className={cn(
+          'inline-flex cursor-pointer items-start text-body-b2 whitespace-nowrap [color:var(--td-color-text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2',
+          className,
+        )}
         onClick={() => handleOpenChange(true)}
         ref={triggerRef}
         type="button"
       >
-        로그인
+        {children}
       </button>
 
       <Modal

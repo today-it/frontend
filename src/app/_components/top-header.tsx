@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { Avatar, Icon, Logo, SearchBar, Tab } from '@/shared/ui';
 
-import { HeaderLoginButton } from './header-login-button';
+import { LoginModalTrigger } from './login-modal-trigger';
 import { ScrollSearchArea } from './scroll-search-area';
 
 export type BrowseSection = 'places' | 'courses';
@@ -64,7 +64,7 @@ export function TopHeader({
               <Icon name="chevron-down" size={24} />
             </div>
           ) : (
-            <HeaderLoginButton />
+            <LoginModalTrigger />
           )}
         </div>
       </div>
