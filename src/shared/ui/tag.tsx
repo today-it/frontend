@@ -24,10 +24,10 @@ export function Tag({ children, className, type = 'default', ...props }: TagProp
   return (
     <span
       className={cn(
-        'inline-flex items-center justify-center rounded-sm px-8 py-4 text-caption-c1 leading-[normal] whitespace-nowrap',
+        'inline-flex items-center justify-center rounded-sm px-8 py-4 leading-[normal] whitespace-nowrap',
         type === 'category'
-          ? 'bg-surface-brand-light text-text-brand'
-          : 'bg-surface-subtle text-text-secondary',
+          ? 'bg-surface-brand-light text-caption-c2 [color:var(--td-color-text-brand)]'
+          : 'bg-surface-subtle text-caption-c1 [color:var(--td-color-text-secondary)]',
         className,
       )}
       data-slot="tag"
