@@ -126,6 +126,7 @@
   --spacing-12: var(--td-spacing-12);
   --spacing-14: var(--td-spacing-14);
   --spacing-16: var(--td-spacing-16);
+  --spacing-18: var(--td-spacing-18);
   --spacing-20: var(--td-spacing-20);
   --spacing-24: var(--td-spacing-24);
   --spacing-28: var(--td-spacing-28);
@@ -324,6 +325,7 @@
   --td-spacing-12: var(--td-number-12);
   --td-spacing-14: var(--td-number-14);
   --td-spacing-16: var(--td-number-16);
+  --td-spacing-18: var(--td-number-18);
   --td-spacing-20: var(--td-number-20);
   --td-spacing-24: var(--td-number-24);
   --td-spacing-28: var(--td-number-28);
