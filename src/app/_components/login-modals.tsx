@@ -1,25 +1,13 @@
 'use client';
 
-import { type ReactNode, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
-import {
-  LoginStep,
-  type LoginStepProps,
-  type LoginSubmitResult,
-  type LoginValues,
-} from '@/features/login';
+import { LoginStep, type LoginSubmitResult, type LoginValues } from '@/features/login';
 import { SignupModal } from '@/features/signup';
-import { cn } from '@/shared/lib';
 import { Logo, Modal } from '@/shared/ui';
 
-interface LoginModalTriggerProps {
-  children?: ReactNode;
-  className?: string;
-  ariaLabel?: string;
-  onComplete?: () => void;
-  onPasswordReset?: LoginStepProps['onPasswordReset'];
-  onSignup?: LoginStepProps['onSignup'];
-  onSocialLogin?: LoginStepProps['onSocialLogin'];
+interface LoginModalsProps {
+  onCloseComplete: () => void;
 }
 
 async function mockLogin(values: LoginValues, failureCount: number): Promise<LoginSubmitResult> {
@@ -36,20 +24,11 @@ async function mockLogin(values: LoginValues, failureCount: number): Promise<Log
   return { status: 'success' };
 }
 
-export function LoginModalTrigger({
-  children = '로그인',
-  className,
-  ariaLabel,
-  onComplete,
-  onPasswordReset,
-  onSignup,
-  onSocialLogin,
-}: LoginModalTriggerProps) {
-  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
+export function LoginModals({ onCloseComplete }: LoginModalsProps) {
+  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>('login');
   const nextModalRef = useRef<'login' | 'signup' | null>(null);
   const [result, setResult] = useState<LoginSubmitResult>();
   const openCycleRef = useRef(0);
-  const triggerRef = useRef<HTMLButtonElement>(null);
 
   function handleOpenChange(nextOpen: boolean) {
     openCycleRef.current += 1;
@@ -72,7 +51,7 @@ export function LoginModalTrigger({
       setActiveModal(nextModalRef.current);
       nextModalRef.current = null;
     } else {
-      triggerRef.current?.focus();
+      onCloseComplete();
     }
   }
 
@@ -92,7 +71,6 @@ export function LoginModalTrigger({
 
     if (nextResult.status === 'success') {
       handleOpenChange(false);
-      onComplete?.();
     }
   }
 
@@ -105,20 +83,6 @@ export function LoginModalTrigger({
         onOpenChange={(open) => setActiveModal(open ? 'signup' : null)}
         open={activeModal === 'signup'}
       />
-      <button
-        aria-haspopup="dialog"
-        aria-label={ariaLabel}
-        className={cn(
-          'inline-flex cursor-pointer items-start text-body-b2 whitespace-nowrap [color:var(--td-color-text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2',
-          className,
-        )}
-        onClick={() => handleOpenChange(true)}
-        ref={triggerRef}
-        type="button"
-      >
-        {children}
-      </button>
-
       <Modal
         logo={<Logo />}
         onOpenChange={handleOpenChange}
@@ -133,12 +97,10 @@ export function LoginModalTrigger({
           failureCount={result?.status === 'invalid' ? result.failureCount : undefined}
           failureCountTotal={result?.status === 'invalid' ? result.failureCountTotal : undefined}
           loginError={result?.status === 'invalid' ? 'invalid' : undefined}
-          onPasswordReset={() => onPasswordReset?.()}
-          onSignup={() => {
-            switchModal('signup');
-            onSignup?.();
+          onPasswordReset={() => {
+            // 비밀번호 재설정은 아직 연결하지 않았습니다.
           }}
-          onSocialLogin={onSocialLogin}
+          onSignup={() => switchModal('signup')}
           onSubmit={handleSubmit}
         />
       </Modal>
