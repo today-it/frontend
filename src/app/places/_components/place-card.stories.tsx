@@ -83,10 +83,11 @@ export const FigmaVariants: Story = {
   ),
   play: async ({ canvasElement }) => {
     const cards = within(canvasElement).getAllByRole('article');
-    const expectedHeights = [374, 458, 374, 458];
+    const expectedHeights = [376, 460, 376, 460];
     for (const [index, card] of cards.entries()) {
       await expect(card.getBoundingClientRect().width).toBe(336);
       await expect(card.getBoundingClientRect().height).toBe(expectedHeights[index]);
+      await expect(card.lastElementChild!.getBoundingClientRect().height).toBe(124);
     }
   },
 };

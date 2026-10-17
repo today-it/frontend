@@ -76,7 +76,7 @@ export function PlaceCard({
           {likeContent}
         </button>
       </div>
-      <div className="flex h-[122px] min-w-0 shrink-0 flex-col items-start gap-8 px-20 pt-20 pb-24">
+      <div className="flex h-place-card-body-height min-w-0 shrink-0 flex-col items-start gap-8 px-20 pt-20 pb-24">
         <Tag type="category">{place.category}</Tag>
         <h3 className="w-full truncate text-heading-h3 text-text-primary" title={place.name}>
           {place.name}
