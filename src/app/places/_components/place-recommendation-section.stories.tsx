@@ -26,7 +26,7 @@ const meta = {
       </>
     ),
   ],
-  args: { places: recommendedPlaces },
+  args: { moreHref: '/places?section=recommended', places: recommendedPlaces },
 } satisfies Meta<typeof PlaceRecommendationSection>;
 
 export default meta;
