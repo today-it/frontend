@@ -5,7 +5,7 @@ export type LoginServerError = 'invalid';
 
 /** 로그인 제출 결과입니다. 실패 횟수가 없으면 횟수 표시는 생략합니다. */
 export type LoginSubmitResult =
-  | { status: 'success' }
+  | { status: 'success'; accessToken: string }
   | {
       status: 'invalid';
       failureCount?: number;

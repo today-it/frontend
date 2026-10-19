@@ -59,25 +59,24 @@ export function TempLoginPreview({
     const openCycle = openCycleRef.current;
     setResult(undefined);
 
-    let nextResult: LoginSubmitResult;
-
     try {
-      nextResult = await login(values);
+      const nextResult = await login(values);
+
+      if (openCycle !== openCycleRef.current) {
+        return;
+      }
+
+      if (nextResult.status === 'success') {
+        localStorage.setItem('accessToken', nextResult.accessToken);
+        handleOpenChange(false);
+        onComplete?.();
+      } else {
+        setResult(nextResult);
+      }
     } catch {
-      // 통신 오류를 이메일·비밀번호 불일치로 표시하지 않습니다.
-      console.error('로그인 요청을 처리하지 못했습니다.');
+      // 요청·저장 오류를 이메일·비밀번호 불일치로 표시하지 않습니다.
+      console.error('로그인을 처리하지 못했습니다.');
       return;
-    }
-
-    if (openCycle !== openCycleRef.current) {
-      return;
-    }
-
-    if (nextResult.status === 'success') {
-      handleOpenChange(false);
-      onComplete?.();
-    } else {
-      setResult(nextResult);
     }
   }
 
