@@ -126,3 +126,26 @@ const placeSamples: readonly PlaceSummary[] = [
 ];
 
 export const recommendedPlaces: readonly PlaceSummary[] = placeSamples;
+
+function getPlacesById(ids: readonly string[]): readonly PlaceSummary[] {
+  return ids.flatMap((id) => {
+    const place = placeSamples.find((sample) => sample.id === id);
+    return place ? [place] : [];
+  });
+}
+
+export const trendingPlaces = getPlacesById([
+  'seongsu-popup-week',
+  'mildo-seongsu',
+  'seongsu-rooftop-lounge',
+  'point-of-view',
+  'lcdc-seoul',
+]);
+
+export const rainyDayPlaces = getPlacesById([
+  'seongsu-artnine',
+  'red-button-seongsu',
+  'daelim-changgo-gallery',
+  'seongsu-pottery-day',
+  'onion-seongsu',
+]);
