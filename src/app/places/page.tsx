@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { TopHeader } from '@/app/_components/top-header';
 
 import { PlaceCollectionView } from './_components/place-collection-view';
+import { PlaceListEmptyState } from './_components/place-list-empty-state';
 import { PlaceRecommendationSection } from './_components/place-recommendation-section';
 import { findPlaceSection, placeSections } from './_model/place-sections';
 
@@ -19,11 +20,16 @@ export default async function PlacesPage({
   const { section: querySection } = await searchParams;
   const sectionId = typeof querySection === 'string' ? querySection : undefined;
   const selectedSection = findPlaceSection(sectionId);
+  const hasPlaces = selectedSection
+    ? selectedSection.places.length > 0
+    : placeSections.some((section) => section.places.length > 0);
 
   return (
     <>
       <TopHeader activeSection="places" auth="guest" />
-      {selectedSection ? (
+      {!hasPlaces ? (
+        <PlaceListEmptyState />
+      ) : selectedSection ? (
         <PlaceCollectionView key={selectedSection.id} section={selectedSection} />
       ) : (
         <main className="mx-auto w-full max-w-[calc(var(--spacing-header-width)+48px)] px-24 pt-48 pb-96">
