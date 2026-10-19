@@ -70,6 +70,8 @@ export function TempLoginPreview({
         localStorage.setItem('accessToken', nextResult.accessToken);
         handleOpenChange(false);
         onComplete?.();
+      } else if (nextResult.status === 'locked') {
+        onPasswordReset?.();
       } else {
         setResult(nextResult);
       }

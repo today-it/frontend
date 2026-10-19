@@ -16,12 +16,12 @@ const loginResponseSchema = z.object({
 });
 
 const loginFailureSchema = z.object({
-  code: z.literal('LOGIN_FAILED'),
+  code: z.enum(['LOGIN_FAILED', 'LOGIN_LOCKED']),
   failureCount: z.number().int().nonnegative().nullable(),
   maxFailureCount: z.number().int().positive(),
 });
 
-/** 로그인 성공과 확인된 불일치 응답을 반환합니다. 그 외 요청 실패는 reject합니다. */
+/** 로그인 성공·불일치·잠금 응답을 반환합니다. 그 외 요청 실패는 reject합니다. */
 export async function login(values: LoginValues): Promise<LoginSubmitResult> {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -44,6 +44,10 @@ export async function login(values: LoginValues): Promise<LoginSubmitResult> {
     const failure = loginFailureSchema.safeParse(await response.json());
 
     if (failure.success) {
+      if (failure.data.code === 'LOGIN_LOCKED') {
+        return { status: 'locked' };
+      }
+
       return {
         status: 'invalid',
         failureCount: failure.data.failureCount ?? undefined,
