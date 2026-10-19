@@ -14,10 +14,12 @@ const compactCount = new Intl.NumberFormat('en-US', {
 });
 const count = new Intl.NumberFormat('en-US');
 
+export type PlaceCardSize = 'md' | 'lg';
+
 export interface PlaceCardProps {
   place: PlaceSummary;
   eager?: boolean;
-  size?: 'md' | 'lg';
+  size?: PlaceCardSize;
   liked?: boolean;
   /** 클릭 이후의 인증 확인과 좋아요 변경은 사용하는 쪽에서 처리합니다. */
   onLikeClick: MouseEventHandler<HTMLButtonElement>;
