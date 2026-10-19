@@ -16,7 +16,7 @@ interface PlaceCarouselProps {
   onLikeClick: MouseEventHandler<HTMLButtonElement>;
 }
 
-/** 장소 카드를 Figma 캐러셀처럼 4개 단위로 이동합니다. */
+/** 장소 카드를 4개 단위로 이동합니다. */
 export function PlaceCarousel({ label, places, onLikeClick }: PlaceCarouselProps) {
   const [page, setPage] = useState(0);
   const viewportId = useId();

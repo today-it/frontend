@@ -22,7 +22,7 @@ export interface SectionHeaderProps {
   className?: string;
 }
 
-/** Figma Section Header의 Dropdown 및 More 변형을 표시합니다. */
+/** 섹션 헤더의 Dropdown 및 More 변형을 표시합니다. */
 export function SectionHeader({
   className,
   description = '선호 지역과 컨셉을 바탕으로 골랐어요',
