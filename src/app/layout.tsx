@@ -3,6 +3,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 import { astaSans } from '@/app/fonts';
+import { Footer } from '@/shared/ui';
 
 import { LoginModalHost } from './_components/login-modal-host';
 import Providers from './providers/query-provider';
@@ -20,6 +21,11 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           {children}
           <LoginModalHost />
         </Providers>
+        <Footer
+          termsHref="/terms"
+          privacyHref="/privacy"
+          contactHref="mailto:contact@example.com"
+        />
       </body>
     </html>
   );
