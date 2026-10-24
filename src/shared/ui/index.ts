@@ -42,6 +42,8 @@ export type { ScrollTopButtonProps } from './scroll-top-button';
 export { ScrollTopButton } from './scroll-top-button';
 export type { SearchBarProps } from './search-bar';
 export { SearchBar } from './search-bar';
+export type { SectionHeaderProps } from './section-header';
+export { SectionHeader } from './section-header';
 export type { SocialLoginButtonProps } from './social-login-button';
 export { SocialLoginButton } from './social-login-button';
 export type { TabProps } from './tab';

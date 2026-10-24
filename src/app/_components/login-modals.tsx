@@ -9,28 +9,20 @@ import {
   type LoginSubmitResult,
   type LoginValues,
 } from '@/features/login';
-import { Button, Logo, Modal } from '@/shared/ui';
+import { SignupModal } from '@/features/signup';
+import { Logo, Modal } from '@/shared/ui';
 
-import { TempTermsPreview } from './temp-terms-preview';
-
-interface TempLoginPreviewProps {
+interface LoginModalsProps {
+  onCloseComplete: () => void;
   onComplete?: () => void;
   onPasswordReset?: LoginStepProps['onPasswordReset'];
-  onSignup?: LoginStepProps['onSignup'];
-  onSocialLogin?: LoginStepProps['onSocialLogin'];
 }
 
-export function TempLoginPreview({
-  onComplete,
-  onPasswordReset,
-  onSignup,
-  onSocialLogin,
-}: TempLoginPreviewProps) {
-  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>('signup');
+export function LoginModals({ onCloseComplete, onComplete, onPasswordReset }: LoginModalsProps) {
+  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>('login');
   const nextModalRef = useRef<'login' | 'signup' | null>(null);
   const [result, setResult] = useState<LoginSubmitResult>();
   const openCycleRef = useRef(0);
-  const triggerRef = useRef<HTMLButtonElement>(null);
 
   function handleOpenChange(nextOpen: boolean) {
     openCycleRef.current += 1;
@@ -52,6 +44,8 @@ export function TempLoginPreview({
     if (nextModalRef.current) {
       setActiveModal(nextModalRef.current);
       nextModalRef.current = null;
+    } else {
+      onCloseComplete();
     }
   }
 
@@ -84,22 +78,18 @@ export function TempLoginPreview({
 
   return (
     <>
-      <TempTermsPreview
+      <SignupModal
+        loginHref="/login"
         onCloseComplete={handleCloseComplete}
         onLogin={() => switchModal('login')}
         onOpenChange={(open) => setActiveModal(open ? 'signup' : null)}
         open={activeModal === 'signup'}
       />
-      <Button onClick={() => handleOpenChange(true)} ref={triggerRef} size="md">
-        로그인
-      </Button>
-
       <Modal
         logo={<Logo />}
         onOpenChange={handleOpenChange}
         onOpenChangeComplete={(nextOpen) => {
           if (!nextOpen) {
-            triggerRef.current?.focus();
             handleCloseComplete();
           }
         }}
@@ -110,11 +100,7 @@ export function TempLoginPreview({
           failureCountTotal={result?.status === 'invalid' ? result.failureCountTotal : undefined}
           loginError={result?.status === 'invalid' ? 'invalid' : undefined}
           onPasswordReset={() => onPasswordReset?.()}
-          onSignup={() => {
-            switchModal('signup');
-            onSignup?.();
-          }}
-          onSocialLogin={onSocialLogin}
+          onSignup={() => switchModal('signup')}
           onSubmit={handleSubmit}
         />
       </Modal>

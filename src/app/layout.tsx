@@ -3,7 +3,9 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 import { astaSans } from '@/app/fonts';
+import { Footer } from '@/shared/ui';
 
+import { LoginModalHost } from './_components/login-modal-host';
 import Providers from './providers/query-provider';
 
 export const metadata: Metadata = {
@@ -15,7 +17,15 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="ko" className={`${astaSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <LoginModalHost />
+        </Providers>
+        <Footer
+          termsHref="/terms"
+          privacyHref="/privacy"
+          contactHref="mailto:contact@example.com"
+        />
       </body>
     </html>
   );

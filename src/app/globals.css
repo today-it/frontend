@@ -126,6 +126,7 @@
   --spacing-12: var(--td-spacing-12);
   --spacing-14: var(--td-spacing-14);
   --spacing-16: var(--td-spacing-16);
+  --spacing-18: var(--td-spacing-18);
   --spacing-20: var(--td-spacing-20);
   --spacing-24: var(--td-spacing-24);
   --spacing-28: var(--td-spacing-28);
@@ -164,6 +165,7 @@
   --spacing-icon-xl: var(--td-size-icon-xl);
   --spacing-icon-2xl: var(--td-size-icon-2xl);
   --spacing-icon-3xl: var(--td-size-icon-3xl);
+  --spacing-place-card-body-height: var(--td-size-place-card-body-height);
   --spacing-place-card-width: var(--td-size-place-card-width);
   --spacing-place-card-thumbnail-height: var(--td-size-place-card-thumbnail-height);
   --spacing-place-card-thumbnail-height-lg: var(--td-size-place-card-thumbnail-height-lg);
@@ -240,7 +242,7 @@
   --radius-3xl: var(--td-radius-3xl);
   --radius-full: var(--td-radius-full);
 
-  /* Effect styles mapped from Figma */
+  /* Effect styles */
   --shadow-dropdown: 0 4px 12px 0 rgb(0 0 0 / 12%);
   --shadow-toast: 0 8px 24px 0 rgb(0 0 0 / 16%);
   --shadow-modal: 0 16px 40px 0 rgb(0 0 0 / 20%);
@@ -281,6 +283,7 @@
   --td-number-100: 100px;
   --td-number-114: 114px;
   --td-number-122: 122px;
+  --td-number-124: 124px;
   --td-number-138: 138px;
   --td-number-140: 140px;
   --td-number-184: 184px;
@@ -324,6 +327,7 @@
   --td-spacing-12: var(--td-number-12);
   --td-spacing-14: var(--td-number-14);
   --td-spacing-16: var(--td-number-16);
+  --td-spacing-18: var(--td-number-18);
   --td-spacing-20: var(--td-number-20);
   --td-spacing-24: var(--td-number-24);
   --td-spacing-28: var(--td-number-28);
@@ -362,6 +366,7 @@
   --td-size-icon-xl: var(--td-number-22);
   --td-size-icon-2xl: var(--td-number-24);
   --td-size-icon-3xl: var(--td-number-36);
+  --td-size-place-card-body-height: var(--td-number-124);
   --td-size-place-card-width: var(--td-number-336);
   --td-size-place-card-thumbnail-height: var(--td-number-252);
   --td-size-place-card-thumbnail-height-lg: var(--td-number-336);
