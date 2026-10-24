@@ -2,29 +2,23 @@
 
 import { useRef, useState } from 'react';
 
-import { LoginStep, type LoginSubmitResult, type LoginValues } from '@/features/login';
+import {
+  login,
+  LoginStep,
+  type LoginStepProps,
+  type LoginSubmitResult,
+  type LoginValues,
+} from '@/features/login';
 import { SignupModal } from '@/features/signup';
 import { Logo, Modal } from '@/shared/ui';
 
 interface LoginModalsProps {
   onCloseComplete: () => void;
+  onComplete?: () => void;
+  onPasswordReset?: LoginStepProps['onPasswordReset'];
 }
 
-async function mockLogin(values: LoginValues, failureCount: number): Promise<LoginSubmitResult> {
-  await new Promise<void>((resolve) => setTimeout(resolve, 700));
-
-  if (values.email === 'invalid@test.com') {
-    return {
-      status: 'invalid',
-      failureCount: failureCount + 1,
-      failureCountTotal: 5,
-    };
-  }
-
-  return { status: 'success' };
-}
-
-export function LoginModals({ onCloseComplete }: LoginModalsProps) {
+export function LoginModals({ onCloseComplete, onComplete, onPasswordReset }: LoginModalsProps) {
   const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>('login');
   const nextModalRef = useRef<'login' | 'signup' | null>(null);
   const [result, setResult] = useState<LoginSubmitResult>();
@@ -57,20 +51,28 @@ export function LoginModals({ onCloseComplete }: LoginModalsProps) {
 
   async function handleSubmit(values: LoginValues) {
     const openCycle = openCycleRef.current;
-    const failureCount = result?.status === 'invalid' ? result.failureCount : 0;
-
     setResult(undefined);
 
-    const nextResult = await mockLogin(values, failureCount);
+    try {
+      const nextResult = await login(values);
 
-    if (openCycle !== openCycleRef.current) {
+      if (openCycle !== openCycleRef.current) {
+        return;
+      }
+
+      if (nextResult.status === 'success') {
+        localStorage.setItem('accessToken', nextResult.accessToken);
+        handleOpenChange(false);
+        onComplete?.();
+      } else if (nextResult.status === 'locked') {
+        onPasswordReset?.();
+      } else {
+        setResult(nextResult);
+      }
+    } catch {
+      // 요청·저장 오류를 이메일·비밀번호 불일치로 표시하지 않습니다.
+      console.error('로그인을 처리하지 못했습니다.');
       return;
-    }
-
-    setResult(nextResult);
-
-    if (nextResult.status === 'success') {
-      handleOpenChange(false);
     }
   }
 
@@ -97,9 +99,7 @@ export function LoginModals({ onCloseComplete }: LoginModalsProps) {
           failureCount={result?.status === 'invalid' ? result.failureCount : undefined}
           failureCountTotal={result?.status === 'invalid' ? result.failureCountTotal : undefined}
           loginError={result?.status === 'invalid' ? 'invalid' : undefined}
-          onPasswordReset={() => {
-            // 비밀번호 재설정은 아직 연결하지 않았습니다.
-          }}
+          onPasswordReset={() => onPasswordReset?.()}
           onSignup={() => switchModal('signup')}
           onSubmit={handleSubmit}
         />
