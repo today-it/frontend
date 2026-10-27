@@ -3,6 +3,8 @@ export interface PlaceSummary {
   name: string;
   category: string;
   neighborhood: string;
+  regionId?: string;
+  districtId?: string;
   imageSrc?: string;
   rating: number;
   reviewCount: number;
