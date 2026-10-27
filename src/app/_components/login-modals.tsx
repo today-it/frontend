@@ -65,7 +65,11 @@ export function LoginModals({ onCloseComplete, onComplete, onPasswordReset }: Lo
         handleOpenChange(false);
         onComplete?.();
       } else if (nextResult.status === 'locked') {
-        onPasswordReset?.();
+        if (onPasswordReset) {
+          onPasswordReset();
+        } else {
+          setResult(nextResult);
+        }
       } else {
         setResult(nextResult);
       }
@@ -98,7 +102,9 @@ export function LoginModals({ onCloseComplete, onComplete, onPasswordReset }: Lo
         <LoginStep
           failureCount={result?.status === 'invalid' ? result.failureCount : undefined}
           failureCountTotal={result?.status === 'invalid' ? result.failureCountTotal : undefined}
-          loginError={result?.status === 'invalid' ? 'invalid' : undefined}
+          loginError={
+            result?.status === 'invalid' || result?.status === 'locked' ? result.status : undefined
+          }
           onPasswordReset={() => onPasswordReset?.()}
           onSignup={() => switchModal('signup')}
           onSubmit={handleSubmit}
