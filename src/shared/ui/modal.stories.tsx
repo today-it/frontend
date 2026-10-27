@@ -1,10 +1,11 @@
+import { Dialog } from '@base-ui/react/dialog';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from './button';
 import { Logo } from './logo';
-import { Modal, ModalTitle } from './modal';
+import { Modal, ModalBackdrop, ModalTitle } from './modal';
 
 const meta = {
   title: 'Shared/UI/Modal',
@@ -39,6 +40,32 @@ export const WithoutLogo: Story = {
       <Button>확인</Button>
     </Modal>
   ),
+};
+
+export const ComposedLayout: Story = {
+  render: () => (
+    <Dialog.Root defaultOpen disablePointerDismissal={false}>
+      <Dialog.Portal>
+        <ModalBackdrop />
+        <Dialog.Popup className="fixed top-1/2 left-1/2 z-50 flex w-modal-width max-w-[calc(100%-32px)] -translate-x-1/2 -translate-y-1/2 flex-col gap-12 outline-none">
+          <div className="rounded-full bg-surface-default p-20">
+            <ModalTitle>여러 영역으로 구성한 모달</ModalTitle>
+          </div>
+          <div className="flex justify-center rounded-3xl bg-surface-default p-24">
+            <Dialog.Close render={<Button>닫기</Button>} />
+          </div>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
+  ),
+  play: async () => {
+    const dialog = await screen.findByRole('dialog', { name: '여러 영역으로 구성한 모달' });
+    await expect(dialog).toBeVisible();
+    const backdrop = document.querySelector<HTMLElement>('[data-slot="modal-backdrop"]');
+    if (!backdrop) throw new Error('Modal 스크림을 찾을 수 없어요.');
+    await userEvent.click(backdrop);
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  },
 };
 
 export const OpenAndClose: Story = {
