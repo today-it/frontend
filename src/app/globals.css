@@ -418,10 +418,10 @@
   --td-color-white: #ffffff;
 
   /* Primitive: alpha colors */
-  --td-color-alpha-20: rgba(57, 57, 57, 0.2);
-  --td-color-alpha-40: rgba(57, 57, 57, 0.4);
-  --td-color-alpha-60: rgba(57, 57, 57, 0.6);
-  --td-color-alpha-80: rgba(57, 57, 57, 0.8);
+  --td-color-alpha-20: rgba(52, 57, 62, 0.2);
+  --td-color-alpha-40: rgba(52, 57, 62, 0.4);
+  --td-color-alpha-60: rgba(52, 57, 62, 0.6);
+  --td-color-alpha-80: rgba(52, 57, 62, 0.8);
 
   /* Primitive: gray colors */
   --td-color-gray-100: #e2e2e2;
