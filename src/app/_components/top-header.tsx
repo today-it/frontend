@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 import { Avatar, Icon, Logo, SearchBar, Tab } from '@/shared/ui';
 
@@ -18,6 +19,8 @@ export interface TopHeaderProps {
   nickname?: string;
   /** 탭 또는 검색창 중 표시할 내비게이션 */
   navigation?: HeaderNavigation;
+  /** 스크롤 검색 영역에 연결할 검색 컴포넌트 */
+  searchContent?: ReactNode;
 }
 
 /** 고정 상단 바와 스크롤 방향에 따라 표시되는 검색 영역을 포함한 헤더입니다. */
@@ -26,6 +29,7 @@ export function TopHeader({
   auth = 'guest',
   nickname = '닉네임',
   navigation = 'tabs',
+  searchContent,
 }: TopHeaderProps) {
   return (
     <header>
@@ -69,7 +73,7 @@ export function TopHeader({
         </div>
       </div>
       <div aria-hidden="true" className="h-header-height w-full shrink-0" />
-      {navigation === 'tabs' ? <ScrollSearchArea /> : null}
+      {navigation === 'tabs' ? <ScrollSearchArea>{searchContent}</ScrollSearchArea> : null}
     </header>
   );
 }
