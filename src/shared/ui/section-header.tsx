@@ -12,8 +12,12 @@ export interface SectionHeaderProps {
   description?: string;
   /** `More` 타입에서 설명을 표시할지 여부 */
   showDescription?: boolean;
+  /** `More` 타입에서 모두 보기 링크를 표시할지 여부 */
+  showLink?: boolean;
   /** 제목 오른쪽의 모두 보기 링크 주소 */
   moreHref?: ComponentProps<typeof TextLink>['href'];
+  /** `More` 타입의 제목 크기 */
+  size?: 'Lg' | 'Sm';
   /** 섹션 제목 */
   title?: string;
   /** 헤더 종류 */
@@ -29,10 +33,13 @@ export function SectionHeader({
   id,
   moreHref,
   showDescription = true,
+  showLink = true,
+  size = 'Lg',
   title = '당신을 위한 추천 장소',
   type = 'Dropdown',
 }: SectionHeaderProps) {
   const isMore = type === 'More';
+  const isSmallMore = isMore && size === 'Sm';
 
   return (
     <div
@@ -46,18 +53,26 @@ export function SectionHeader({
       {isMore ? (
         <>
           <div className="flex shrink-0 flex-col items-start gap-8 overflow-clip whitespace-nowrap">
-            <h2 className="text-heading-h1 text-text-primary" id={id}>
+            <h2
+              className={cn(
+                isSmallMore ? 'text-heading-h2' : 'text-heading-h1',
+                'text-text-primary',
+              )}
+              id={id}
+            >
               {title}
             </h2>
             {showDescription && <p className="text-body-b2 text-text-secondary">{description}</p>}
           </div>
-          <div className="flex shrink-0 items-start">
-            {moreHref ? (
-              <TextLink href={moreHref}>모두 보기</TextLink>
-            ) : (
-              <span className="text-body-b2 whitespace-nowrap text-text-primary">모두 보기</span>
-            )}
-          </div>
+          {showLink && (
+            <div className="flex shrink-0 items-start">
+              {moreHref ? (
+                <TextLink href={moreHref}>모두 보기</TextLink>
+              ) : (
+                <span className="text-body-b2 whitespace-nowrap text-text-primary">모두 보기</span>
+              )}
+            </div>
+          )}
         </>
       ) : (
         <>

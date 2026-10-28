@@ -30,3 +30,17 @@ export const MoreWithoutDescription: Story = {
     showDescription: false,
   },
 };
+
+export const MoreSmall: Story = {
+  args: {
+    type: 'More',
+    size: 'Sm',
+  },
+};
+
+export const MoreWithoutLink: Story = {
+  args: {
+    type: 'More',
+    showLink: false,
+  },
+};
