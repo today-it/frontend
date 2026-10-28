@@ -21,9 +21,7 @@ export function SignupFieldMessage({
     <p
       className={cn(
         'text-caption-c1',
-        tone === 'error'
-          ? '[color:var(--td-color-text-error)]'
-          : '[color:var(--td-color-text-success)]',
+        tone === 'error' ? 'text-text-error' : 'text-text-success',
         className,
       )}
       id={id}

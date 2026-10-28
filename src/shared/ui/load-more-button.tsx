@@ -27,7 +27,7 @@ export function LoadMoreButton({
     <Button
       {...props}
       className={cn(
-        'rounded-full border-(length:--td-border-width-sm) border-border-default bg-surface-default [color:var(--td-color-text-primary)] enabled:hover:bg-state-hover enabled:active:bg-state-pressed',
+        'rounded-full border-(length:--td-border-width-sm) border-border-default bg-surface-default text-text-primary enabled:hover:bg-state-hover enabled:active:bg-state-pressed',
         className,
       )}
       size="md"

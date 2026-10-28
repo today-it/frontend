@@ -14,7 +14,7 @@ export function CarouselIndicator({ className, current, total, ...props }: Carou
   return (
     <span
       className={cn(
-        'inline-flex h-36 min-w-[60px] items-center justify-center rounded-full bg-overlay-scrim-strong px-16 text-caption-c2 whitespace-nowrap [color:var(--td-color-text-inverse)]',
+        'inline-flex h-36 min-w-[60px] items-center justify-center rounded-full bg-overlay-scrim-strong px-16 text-caption-c2 whitespace-nowrap text-text-inverse',
         className,
       )}
       data-slot="carousel-indicator"

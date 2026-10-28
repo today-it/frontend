@@ -13,10 +13,7 @@ export interface CarouselButtonProps extends Omit<IconButtonProps, 'icon' | 'lab
 export function CarouselButton({ direction, className, ...props }: CarouselButtonProps) {
   return (
     <IconButton
-      className={cn(
-        'size-carousel-button h-carousel-button w-carousel-button rounded-full shadow-md',
-        className,
-      )}
+      className={cn('size-carousel-button rounded-full shadow-md', className)}
       icon={direction === 'left' ? 'chevron-left' : 'chevron-right'}
       label={direction === 'left' ? '이전' : '다음'}
       {...props}

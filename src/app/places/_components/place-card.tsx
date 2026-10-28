@@ -35,7 +35,7 @@ export function PlaceCard({
 }: PlaceCardProps) {
   const imageSrc = place.imageSrc;
   const likeClassName =
-    'relative inline-flex cursor-pointer items-center gap-4 rounded-full bg-surface-default py-8 pr-12 pl-10 text-caption-c1 [color:var(--td-color-text-secondary)] shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2';
+    'relative inline-flex cursor-pointer items-center gap-4 rounded-full bg-surface-default py-8 pr-12 pl-10 text-caption-c1 text-text-secondary shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2';
   const likeContent = (
     <>
       <Icon

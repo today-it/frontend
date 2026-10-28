@@ -19,14 +19,14 @@ const buttonVariantConfig = {
 };
 
 export const buttonVariants = cva(
-  `${buttonBaseStyles} disabled:pointer-events-none disabled:bg-state-inverse-disabled disabled:[color:var(--td-color-text-muted)]`,
+  `${buttonBaseStyles} disabled:pointer-events-none disabled:bg-state-inverse-disabled disabled:text-text-muted`,
   {
     variants: {
       size: buttonSizeVariants,
       variant: {
         primary:
-          'bg-surface-inverse [color:var(--td-color-text-inverse)] enabled:hover:bg-state-inverse-hover enabled:active:bg-state-inverse-pressed',
-        cta: 'bg-surface-cta [color:var(--td-color-text-primary)] enabled:hover:bg-state-cta-hover enabled:active:bg-state-cta-pressed',
+          'bg-surface-inverse text-text-inverse enabled:hover:bg-state-inverse-hover enabled:active:bg-state-inverse-pressed',
+        cta: 'bg-surface-cta text-text-primary enabled:hover:bg-state-cta-hover enabled:active:bg-state-cta-pressed',
       },
     },
     defaultVariants: { size: 'lg', variant: 'primary' },
@@ -34,7 +34,7 @@ export const buttonVariants = cva(
 );
 
 export const buttonLinkVariants = cva(
-  `${buttonBaseStyles} bg-surface-inverse [color:var(--td-color-text-inverse)] hover:bg-state-inverse-hover active:bg-state-inverse-pressed aria-disabled:pointer-events-none aria-disabled:cursor-default aria-disabled:bg-state-inverse-disabled aria-disabled:[color:var(--td-color-text-muted)]`,
+  `${buttonBaseStyles} bg-surface-inverse text-text-inverse hover:bg-state-inverse-hover active:bg-state-inverse-pressed aria-disabled:pointer-events-none aria-disabled:cursor-default aria-disabled:bg-state-inverse-disabled aria-disabled:text-text-muted`,
   buttonVariantConfig,
 );
 

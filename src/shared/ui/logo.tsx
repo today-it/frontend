@@ -16,7 +16,7 @@ export type LogoProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'>;
 export function Logo({ className, ...props }: LogoProps) {
   return (
     <span
-      className={cn('text-heading-h1 [color:var(--td-color-text-primary)]', className)}
+      className={cn('text-heading-h1 text-text-primary', className)}
       data-slot="logo"
       {...props}
     >

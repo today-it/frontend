@@ -68,10 +68,7 @@ export function SignupTermsStep({
                   checked={isAllTermsAgreed(field.value)}
                   onCheckedChange={(checked) => field.onChange(setAllTermsAgreed(checked))}
                 />
-                <span
-                  className="text-caption-c1 [color:var(--td-color-text-primary)]"
-                  id={allLabelId}
-                >
+                <span className="text-caption-c1 text-text-primary" id={allLabelId}>
                   전체 동의합니다
                 </span>
               </label>
@@ -94,10 +91,7 @@ export function SignupTermsStep({
                               field.onChange(setTermAgreed(field.value, term.id, checked))
                             }
                           />
-                          <span
-                            className="min-w-0 text-caption-c1 [color:var(--td-color-text-primary)]"
-                            id={labelId}
-                          >
+                          <span className="min-w-0 text-caption-c1 text-text-primary" id={labelId}>
                             {title}
                           </span>
                         </label>
@@ -121,7 +115,7 @@ export function SignupTermsStep({
                           </Accordion.Trigger>
                         </Accordion.Header>
                       </div>
-                      <Accordion.Panel className="rounded-md bg-surface-subtle p-16 text-body-b3 whitespace-pre-line [color:var(--td-color-text-secondary)]">
+                      <Accordion.Panel className="rounded-md bg-surface-subtle p-16 text-body-b3 whitespace-pre-line text-text-secondary">
                         {term.content}
                       </Accordion.Panel>
                     </Accordion.Item>

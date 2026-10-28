@@ -113,7 +113,7 @@ export function LoginStep({
   return (
     <>
       <ModalTitle className="sr-only">로그인</ModalTitle>
-      <p className="text-center text-caption-c1 [color:var(--td-color-text-muted)]">
+      <p className="text-center text-caption-c1 text-text-muted">
         오늘을 특별하게 만드는 우리다운 선택, Today It
       </p>
 
@@ -146,11 +146,7 @@ export function LoginStep({
 
           <div className="h-20">
             {errors.email ? (
-              <p
-                className="text-caption-c2 [color:var(--td-color-text-error)]"
-                id={emailErrorId}
-                role="alert"
-              >
+              <p className="text-caption-c2 text-text-error" id={emailErrorId} role="alert">
                 {errors.email.message}
               </p>
             ) : null}
@@ -180,11 +176,7 @@ export function LoginStep({
 
           <div className="h-20">
             {loginErrorMessage ? (
-              <p
-                className="text-caption-c2 [color:var(--td-color-text-error)]"
-                id={loginErrorId}
-                role="alert"
-              >
+              <p className="text-caption-c2 text-text-error" id={loginErrorId} role="alert">
                 {loginErrorMessage}
                 {failureCountText}
               </p>
@@ -194,7 +186,7 @@ export function LoginStep({
 
         <div className="flex justify-end">
           <button
-            className="inline-flex cursor-pointer items-start bg-transparent p-0 text-body-b2 whitespace-nowrap [color:var(--td-color-text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
+            className="inline-flex cursor-pointer items-start bg-transparent p-0 text-body-b2 whitespace-nowrap text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
             onClick={onPasswordReset}
             type="button"
           >
@@ -228,11 +220,9 @@ export function LoginStep({
       </div>
 
       <p className="flex flex-wrap items-baseline justify-center gap-8">
-        <span className="text-caption-c1 [color:var(--td-color-text-muted)]">
-          계정이 없으신가요?
-        </span>
+        <span className="text-caption-c1 text-text-muted">계정이 없으신가요?</span>
         <button
-          className="inline-flex cursor-pointer items-start bg-transparent p-0 text-body-b2 whitespace-nowrap [color:var(--td-color-text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
+          className="inline-flex cursor-pointer items-start bg-transparent p-0 text-body-b2 whitespace-nowrap text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
           onClick={onSignup}
           type="button"
         >

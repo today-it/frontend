@@ -65,7 +65,7 @@ export function SignupPreferenceStep({
     <>
       <ModalTitle>어떤 데이트를 좋아하세요?</ModalTitle>
 
-      <p className="text-center text-caption-c1 [color:var(--td-color-text-tertiary)]">
+      <p className="text-center text-caption-c1 text-text-tertiary">
         취향에 맞는 코스를 추천해드릴게요.
       </p>
 
@@ -79,10 +79,7 @@ export function SignupPreferenceStep({
           }
         }}
       >
-        <p
-          className="text-center text-caption-c1 [color:var(--td-color-text-tertiary)]"
-          id={regionLabelId}
-        >
+        <p className="text-center text-caption-c1 text-text-tertiary" id={regionLabelId}>
           선호 지역
         </p>
 
@@ -121,10 +118,7 @@ export function SignupPreferenceStep({
           />
         </div>
 
-        <p
-          className="text-center text-caption-c1 [color:var(--td-color-text-tertiary)]"
-          id={conceptLabelId}
-        >
+        <p className="text-center text-caption-c1 text-text-tertiary" id={conceptLabelId}>
           선호 컨셉
         </p>
 

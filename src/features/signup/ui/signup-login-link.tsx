@@ -13,9 +13,7 @@ interface SignupLoginLinkProps {
 export function SignupLoginLink({ href, onLogin }: SignupLoginLinkProps) {
   return (
     <p className="flex items-baseline justify-center gap-8">
-      <span className="text-caption-c1 [color:var(--td-color-text-tertiary)]">
-        이미 계정이 있으신가요?
-      </span>
+      <span className="text-caption-c1 text-text-tertiary">이미 계정이 있으신가요?</span>
       <TextLink
         href={href}
         onClick={(event) => {

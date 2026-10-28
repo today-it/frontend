@@ -57,7 +57,7 @@ export function TopHeader({
               className="flex h-profile-chip w-profile-chip-width shrink-0 items-center gap-12 pr-8 pl-10"
               role="group"
             >
-              <Avatar alt="" className="size-avatar-sm rounded-full" size="sm" />
+              <Avatar alt="" className="rounded-full" size="sm" />
               <span className="shrink-0 text-caption-c1 whitespace-nowrap text-text-primary">
                 {nickname}
               </span>

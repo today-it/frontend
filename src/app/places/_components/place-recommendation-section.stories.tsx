@@ -9,7 +9,7 @@ import { rainyDayPlaces, recommendedPlaces, trendingPlaces } from '../_model/rec
 import { PlaceRecommendationSection } from './place-recommendation-section';
 
 function DesktopFrame({ children }: { children: ReactNode }) {
-  return <div className="min-w-[var(--spacing-header-width)]">{children}</div>;
+  return <div className="min-w-header-width">{children}</div>;
 }
 
 const meta = {

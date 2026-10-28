@@ -42,7 +42,7 @@ export function TextLink({
     <Link
       aria-disabled={disabled || undefined}
       className={cn(
-        'inline-flex items-start text-body-b2 whitespace-nowrap [color:var(--td-color-text-primary)] no-underline outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 aria-disabled:pointer-events-none aria-disabled:cursor-default aria-disabled:[color:var(--td-color-text-disabled)]',
+        'inline-flex items-start text-body-b2 whitespace-nowrap text-text-primary no-underline outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 aria-disabled:pointer-events-none aria-disabled:cursor-default aria-disabled:text-text-disabled',
         className,
       )}
       data-slot="text-link"

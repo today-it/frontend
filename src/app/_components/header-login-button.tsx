@@ -11,7 +11,7 @@ export function HeaderLoginButton() {
   return (
     <button
       aria-haspopup="dialog"
-      className="inline-flex cursor-pointer items-start text-body-b2 whitespace-nowrap [color:var(--td-color-text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
+      className="inline-flex cursor-pointer items-start text-body-b2 whitespace-nowrap text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
       onClick={openLogin}
       type="button"
     >

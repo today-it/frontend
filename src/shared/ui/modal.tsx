@@ -89,7 +89,7 @@ export interface ModalTitleProps extends DialogPrimitive.Title.Props {
 export function ModalTitle({ className, ...props }: ModalTitleProps) {
   return (
     <DialogPrimitive.Title
-      className={cn('text-center text-heading-h3 [color:var(--td-color-text-primary)]', className)}
+      className={cn('text-center text-heading-h3 text-text-primary', className)}
       data-slot="modal-title"
       {...props}
     />

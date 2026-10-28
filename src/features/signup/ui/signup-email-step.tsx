@@ -106,7 +106,7 @@ export function SignupEmailStep({
     <>
       <ModalTitle>이메일로 회원가입</ModalTitle>
 
-      <p className="text-center text-caption-c1 [color:var(--td-color-text-tertiary)]">
+      <p className="text-center text-caption-c1 text-text-tertiary">
         입력해주신 이메일로 인증코드를 보내드려요.
       </p>
 
@@ -186,11 +186,9 @@ export function SignupEmailStep({
             ) : null}
 
             <p className="flex items-baseline justify-center gap-8">
-              <span className="text-caption-c1 [color:var(--td-color-text-tertiary)]">
-                인증코드를 못 받으셨나요?
-              </span>
+              <span className="text-caption-c1 text-text-tertiary">인증코드를 못 받으셨나요?</span>
               <button
-                className="inline-flex cursor-pointer items-start bg-transparent p-0 text-body-b2 whitespace-nowrap [color:var(--td-color-text-primary)] outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 disabled:cursor-default disabled:[color:var(--td-color-text-disabled)]"
+                className="inline-flex cursor-pointer items-start bg-transparent p-0 text-body-b2 whitespace-nowrap text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 disabled:cursor-default disabled:text-text-disabled"
                 disabled={isSubmitting}
                 onClick={() => {
                   setValue('code', '');

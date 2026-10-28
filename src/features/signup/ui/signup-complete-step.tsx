@@ -20,7 +20,7 @@ export function SignupCompleteStep({ onSkip, onStartPreference }: SignupComplete
 
       <div className="flex flex-col items-center gap-8">
         <ModalTitle>회원가입이 완료되었어요</ModalTitle>
-        <p className="text-center text-caption-c1 [color:var(--td-color-text-tertiary)]">
+        <p className="text-center text-caption-c1 text-text-tertiary">
           취향을 알려주시면 맞춤 데이트 코스를 추천해드릴게요.
         </p>
       </div>
