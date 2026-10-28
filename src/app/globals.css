@@ -67,6 +67,7 @@
   --color-surface-subtle: var(--td-color-surface-subtle);
   --color-surface-cta: var(--td-color-surface-cta);
   --color-overlay-scrim: var(--td-color-overlay-scrim);
+  --color-overlay-scrim-strong: var(--td-color-overlay-scrim-strong);
   --color-state-disabled: var(--td-color-state-disabled);
   --color-state-hover: var(--td-color-state-hover);
   --color-state-inverse-disabled: var(--td-color-state-inverse-disabled);
@@ -420,6 +421,7 @@
   --td-color-alpha-20: rgba(57, 57, 57, 0.2);
   --td-color-alpha-40: rgba(57, 57, 57, 0.4);
   --td-color-alpha-60: rgba(57, 57, 57, 0.6);
+  --td-color-alpha-80: rgba(57, 57, 57, 0.8);
 
   /* Primitive: gray colors */
   --td-color-gray-100: #e2e2e2;
@@ -487,7 +489,7 @@
   --td-color-text-primary: var(--td-color-gray-900);
   --td-color-text-secondary: var(--td-color-gray-700);
   --td-color-text-tertiary: var(--td-color-gray-500);
-  --td-color-text-muted: var(--td-color-gray-400);
+  --td-color-text-muted: var(--td-color-gray-500);
   --td-color-text-disabled: var(--td-color-gray-300);
   --td-color-text-inverse: var(--td-color-white);
   --td-color-text-error: var(--td-color-error-500);
@@ -530,6 +532,7 @@
 
   /* Semantic: overlay colors */
   --td-color-overlay-scrim: var(--td-color-alpha-40);
+  --td-color-overlay-scrim-strong: var(--td-color-alpha-80);
 
   /* Semantic: state colors */
   --td-color-state-disabled: var(--td-color-gray-100);
