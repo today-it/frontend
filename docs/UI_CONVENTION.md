@@ -180,6 +180,7 @@ import { SignupModal } from '@/features/signup';
 - 전역 스타일과 디자인 토큰은 `src/app/globals.css`에서 관리한다.
 - 디자인 토큰은 [TODAYIT Figma 변수](https://www.figma.com/design/oj7rJurylzORPSuAsZPv3a/TODAYIT?node-id=274-434&var-set-id=274-477&view=variables)의 `primitive`·`semantic` 컬렉션에 맞춘다. 변수 이름의 `/`를 `-`로 바꾸고 `--td-` 접두사를 붙이며, 시맨틱 변수의 별칭 참조도 유지한다.
 - 색상과 크기 토큰은 `@theme inline`에 각각 `--color-*`, `--spacing-*`로 연결해 사용한다. 선택 상태의 텍스트, 테두리, 배경과 CTA 상태는 해당 시맨틱 색상을 사용한다.
+- `@theme inline`에 연결된 색상·크기·타이포그래피 토큰은 대응하는 Tailwind 유틸리티 클래스로 사용한다. 대응 토큰이 없는 런타임 값이나 계산식은 기존 arbitrary utility로 유지한다. `cn` 병합에 쓰이는 새 이름형 `--spacing-*`, `--text-*` 토큰과 시맨틱 그림자는 `src/shared/lib/cn.ts`의 설정에도 등록한다.
 - 반복되는 스타일 규칙은 공용 UI 또는 명확한 스타일 추상화로 분리한다.
 
 ### 6.2 SVG 아이콘
