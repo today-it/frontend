@@ -3,11 +3,11 @@ import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
 
 import { emptyPlaceFilters } from '../_model/place-filters';
 import { allPlaces } from '../_model/recommended-places';
-import { PlaceSearchExperience } from './place-search-experience';
+import { PlacesPageClient } from './places-page-client';
 
 const meta = {
-  title: 'App/Places/PlaceSearchExperience',
-  component: PlaceSearchExperience,
+  title: 'App/Places/PlacesPageClient',
+  component: PlacesPageClient,
   args: {
     allPlaces,
     initialFilters: emptyPlaceFilters,
@@ -19,7 +19,7 @@ const meta = {
     ),
   },
   parameters: { layout: 'fullscreen' },
-} satisfies Meta<typeof PlaceSearchExperience>;
+} satisfies Meta<typeof PlacesPageClient>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
