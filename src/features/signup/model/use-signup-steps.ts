@@ -33,6 +33,7 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
   const [phase, setPhase] = useState<SignupEmailPhase>('email');
   const [agreedIds, setAgreedIds] = useState<SignupTermId[]>([]);
   const [email, setEmail] = useState('');
+  const [verificationToken, setVerificationToken] = useState('');
   const [emailError, setEmailError] = useState<SignupEmailServerError>();
   const [codeError, setCodeError] = useState<SignupCodeError>();
   const [nicknameStatus, setNicknameStatus] = useState<SignupNicknameStatus>();
@@ -91,6 +92,7 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
     setPhase('email');
     setAgreedIds([]);
     setEmail('');
+    setVerificationToken('');
     setEmailError(undefined);
     setCodeError(undefined);
     setNicknameStatus(undefined);
@@ -123,13 +125,14 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
 
   function resendCode() {
     void submit(
-      () => api.requestCode(email),
+      () => api.requestCode(email, { resend: true }),
       (result) => {
         if (result !== 'sent') {
           setEmailError(result);
           return;
         }
 
+        setEmailError(undefined);
         setCodeError(undefined);
         startCountdown();
       },
@@ -145,13 +148,20 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
     void submit(
       () => api.verifyCode(email, code),
       (result) => {
-        if (result === 'verified') {
-          setRequestFailed(false);
-          setStep('profile');
+        if (typeof result === 'string') {
+          setCodeError(result);
+
+          // 서버가 새 인증코드를 보냈으므로 유효 시간을 다시 셉니다.
+          if (result === 'reissued') {
+            startCountdown();
+          }
+
           return;
         }
 
-        setCodeError(result);
+        setVerificationToken(result.verificationToken);
+        setRequestFailed(false);
+        setStep('profile');
       },
     );
   }
@@ -188,10 +198,30 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
 
   function submitProfile(profile: SignupProfileValues) {
     void submit(
-      () => api.signup({ ...profile, email }),
+      () => api.signup({ ...profile, email, verificationToken, agreedIds }),
       (result) => {
         if (result === 'created') {
           setStep('complete');
+          return;
+        }
+
+        if (result === 'nicknameDuplicated') {
+          setNicknameStatus('duplicated');
+          return;
+        }
+
+        if (result === 'verificationExpired' || result === 'emailRegistered') {
+          // 이메일 인증을 처음부터 다시 해야 하므로 이메일 단계로 돌아갑니다.
+          setVerificationToken('');
+          resetCountdown();
+          setCodeError(undefined);
+          // 프로필 단계는 다시 빈 입력으로 열리므로 이전 닉네임 검사 결과와 비밀번호 오류도 버립니다.
+          nicknameRequestRef.current += 1;
+          setNicknameStatus(undefined);
+          setPasswordError(undefined);
+          setPhase('email');
+          setEmailError(result === 'emailRegistered' ? 'registered' : 'verificationExpired');
+          setStep('email');
           return;
         }
 
@@ -231,7 +261,10 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
     resendCode,
     verifyCode,
     changeEmail: () => setEmailError(undefined),
-    changeCode: () => setCodeError(undefined),
+    changeCode: () => {
+      setCodeError(undefined);
+      setEmailError(undefined);
+    },
     changeNickname,
     checkNickname,
     changePassword: () => setPasswordError(undefined),

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Logo, Modal } from '@/shared/ui';
 
 import { type SignupApi } from '../model/signup-api';
-import { createMockSignupApi } from '../model/signup-mock-api';
+import { createHttpSignupApi } from '../model/signup-http-api';
 import { useSignupSteps } from '../model/use-signup-steps';
 import { SignupCompleteStep } from './signup-complete-step';
 import { SignupEmailStep } from './signup-email-step';
@@ -24,7 +24,7 @@ export interface SignupModalProps {
   onLogin?: () => void;
   /** 닫힘 애니메이션과 단계 초기화가 끝나면 호출합니다. */
   onCloseComplete?: () => void;
-  /** 가입 과정에서 호출하는 서버 요청. 생략하면 임시 응답을 사용합니다. */
+  /** 가입 과정에서 호출하는 서버 요청. 생략하면 실제 서버에 요청합니다. 스토리와 테스트는 mock을 넘깁니다. */
   api?: SignupApi;
   /** 가입 완료 안내에서 나중에 설정하거나, 선호 지역·컨셉을 저장하거나 건너뛰어 가입이 끝났을 때 호출되는 함수 */
   onComplete?: () => void;
@@ -50,9 +50,9 @@ export function SignupModal({
   open,
 }: SignupModalProps) {
   // api를 생략했을 때 렌더마다 새로 만들지 않도록 한 번만 만듭니다.
-  const [mockApi] = useState(() => createMockSignupApi());
+  const [defaultApi] = useState(() => createHttpSignupApi());
   const flow = useSignupSteps({
-    api: api ?? mockApi,
+    api: api ?? defaultApi,
     onComplete: () => {
       onOpenChange(false);
       onComplete?.();

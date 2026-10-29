@@ -67,7 +67,7 @@ export const PasswordFilled: Story = {
   args: {
     defaultNickname: '또르끄막두',
     nicknameStatus: 'available',
-    defaultPassword: 'godari13620',
+    defaultPassword: 'godari1362!0',
   },
 };
 
@@ -75,7 +75,7 @@ export const PasswordBlocked: Story = {
   args: {
     defaultNickname: '또르끄막두',
     nicknameStatus: 'available',
-    defaultPassword: '1234567890',
+    defaultPassword: 'Password123!',
     passwordError: 'blocked',
   },
 };
@@ -137,14 +137,20 @@ export const SubmitProfile: Story = {
 
     await userEvent.click(submit);
     await expect(within(dialog).getByRole('alert')).toHaveTextContent(
-      '비밀번호는 10자 이상 128자 이하로 입력해 주세요.',
+      '영문, 숫자, 특수문자를 각각 포함해 10자 이상 입력해 주세요.',
     );
     await expect(args.onSubmit).not.toHaveBeenCalled();
 
-    await userEvent.type(password, '567890{Enter}');
+    await userEvent.type(password, 'abcdef{Enter}');
+    await expect(within(dialog).getByRole('alert')).toHaveTextContent(
+      '영문, 숫자, 특수문자를 각각 포함해 10자 이상 입력해 주세요.',
+    );
+    await expect(args.onSubmit).not.toHaveBeenCalled();
+
+    await userEvent.type(password, '!{Enter}');
     await expect(args.onSubmit).toHaveBeenCalledWith({
       nickname: '또르끄막두',
-      password: '1234567890',
+      password: '1234abcdef!',
     });
   },
 };
@@ -155,11 +161,11 @@ export const PasswordWithSpaceAndSymbols: Story = {
     const dialog = await screen.findByRole('dialog');
     const password = within(dialog).getByLabelText('비밀번호', { selector: 'input' });
 
-    // 공백과 특수문자가 있어도 길이만 맞으면 값을 그대로 제출합니다.
-    await userEvent.type(password, 'my pass word!!{Enter}');
+    // 공백이 있어도 규칙에 맞으면 값을 그대로 제출합니다.
+    await userEvent.type(password, 'my pass 1 word!!{Enter}');
     await expect(args.onSubmit).toHaveBeenCalledWith({
       nickname: '또르끄막두',
-      password: 'my pass word!!',
+      password: 'my pass 1 word!!',
     });
   },
 };
@@ -168,7 +174,7 @@ export const Submitting: Story = {
   args: {
     defaultNickname: '또르끄막두',
     nicknameStatus: 'available',
-    defaultPassword: 'godari13620',
+    defaultPassword: 'godari1362!0',
     isSubmitting: true,
   },
 };
@@ -177,7 +183,7 @@ export const RequestError: Story = {
   args: {
     defaultNickname: '또르끄막두',
     nicknameStatus: 'available',
-    defaultPassword: 'godari13620',
+    defaultPassword: 'godari1362!0',
     requestError: true,
   },
 };

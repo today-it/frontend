@@ -83,7 +83,7 @@ export const FullFlow: Story = {
 
     await userEvent.type(
       within(dialog).getByLabelText('비밀번호', { selector: 'input' }),
-      'godari13620{Enter}',
+      'godari1362!0{Enter}',
     );
 
     // 가입 완료 안내에서 나중에 설정하면 선호 지역 단계 없이 끝납니다.
@@ -117,7 +117,7 @@ export const FullFlowWithPreference: Story = {
     await within(dialog).findByText('사용 가능한 닉네임이에요.', {}, { timeout: 3000 });
     await userEvent.type(
       within(dialog).getByLabelText('비밀번호', { selector: 'input' }),
-      'godari13620{Enter}',
+      'godari1362!0{Enter}',
     );
 
     // 취향 알려주기를 누르면 선호 지역·컨셉 단계로 이동하고, 아직 가입은 끝나지 않습니다.

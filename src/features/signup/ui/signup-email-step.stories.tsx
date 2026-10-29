@@ -113,6 +113,32 @@ export const CodeInvalid: Story = {
   },
 };
 
+export const SendLimitExceeded: Story = {
+  args: { defaultEmail: 'poppop@gmail.com', emailError: 'limitExceeded' },
+};
+
+export const VerificationExpired: Story = {
+  args: { defaultEmail: 'poppop@gmail.com', emailError: 'verificationExpired' },
+};
+
+export const CodeLimitExceeded: Story = {
+  args: {
+    phase: 'code',
+    defaultEmail: 'wowowoooo@gmail.com',
+    codeError: 'limitExceeded',
+    timerSeconds: 272,
+  },
+};
+
+export const CodeReissued: Story = {
+  args: {
+    phase: 'code',
+    defaultEmail: 'wowowoooo@gmail.com',
+    codeError: 'reissued',
+    timerSeconds: SIGNUP_CODE_EXPIRES_SECONDS,
+  },
+};
+
 export const CodeExpired: Story = {
   args: {
     phase: 'code',

@@ -16,14 +16,16 @@ export const signupNicknameMessages = {
 } as const;
 
 export const signupPasswordMessages = {
-  length: '비밀번호는 10자 이상 128자 이하로 입력해 주세요.',
+  format: '영문, 숫자, 특수문자를 각각 포함해 10자 이상 입력해 주세요.',
   blocked: '쉽게 추측되거나 유출된 비밀번호입니다. 다른 비밀번호를 입력해 주세요.',
 } as const;
 
 const NICKNAME_MIN_LENGTH = 2;
 const NICKNAME_MAX_LENGTH = 8;
 const PASSWORD_MIN_LENGTH = 10;
-export const SIGNUP_PASSWORD_MAX_LENGTH = 128;
+export const SIGNUP_PASSWORD_MAX_LENGTH = 72;
+// 서버는 비밀번호를 UTF-8 72바이트 이하로 제한합니다. 한글은 글자당 3바이트입니다.
+const PASSWORD_MAX_BYTES = 72;
 
 // 한글은 완성형만 허용하고 앞뒤 공백은 제거합니다. 먼저 실패한 규칙의 문구를 표시합니다.
 const nicknameSchema = z
@@ -34,11 +36,20 @@ const nicknameSchema = z
   .refine((value) => !/\s/.test(value), signupNicknameMessages.space)
   .refine((value) => /^[가-힣a-zA-Z0-9]*$/.test(value), signupNicknameMessages.chars);
 
-// 길이만 확인합니다. 공백과 특수문자도 사용할 수 있어 값을 다듬지 않습니다. 128자 초과는 입력창의 maxLength로 막습니다.
+// 길이(글자 수·UTF-8 바이트 수)와 영문·숫자·특수문자 포함 여부를 확인합니다. 공백도 사용할 수 있어 값을 다듬지 않습니다.
+// 72자 초과는 입력창의 maxLength로 막습니다.
 const passwordSchema = z
   .string()
-  .min(PASSWORD_MIN_LENGTH, signupPasswordMessages.length)
-  .max(SIGNUP_PASSWORD_MAX_LENGTH, signupPasswordMessages.length);
+  .min(PASSWORD_MIN_LENGTH, signupPasswordMessages.format)
+  .max(SIGNUP_PASSWORD_MAX_LENGTH, signupPasswordMessages.format)
+  .refine(
+    (value) => new TextEncoder().encode(value).length <= PASSWORD_MAX_BYTES,
+    signupPasswordMessages.format,
+  )
+  .refine(
+    (value) => /[A-Za-z]/.test(value) && /\d/.test(value) && /[^\p{L}\p{N}\s]/u.test(value),
+    signupPasswordMessages.format,
+  );
 
 export const signupProfileSchema = z.object({
   nickname: nicknameSchema,

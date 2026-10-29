@@ -138,7 +138,7 @@ export function SignupProfileStep({
           }
         }}
       >
-        <div className="flex flex-col gap-24">
+        <div className="flex flex-col gap-12">
           <Controller
             control={control}
             name="nickname"
@@ -173,7 +173,7 @@ export function SignupProfileStep({
           ) : null}
         </div>
 
-        <div className="flex flex-col gap-24">
+        <div className="flex flex-col gap-12">
           <Controller
             control={control}
             name="password"
