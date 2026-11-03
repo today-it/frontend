@@ -36,11 +36,11 @@ export function ScrollSearchArea({ children }: { children?: ReactNode }) {
           aria-hidden={!isVisible}
           inert={!isVisible}
           className={cn(
-            'mx-auto flex w-full max-w-header-width flex-col bg-surface-default transition-transform duration-300 ease-out motion-reduce:transition-none',
+            'flex w-full flex-col bg-surface-default transition-transform duration-300 ease-out motion-reduce:transition-none',
             isVisible ? 'pointer-events-auto translate-y-0' : '-translate-y-full',
           )}
         >
-          <div className="flex w-full justify-center pt-18 pb-36">
+          <div className="mx-auto flex w-full max-w-header-width justify-center pt-18 pb-36">
             {children ?? <SearchBar className="w-full" placeholder="검색어를 입력해주세요" />}
           </div>
           <Divider />
