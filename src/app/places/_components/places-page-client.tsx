@@ -87,6 +87,7 @@ export function PlacesPageClient({
           >
             <SearchBar
               className="w-full"
+              searchDisabled={!queryDraft.trim()}
               onSearch={() => navigateWithFilters(queryDraft, initialFilters)}
               onValueChange={setQueryDraft}
               placeholder="검색어를 입력해주세요"
