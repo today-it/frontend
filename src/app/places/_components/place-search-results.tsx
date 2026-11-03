@@ -51,7 +51,7 @@ export function PlaceSearchResults({
     <>
       <main className="mx-auto flex w-full max-w-[calc(var(--spacing-header-width)+48px)] flex-1 flex-col px-24 pt-48 pb-96">
         <section aria-labelledby={titleId} className="flex flex-1 flex-col gap-28">
-          <div className="flex flex-col gap-16">
+          <div className="flex flex-col gap-28">
             <div className="flex items-end justify-between gap-16">
               <div className="flex min-w-0 flex-col gap-8">
                 <h1 className="text-heading-h1 text-text-primary" id={titleId}>
@@ -62,7 +62,7 @@ export function PlaceSearchResults({
                 </p>
               </div>
               <button
-                className="inline-flex shrink-0 cursor-pointer items-center gap-4 rounded-sm text-caption-c2 text-text-secondary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
+                className="inline-flex shrink-0 cursor-pointer items-center gap-4 rounded-sm text-caption-c1 text-text-secondary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
                 onClick={resetSearch}
                 type="button"
               >
@@ -89,7 +89,7 @@ export function PlaceSearchResults({
                 <h2 className="text-heading-h3 text-text-primary" id={`${titleId}-empty`}>
                   조건에 맞는 장소가 없어요
                 </h2>
-                <p className="text-body-b2 text-text-muted">다른 지역이나 컨셉을 골라보세요</p>
+                <p className="text-body-b2 text-text-tertiary">다른 지역이나 컨셉을 골라보세요</p>
               </div>
               <Button onClick={resetSearch} size="md">
                 {resetLabel}
