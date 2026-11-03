@@ -11,8 +11,6 @@ import {
   emptyPlaceFilters,
   filterPlaces,
   getPlaceFilterCount,
-  getPlaceRegionFilterCount,
-  MAX_PLACE_DISTRICTS,
   MAX_PLACE_FILTERS,
   placeConcepts,
   type PlaceFilterState,
@@ -45,38 +43,25 @@ export function PlaceSearchModal({
   const selectedCount = getPlaceFilterCount(draftFilters);
   const hasSearchConditions = Boolean(query.trim() || selectedCount);
   const previewCount = filterPlaces(allPlaces, query, draftFilters).length;
-  const [activeRegionId, setActiveRegionId] = useState<string | null>(
-    initialFilters.regions[0]?.regionId ?? null,
-  );
+  const regionSelection = draftFilters.regions[0];
+  const activeRegionId = regionSelection?.regionId ?? null;
   const selectedRegion = placeRegions.find((region) => region.id === activeRegionId);
-  const regionSelection = draftFilters.regions.find((region) => region.regionId === activeRegionId);
   const districtIds = regionSelection?.districtIds ?? [];
-  const regionCount = getPlaceRegionFilterCount(draftFilters);
   const districtOptions = selectedRegion?.districts ?? [];
 
-  /** 다른 지역의 선택을 유지하며 시/도 패널을 전환하거나 현재 시/도를 해제합니다. */
+  /** 시/도를 바꾸면 이전 지역 선택을 교체하고 해당 시/도 칩을 추가합니다. */
   function selectRegion(regionId: string) {
-    if (activeRegionId === regionId && regionSelection) {
-      setDraftFilters({
-        ...draftFilters,
-        regions: draftFilters.regions.filter((region) => region.regionId !== regionId),
-      });
-      setActiveRegionId(null);
-      return;
-    }
-    setActiveRegionId(regionId);
-    if (draftFilters.regions.some((region) => region.regionId === regionId)) return;
+    if (activeRegionId === regionId) return;
     setDraftFilters(updatePlaceRegionSelection(draftFilters, regionId, []));
   }
 
-  /** 다른 시/도의 선택을 유지하며 현재 시/군/구의 선택을 전환합니다. */
+  /** 현재 시/군/구 선택을 최대 3개까지 전환합니다. */
   function toggleDistrict(districtId: string) {
     if (!activeRegionId) return;
-    const isSelected = districtIds.includes(districtId);
-    const nextDistrictIds = isSelected
+    const nextDistrictIds = districtIds.includes(districtId)
       ? districtIds.filter((id) => id !== districtId)
       : [...districtIds, districtId];
-    updateDistricts(nextDistrictIds);
+    setDraftFilters(updatePlaceRegionSelection(draftFilters, activeRegionId, nextDistrictIds));
   }
 
   /**
@@ -95,22 +80,9 @@ export function PlaceSearchModal({
     });
   }
 
-  /** 현재 지역에서 선택한 모든 구/군을 해제합니다. */
-  function clearDistricts() {
-    if (!activeRegionId) return;
-    updateDistricts([]);
-  }
-
-  /** 현재 시/도의 구/군만 갱신하고 다른 지역의 선택과 표시 순서를 유지합니다. */
-  function updateDistricts(nextDistrictIds: string[]) {
-    if (!activeRegionId) return;
-    setDraftFilters(updatePlaceRegionSelection(draftFilters, activeRegionId, nextDistrictIds));
-  }
-
   /** 모든 임시 필터와 현재 시/도 패널을 초기화합니다. */
   function resetFilters() {
     setDraftFilters(emptyPlaceFilters);
-    setActiveRegionId(null);
   }
 
   /** 모달의 검색어와 임시 필터 상태를 부모에 전달해 적용합니다. */
@@ -172,19 +144,29 @@ export function PlaceSearchModal({
             >
               {activeTab === 'region' ? (
                 <div className="flex flex-col gap-20">
-                  <FilterGroup label="시/도" chipsClassName="h-[80px] content-start">
+                  <FilterGroup label="시/도" chipsClassName="flex-nowrap gap-8">
                     {placeRegions.map((region) => {
                       const isSelected = activeRegionId === region.id;
 
                       return (
-                        <Chip
+                        <button
                           aria-label={`${region.label} 지역 선택`}
+                          aria-pressed={isSelected}
                           key={region.id}
-                          onPressedChange={() => selectRegion(region.id)}
-                          pressed={isSelected}
+                          onClick={() => selectRegion(region.id)}
+                          type="button"
+                          className={cn(
+                            'flex h-36 min-w-0 flex-1 cursor-pointer items-center justify-center gap-4 border-b border-transparent py-10 text-caption-c1 whitespace-nowrap text-text-tertiary outline-none focus-visible:ring-2 focus-visible:ring-border-active',
+                            isSelected && 'border-border-active text-text-primary',
+                          )}
                         >
                           {region.label}
-                        </Chip>
+                          {isSelected ? (
+                            <span className="text-caption-c2 text-text-brand">
+                              {districtIds.length || 1}
+                            </span>
+                          ) : null}
+                        </button>
                       );
                     })}
                   </FilterGroup>
@@ -196,17 +178,6 @@ export function PlaceSearchModal({
                   >
                     {selectedRegion ? (
                       <>
-                        <Chip
-                          aria-label={`${selectedRegion.label} 전체 지역 선택`}
-                          onPressedChange={clearDistricts}
-                          pressed={Boolean(regionSelection) && districtIds.length === 0}
-                          disabled={
-                            updatePlaceRegionSelection(draftFilters, selectedRegion.id, []) ===
-                            draftFilters
-                          }
-                        >
-                          전체
-                        </Chip>
                         {districtOptions.map((district) => {
                           const isSelected = districtIds.includes(district.id);
 
@@ -215,16 +186,10 @@ export function PlaceSearchModal({
                               aria-label={`${district.label} 선택`}
                               disabled={
                                 !isSelected &&
-                                (regionCount -
-                                  (regionSelection ? districtIds.length || 1 : 0) +
-                                  districtIds.length +
-                                  1 >
-                                  MAX_PLACE_DISTRICTS ||
-                                  selectedCount -
-                                    (regionSelection ? districtIds.length || 1 : 0) +
-                                    districtIds.length +
-                                    1 >
-                                    MAX_PLACE_FILTERS)
+                                updatePlaceRegionSelection(draftFilters, selectedRegion.id, [
+                                  ...districtIds,
+                                  district.id,
+                                ]) === draftFilters
                               }
                               key={district.id}
                               onPressedChange={() => toggleDistrict(district.id)}

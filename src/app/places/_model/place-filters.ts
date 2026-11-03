@@ -141,7 +141,7 @@ export function getPlaceRegionFilterCount(filters: PlaceFilterState) {
 }
 
 /**
- * 지정한 시/도의 선택을 갱신합니다. 전체 선택은 기존 전체 선택을 대체하며 개별 구/군은 유지합니다.
+ * 하나의 시/도와 최대 3개 구/군을 선택하며, 이전 시/도의 선택은 교체합니다.
  * 지역 및 전체 필터 개수를 넘으면 원래 상태를 반환합니다.
  */
 export function updatePlaceRegionSelection(
@@ -149,15 +149,8 @@ export function updatePlaceRegionSelection(
   regionId: string,
   districtIds: string[],
 ): PlaceFilterState {
-  const nextRegion = { regionId, districtIds };
-  const regions = filters.regions.flatMap((region) => {
-    if (region.regionId === regionId) return [nextRegion];
-    return districtIds.length === 0 && region.districtIds.length === 0 ? [] : [region];
-  });
-  if (!filters.regions.some((region) => region.regionId === regionId)) regions.push(nextRegion);
-  const next = { ...filters, regions };
-  return getPlaceRegionFilterCount(next) > MAX_PLACE_DISTRICTS ||
-    getPlaceFilterCount(next) > MAX_PLACE_FILTERS
+  const next = { ...filters, regions: [{ regionId, districtIds }] };
+  return districtIds.length > MAX_PLACE_DISTRICTS || getPlaceFilterCount(next) > MAX_PLACE_FILTERS
     ? filters
     : next;
 }
@@ -208,8 +201,7 @@ export function normalizePlaceFilters(
         ),
       ),
     ].filter((id) => region.districts.some((district) => district.id === id));
-    const remainingRegions = MAX_PLACE_DISTRICTS - getPlaceRegionFilterCount(regionFilters);
-    if (validDistrictIds.length > 0 && remainingRegions === 0) continue;
+    const remainingRegions = MAX_PLACE_DISTRICTS;
     regionFilters = updatePlaceRegionSelection(
       regionFilters,
       regionId,

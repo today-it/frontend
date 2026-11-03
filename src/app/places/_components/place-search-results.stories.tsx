@@ -39,7 +39,7 @@ export const RemoveDistrictAndReset: Story = {
     await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
     await userEvent.click(canvas.getByRole('button', { name: '성동구 필터 해제' }));
     await expect(args.onSearch).toHaveBeenCalledWith('성수', {
-      regions: [],
+      regions: [{ regionId: 'seoul', districtIds: [] }],
       conceptIds: ['cafe'],
     });
     await userEvent.click(canvas.getByRole('button', { name: '전체 초기화' }));
