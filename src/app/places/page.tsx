@@ -25,13 +25,9 @@ export default async function PlacesPage({
   const queryParam = params.q;
   const query = typeof queryParam === 'string' ? queryParam.trim() : '';
   const filters = normalizePlaceFilters(params);
-  const hasFilters = Boolean(
-    filters.regionId || filters.districtIds.length || filters.conceptIds.length,
-  );
+  const hasFilters = Boolean(filters.regions.length || filters.conceptIds.length);
   const isSearchMode = Boolean(query || hasFilters);
-  const routeKey = [query, filters.regionId, ...filters.districtIds, ...filters.conceptIds].join(
-    '|',
-  );
+  const routeKey = JSON.stringify([query, filters]);
   const hasPlaces = selectedSection
     ? selectedSection.places.length > 0
     : placeSections.some((section) => section.places.length > 0);

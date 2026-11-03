@@ -1,8 +1,12 @@
 import type { PlaceSummary } from './place';
 
-export interface PlaceFilterState {
-  regionId: string | null;
+export interface PlaceRegionSelection {
+  regionId: string;
   districtIds: string[];
+}
+
+export interface PlaceFilterState {
+  regions: PlaceRegionSelection[];
   conceptIds: string[];
 }
 
@@ -12,7 +16,8 @@ export interface RegionOption {
   districts: readonly { id: string; label: string }[];
 }
 
-export const MAX_PLACE_FILTERS = 7;
+export const MAX_PLACE_FILTERS = 12;
+export const MAX_PLACE_DISTRICTS = 3;
 
 const seoulDistricts = [
   ['jongno', '종로구'],
@@ -110,29 +115,56 @@ export const placeConcepts = [
   { id: 'exhibition', label: '전시·박물관', categoryTerms: ['전시'] },
   { id: 'performance', label: '공연', categoryTerms: ['공연'] },
   { id: 'experience', label: '체험', categoryTerms: ['체험'] },
-  { id: 'leisure', label: '놀거리·레저', categoryTerms: ['놀거리', '레저'] },
+  { id: 'leisure', label: '놀이·레저', categoryTerms: ['놀거리', '놀이', '레저'] },
   { id: 'nature', label: '자연·산책', categoryTerms: ['자연', '산책'] },
   { id: 'shopping', label: '쇼핑', categoryTerms: ['쇼핑'] },
+  { id: 'landmark', label: '명소·전망', categoryTerms: ['명소', '전망'] },
 ] as const;
 
 export const emptyPlaceFilters: PlaceFilterState = {
-  regionId: null,
-  districtIds: [],
+  regions: [],
   conceptIds: [],
 };
 
 /**
- * 지역, 구/군, 카테고리에 선택된 필터 수를 계산합니다.
+ * 시/도 전체 또는 선택한 구/군 수에 카테고리 수를 더합니다.
  * @param filters 현재 장소 필터 상태
  * @returns 선택된 필터의 총 개수
  */
 export function getPlaceFilterCount(filters: PlaceFilterState) {
-  return (filters.regionId ? 1 : 0) + filters.districtIds.length + filters.conceptIds.length;
+  return getPlaceRegionFilterCount(filters) + filters.conceptIds.length;
+}
+
+/** 시/도 전체는 1개, 세부 지역은 선택한 구/군 개수로 합산합니다. */
+export function getPlaceRegionFilterCount(filters: PlaceFilterState) {
+  return filters.regions.reduce((count, region) => count + (region.districtIds.length || 1), 0);
+}
+
+/**
+ * 지정한 시/도의 선택을 갱신합니다. 전체 선택은 기존 전체 선택을 대체하며 개별 구/군은 유지합니다.
+ * 지역 및 전체 필터 개수를 넘으면 원래 상태를 반환합니다.
+ */
+export function updatePlaceRegionSelection(
+  filters: PlaceFilterState,
+  regionId: string,
+  districtIds: string[],
+): PlaceFilterState {
+  const nextRegion = { regionId, districtIds };
+  const regions = filters.regions.flatMap((region) => {
+    if (region.regionId === regionId) return [nextRegion];
+    return districtIds.length === 0 && region.districtIds.length === 0 ? [] : [region];
+  });
+  if (!filters.regions.some((region) => region.regionId === regionId)) regions.push(nextRegion);
+  const next = { ...filters, regions };
+  return getPlaceRegionFilterCount(next) > MAX_PLACE_DISTRICTS ||
+    getPlaceFilterCount(next) > MAX_PLACE_FILTERS
+    ? filters
+    : next;
 }
 
 /**
  * 검색어와 필터 상태를 `/places` 경로의 검색 파라미터로 직렬화합니다.
- * 검색어 앞뒤 공백은 제거하고, 구/군과 카테고리는 각각 반복 파라미터로 추가합니다.
+ * 검색어 앞뒤 공백을 제거하고, 시/도와 소속을 포함한 구/군 및 카테고리를 반복 파라미터로 추가합니다.
  * @param query 검색어
  * @param filters 적용할 장소 필터 상태
  * @returns 필터와 검색어가 포함된 장소 목록 경로
@@ -142,8 +174,10 @@ export function getPlaceSearchHref(query: string, filters: PlaceFilterState) {
   const normalizedQuery = query.trim();
 
   if (normalizedQuery) params.set('q', normalizedQuery);
-  if (filters.regionId) params.set('region', filters.regionId);
-  filters.districtIds.forEach((districtId) => params.append('district', districtId));
+  filters.regions.forEach(({ regionId, districtIds }) => {
+    params.append('region', regionId);
+    districtIds.forEach((districtId) => params.append('district', `${regionId}:${districtId}`));
+  });
   filters.conceptIds.forEach((conceptId) => params.append('concept', conceptId));
 
   const queryString = params.toString();
@@ -159,39 +193,42 @@ export function getPlaceSearchHref(query: string, filters: PlaceFilterState) {
 export function normalizePlaceFilters(
   params: Record<string, string | string[] | undefined>,
 ): PlaceFilterState {
-  const rawRegion = params.region;
-  const regionId = typeof rawRegion === 'string' ? rawRegion : undefined;
-  const region = placeRegions.find((option) => option.id === regionId);
-  const rawDistricts = Array.isArray(params.district)
-    ? params.district
-    : typeof params.district === 'string'
-      ? [params.district]
-      : [];
-  const rawConcepts = Array.isArray(params.concept)
-    ? params.concept
-    : typeof params.concept === 'string'
-      ? [params.concept]
-      : [];
-  const districtIds = region
-    ? [
-        ...new Set(
-          rawDistricts.filter((id) => region.districts.some((district) => district.id === id)),
+  const rawRegions = [params.region ?? []].flat();
+  const rawDistricts = [params.district ?? []].flat();
+  const rawConcepts = [params.concept ?? []].flat();
+  let regionFilters: PlaceFilterState = emptyPlaceFilters;
+
+  for (const regionId of new Set(rawRegions)) {
+    const region = placeRegions.find((option) => option.id === regionId);
+    if (!region) continue;
+    const validDistrictIds = [
+      ...new Set(
+        rawDistricts.map((id) =>
+          id.startsWith(`${regionId}:`) ? id.slice(regionId.length + 1) : id,
         ),
-      ].slice(0, MAX_PLACE_FILTERS - 1)
-    : [];
+      ),
+    ].filter((id) => region.districts.some((district) => district.id === id));
+    const remainingRegions = MAX_PLACE_DISTRICTS - getPlaceRegionFilterCount(regionFilters);
+    if (validDistrictIds.length > 0 && remainingRegions === 0) continue;
+    regionFilters = updatePlaceRegionSelection(
+      regionFilters,
+      regionId,
+      validDistrictIds.slice(0, remainingRegions),
+    );
+  }
+  const { regions } = regionFilters;
 
   return {
-    regionId: region?.id ?? null,
-    districtIds,
+    regions,
     conceptIds: [
       ...new Set(rawConcepts.filter((id) => placeConcepts.some((concept) => concept.id === id))),
-    ].slice(0, MAX_PLACE_FILTERS - (region ? 1 : 0) - districtIds.length),
+    ].slice(0, MAX_PLACE_FILTERS - getPlaceRegionFilterCount({ regions, conceptIds: [] })),
   };
 }
 
 /**
  * 검색어와 선택 필터에 모두 맞는 장소만 입력 순서대로 반환합니다.
- * 검색어의 모든 항목과 지역/구군 필터는 AND 조건이며, 여러 카테고리는 OR 조건으로 비교합니다.
+ * 검색어, 지역, 카테고리 조건은 AND로 결합하고, 여러 지역과 여러 카테고리는 각각 OR로 비교합니다.
  * @param places 검색할 장소 목록
  * @param query 장소명, 분류, 지역 등에서 찾을 검색어
  * @param filters 적용할 지역/구군/카테고리 필터
@@ -203,7 +240,6 @@ export function filterPlaces(
   filters: PlaceFilterState,
 ) {
   const queryTerms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  const region = placeRegions.find((option) => option.id === filters.regionId);
   const selectedConcepts = placeConcepts.filter((concept) =>
     filters.conceptIds.includes(concept.id),
   );
@@ -218,16 +254,20 @@ export function filterPlaces(
       .join(' ')
       .toLocaleLowerCase();
     const matchesQuery = queryTerms.every((term) => searchableText.includes(term));
-    const matchesRegion = !region || place.regionId === region.id;
-    const matchesDistrict =
-      filters.districtIds.length === 0 || filters.districtIds.includes(place.districtId ?? '');
+    const matchesRegion =
+      filters.regions.length === 0 ||
+      filters.regions.some(
+        (region) =>
+          place.regionId === region.regionId &&
+          (region.districtIds.length === 0 || region.districtIds.includes(place.districtId ?? '')),
+      );
     const matchesConcept =
       selectedConcepts.length === 0 ||
       selectedConcepts.some((concept) =>
         concept.categoryTerms.some((term) => place.category.includes(term)),
       );
 
-    return matchesQuery && matchesRegion && matchesDistrict && matchesConcept;
+    return matchesQuery && matchesRegion && matchesConcept;
   });
 }
 

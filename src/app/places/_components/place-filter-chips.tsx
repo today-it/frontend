@@ -15,24 +15,37 @@ interface PlaceFilterChipsProps {
 export function PlaceFilterChips({ filters, onChange }: PlaceFilterChipsProps) {
   return (
     <>
-      {filters.regionId ? (
-        <RemovableFilterChip
-          label={getRegionLabel(filters.regionId)}
-          onRemove={() => onChange({ ...filters, regionId: null, districtIds: [] })}
-        />
-      ) : null}
-      {filters.districtIds.map((districtId) => (
-        <RemovableFilterChip
-          key={districtId}
-          label={getDistrictLabel(filters.regionId, districtId)}
-          onRemove={() =>
-            onChange({
-              ...filters,
-              districtIds: filters.districtIds.filter((id) => id !== districtId),
-            })
-          }
-        />
-      ))}
+      {filters.regions.flatMap((region) =>
+        region.districtIds.length === 0 ? (
+          <RemovableFilterChip
+            key={region.regionId}
+            label={`${getRegionLabel(region.regionId)} - 전체`}
+            onRemove={() =>
+              onChange({
+                ...filters,
+                regions: filters.regions.filter((entry) => entry.regionId !== region.regionId),
+              })
+            }
+          />
+        ) : (
+          region.districtIds.map((districtId) => (
+            <RemovableFilterChip
+              key={`${region.regionId}:${districtId}`}
+              label={getDistrictLabel(region.regionId, districtId)}
+              onRemove={() =>
+                onChange({
+                  ...filters,
+                  regions: filters.regions.flatMap((entry) => {
+                    if (entry.regionId !== region.regionId) return [entry];
+                    const districtIds = entry.districtIds.filter((id) => id !== districtId);
+                    return districtIds.length ? [{ ...entry, districtIds }] : [];
+                  }),
+                })
+              }
+            />
+          ))
+        ),
+      )}
       {filters.conceptIds.map((conceptId) => {
         const concept = placeConcepts.find((option) => option.id === conceptId);
         if (!concept) return null;

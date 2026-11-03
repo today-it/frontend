@@ -30,17 +30,16 @@ export const LoadMore: Story = {
   },
 };
 
-export const RemoveRegionAndReset: Story = {
+export const RemoveDistrictAndReset: Story = {
   args: {
-    filters: { regionId: 'seoul', districtIds: ['seongdong'], conceptIds: ['cafe'] },
+    filters: { regions: [{ regionId: 'seoul', districtIds: ['seongdong'] }], conceptIds: ['cafe'] },
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
-    await userEvent.click(canvas.getByRole('button', { name: '서울 필터 해제' }));
+    await userEvent.click(canvas.getByRole('button', { name: '성동구 필터 해제' }));
     await expect(args.onSearch).toHaveBeenCalledWith('성수', {
-      regionId: null,
-      districtIds: [],
+      regions: [],
       conceptIds: ['cafe'],
     });
     await userEvent.click(canvas.getByRole('button', { name: '전체 초기화' }));
@@ -51,7 +50,7 @@ export const RemoveRegionAndReset: Story = {
 export const EmptyResults: Story = {
   args: {
     query: '존재하지않는장소',
-    filters: { regionId: 'seoul', districtIds: ['seongdong'], conceptIds: ['cafe'] },
+    filters: { regions: [{ regionId: 'seoul', districtIds: ['seongdong'] }], conceptIds: ['cafe'] },
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);

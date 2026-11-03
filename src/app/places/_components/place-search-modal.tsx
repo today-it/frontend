@@ -11,10 +11,13 @@ import {
   emptyPlaceFilters,
   filterPlaces,
   getPlaceFilterCount,
+  getPlaceRegionFilterCount,
+  MAX_PLACE_DISTRICTS,
   MAX_PLACE_FILTERS,
   placeConcepts,
   type PlaceFilterState,
   placeRegions,
+  updatePlaceRegionSelection,
 } from '../_model/place-filters';
 import { PlaceFilterChips } from './place-filter-chips';
 
@@ -40,41 +43,40 @@ export function PlaceSearchModal({
   const [activeTab, setActiveTab] = useState<PlaceFilterTab>('region');
   const [draftFilters, setDraftFilters] = useState(initialFilters);
   const selectedCount = getPlaceFilterCount(draftFilters);
+  const hasSearchConditions = Boolean(query.trim() || selectedCount);
   const previewCount = filterPlaces(allPlaces, query, draftFilters).length;
-  const selectedRegion = placeRegions.find((region) => region.id === draftFilters.regionId);
+  const [activeRegionId, setActiveRegionId] = useState<string | null>(
+    initialFilters.regions[0]?.regionId ?? null,
+  );
+  const selectedRegion = placeRegions.find((region) => region.id === activeRegionId);
+  const regionSelection = draftFilters.regions.find((region) => region.regionId === activeRegionId);
+  const districtIds = regionSelection?.districtIds ?? [];
+  const regionCount = getPlaceRegionFilterCount(draftFilters);
   const districtOptions = selectedRegion?.districts ?? [];
 
-  /**
-   * 지역을 선택하거나 해제하고, 지역이 바뀌면 하위 지역 선택을 비웁니다.
-   * @param regionId 전환할 지역 ID
-   */
-  function toggleRegion(regionId: string) {
-    const isSelected = draftFilters.regionId === regionId;
-    const selectionsWithoutArea = draftFilters.conceptIds.length;
-
-    if (!isSelected && selectionsWithoutArea + 1 > MAX_PLACE_FILTERS) return;
-
-    setDraftFilters({
-      ...draftFilters,
-      regionId: isSelected ? null : regionId,
-      districtIds: [],
-    });
+  /** 다른 지역의 선택을 유지하며 시/도 패널을 전환하거나 현재 시/도를 해제합니다. */
+  function selectRegion(regionId: string) {
+    if (activeRegionId === regionId && regionSelection) {
+      setDraftFilters({
+        ...draftFilters,
+        regions: draftFilters.regions.filter((region) => region.regionId !== regionId),
+      });
+      setActiveRegionId(null);
+      return;
+    }
+    setActiveRegionId(regionId);
+    if (draftFilters.regions.some((region) => region.regionId === regionId)) return;
+    setDraftFilters(updatePlaceRegionSelection(draftFilters, regionId, []));
   }
 
-  /**
-   * 최대 필터 선택 개수를 지키며 구/군 선택을 전환합니다.
-   * @param districtId 전환할 구/군 ID
-   */
+  /** 다른 시/도의 선택을 유지하며 현재 시/군/구의 선택을 전환합니다. */
   function toggleDistrict(districtId: string) {
-    const isSelected = draftFilters.districtIds.includes(districtId);
-    if (!isSelected && selectedCount >= MAX_PLACE_FILTERS) return;
-
-    setDraftFilters({
-      ...draftFilters,
-      districtIds: isSelected
-        ? draftFilters.districtIds.filter((id) => id !== districtId)
-        : [...draftFilters.districtIds, districtId],
-    });
+    if (!activeRegionId) return;
+    const isSelected = districtIds.includes(districtId);
+    const nextDistrictIds = isSelected
+      ? districtIds.filter((id) => id !== districtId)
+      : [...districtIds, districtId];
+    updateDistricts(nextDistrictIds);
   }
 
   /**
@@ -95,12 +97,25 @@ export function PlaceSearchModal({
 
   /** 현재 지역에서 선택한 모든 구/군을 해제합니다. */
   function clearDistricts() {
-    setDraftFilters({ ...draftFilters, districtIds: [] });
+    if (!activeRegionId) return;
+    updateDistricts([]);
+  }
+
+  /** 현재 시/도의 구/군만 갱신하고 다른 지역의 선택과 표시 순서를 유지합니다. */
+  function updateDistricts(nextDistrictIds: string[]) {
+    if (!activeRegionId) return;
+    setDraftFilters(updatePlaceRegionSelection(draftFilters, activeRegionId, nextDistrictIds));
+  }
+
+  /** 모든 임시 필터와 현재 시/도 패널을 초기화합니다. */
+  function resetFilters() {
+    setDraftFilters(emptyPlaceFilters);
+    setActiveRegionId(null);
   }
 
   /** 모달의 검색어와 임시 필터 상태를 부모에 전달해 적용합니다. */
   function submitSearch() {
-    onSubmit(query, draftFilters);
+    if (hasSearchConditions) onSubmit(query, draftFilters);
   }
 
   return (
@@ -121,6 +136,7 @@ export function PlaceSearchModal({
           <SearchBar
             autoFocus
             className="shrink-0"
+            searchDisabled={!query.trim()}
             onSearch={submitSearch}
             onValueChange={onQueryChange}
             value={query}
@@ -156,18 +172,15 @@ export function PlaceSearchModal({
             >
               {activeTab === 'region' ? (
                 <div className="flex flex-col gap-20">
-                  <FilterGroup label="시도">
+                  <FilterGroup label="시/도" chipsClassName="h-[80px] content-start">
                     {placeRegions.map((region) => {
-                      const isSelected = draftFilters.regionId === region.id;
-                      const selectionsAfterChange =
-                        draftFilters.conceptIds.length + (isSelected ? 0 : 1);
+                      const isSelected = activeRegionId === region.id;
 
                       return (
                         <Chip
                           aria-label={`${region.label} 지역 선택`}
-                          disabled={!isSelected && selectionsAfterChange > MAX_PLACE_FILTERS}
                           key={region.id}
-                          onPressedChange={() => toggleRegion(region.id)}
+                          onPressedChange={() => selectRegion(region.id)}
                           pressed={isSelected}
                         >
                           {region.label}
@@ -176,23 +189,43 @@ export function PlaceSearchModal({
                     })}
                   </FilterGroup>
 
-                  <FilterGroup label="시/군/구" chipsClassName="h-[168px] content-start">
+                  <FilterGroup
+                    label="시/군/구"
+                    hint="최대 3개 선택"
+                    chipsClassName="h-[168px] content-start"
+                  >
                     {selectedRegion ? (
                       <>
                         <Chip
                           aria-label={`${selectedRegion.label} 전체 지역 선택`}
                           onPressedChange={clearDistricts}
-                          pressed={draftFilters.districtIds.length === 0}
+                          pressed={Boolean(regionSelection) && districtIds.length === 0}
+                          disabled={
+                            updatePlaceRegionSelection(draftFilters, selectedRegion.id, []) ===
+                            draftFilters
+                          }
                         >
                           전체
                         </Chip>
                         {districtOptions.map((district) => {
-                          const isSelected = draftFilters.districtIds.includes(district.id);
+                          const isSelected = districtIds.includes(district.id);
 
                           return (
                             <Chip
                               aria-label={`${district.label} 선택`}
-                              disabled={!isSelected && selectedCount >= MAX_PLACE_FILTERS}
+                              disabled={
+                                !isSelected &&
+                                (regionCount -
+                                  (regionSelection ? districtIds.length || 1 : 0) +
+                                  districtIds.length +
+                                  1 >
+                                  MAX_PLACE_DISTRICTS ||
+                                  selectedCount -
+                                    (regionSelection ? districtIds.length || 1 : 0) +
+                                    districtIds.length +
+                                    1 >
+                                    MAX_PLACE_FILTERS)
+                              }
                               key={district.id}
                               onPressedChange={() => toggleDistrict(district.id)}
                               pressed={isSelected}
@@ -203,8 +236,8 @@ export function PlaceSearchModal({
                         })}
                       </>
                     ) : (
-                      <p className="text-caption-c2 text-text-tertiary">
-                        시도를 먼저 선택해주세요.
+                      <p className="flex h-full w-full items-center justify-center text-caption-c2 text-text-tertiary">
+                        시/도를 먼저 선택해주세요
                       </p>
                     )}
                   </FilterGroup>
@@ -240,7 +273,7 @@ export function PlaceSearchModal({
             <div className="shrink-0 px-24 pt-20 pb-28 sm:px-32">
               <div className="flex flex-col gap-20">
                 <div
-                  className="flex h-[66px] shrink-0 flex-col gap-12"
+                  className="flex h-[114px] shrink-0 flex-col gap-12"
                   data-slot="selected-filter-section"
                 >
                   <p
@@ -248,18 +281,18 @@ export function PlaceSearchModal({
                     className="flex h-[18px] shrink-0 items-center gap-8 text-caption-c1 text-text-tertiary"
                   >
                     <span>선택한 필터</span>
-                    <span>
+                    <span className="text-caption-c2 text-text-tertiary">
                       {selectedCount}/{MAX_PLACE_FILTERS}
                     </span>
                   </p>
                   <div
                     aria-label={selectedCount > 0 ? '선택한 필터 목록' : undefined}
-                    className="h-chip shrink-0 overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-inset"
+                    className="h-[84px] shrink-0 overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-inset"
                     data-slot="selected-filters"
                     role={selectedCount > 0 ? 'region' : undefined}
                     tabIndex={selectedCount > 0 ? 0 : undefined}
                   >
-                    <div className="flex flex-wrap gap-8">
+                    <div className="flex flex-wrap gap-x-8 gap-y-12">
                       <PlaceFilterChips filters={draftFilters} onChange={setDraftFilters} />
                     </div>
                   </div>
@@ -270,15 +303,14 @@ export function PlaceSearchModal({
                 <div className="flex items-center justify-between gap-12">
                   <button
                     className="inline-flex cursor-pointer items-center gap-4 rounded-sm text-caption-c1 text-text-secondary outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 disabled:cursor-default disabled:text-text-disabled"
-                    disabled={selectedCount === 0}
-                    onClick={() => setDraftFilters(emptyPlaceFilters)}
+                    onClick={resetFilters}
                     type="button"
                   >
                     <Icon name="refresh" size={16} />
                     선택 초기화
                   </button>
-                  <Button disabled={selectedCount === 0} onClick={submitSearch} size="sm">
-                    장소 {previewCount}곳 보기
+                  <Button disabled={!hasSearchConditions} onClick={submitSearch} size="sm">
+                    {hasSearchConditions ? `장소 ${previewCount}곳 보기` : '장소 보기'}
                   </Button>
                 </div>
               </div>
@@ -295,12 +327,16 @@ interface FilterGroupProps {
   label: string;
   className?: string;
   chipsClassName?: string;
+  hint?: string;
 }
 
-function FilterGroup({ children, label, className, chipsClassName }: FilterGroupProps) {
+function FilterGroup({ children, label, className, chipsClassName, hint }: FilterGroupProps) {
   return (
     <div aria-label={label} className={cn('flex flex-col gap-12', className)} role="group">
-      <p className="text-caption-c1 text-text-tertiary">{label}</p>
+      <div className="flex items-center gap-8">
+        <p className="text-caption-c1 text-text-tertiary">{label}</p>
+        {hint ? <p className="text-caption-c2 text-text-tertiary">{hint}</p> : null}
+      </div>
       <div className={cn('flex flex-wrap gap-8', chipsClassName)}>{children}</div>
     </div>
   );
