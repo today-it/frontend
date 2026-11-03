@@ -19,7 +19,7 @@ export function PlaceFilterChips({ filters, onChange }: PlaceFilterChipsProps) {
         region.districtIds.length === 0 ? (
           <RemovableFilterChip
             key={region.regionId}
-            label={`${getRegionLabel(region.regionId)} - 전체`}
+            label={getRegionLabel(region.regionId)}
             onRemove={() =>
               onChange({
                 ...filters,
@@ -38,7 +38,7 @@ export function PlaceFilterChips({ filters, onChange }: PlaceFilterChipsProps) {
                   regions: filters.regions.flatMap((entry) => {
                     if (entry.regionId !== region.regionId) return [entry];
                     const districtIds = entry.districtIds.filter((id) => id !== districtId);
-                    return districtIds.length ? [{ ...entry, districtIds }] : [];
+                    return [{ ...entry, districtIds }];
                   }),
                 })
               }

@@ -89,7 +89,7 @@ export const CapsDistrictsAtThree: Story = {
     }
     await expect(dialog.getByText('3/12')).toBeInTheDocument();
     await expect(dialog.getByRole('button', { name: '성동구 선택' })).toBeDisabled();
-    await expect(dialog.queryByRole('button', { name: '서울 - 전체 필터 해제' })).toBeNull();
+    await expect(dialog.queryByRole('button', { name: '서울 필터 해제' })).toBeNull();
     await userEvent.click(dialog.getByRole('button', { name: '용산구 필터 해제' }));
     await expect(dialog.getByRole('button', { name: '성동구 선택' })).toBeEnabled();
     await userEvent.click(dialog.getByRole('button', { name: '성동구 선택' }));
@@ -167,118 +167,60 @@ export const SelectedFilterAreaKeepsItsHeight: Story = {
   },
 };
 
-export const KeepsSelectionsAcrossRegions: Story = {
+export const SingleProvinceSelection: Story = {
   render: () => <PlaceSearchModalHarness initialQuery="" />,
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole('button', { name: '필터 열기' }));
     const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 및 필터' }));
-    await userEvent.click(dialog.getByRole('button', { name: '서울 지역 선택' }));
     await userEvent.click(dialog.getByRole('button', { name: '경기 지역 선택' }));
+    await expect(dialog.getByRole('button', { name: '경기 필터 해제' })).toBeInTheDocument();
     await expect(
-      dialog.queryByRole('button', { name: '서울 - 전체 필터 해제' }),
+      dialog.queryByRole('button', { name: '경기 전체 지역 선택' }),
     ).not.toBeInTheDocument();
-    await expect(dialog.getByRole('button', { name: '경기 - 전체 필터 해제' })).toBeInTheDocument();
     await userEvent.click(dialog.getByRole('button', { name: '수원시 선택' }));
+    await userEvent.click(dialog.getByRole('button', { name: '고양시 선택' }));
     await userEvent.click(dialog.getByRole('button', { name: '서울 지역 선택' }));
-    await userEvent.click(dialog.getByRole('button', { name: '성동구 선택' }));
-    await expect(dialog.getByRole('button', { name: '수원시 필터 해제' })).toBeInTheDocument();
-    await expect(dialog.getByRole('button', { name: '성동구 필터 해제' })).toBeInTheDocument();
-    await expect(dialog.getByText('2/12')).toBeInTheDocument();
-    await userEvent.click(dialog.getByRole('button', { name: '종로구 선택' }));
-    await userEvent.click(dialog.getByRole('button', { name: '경기 지역 선택' }));
-    await expect(dialog.getByRole('button', { name: '고양시 선택' })).toBeDisabled();
-    await expect(dialog.getByRole('button', { name: '수원시 선택' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
-    await userEvent.click(dialog.getByRole('button', { name: '성동구 필터 해제' }));
-    await expect(dialog.getByRole('button', { name: '수원시 필터 해제' })).toBeInTheDocument();
-    await expect(dialog.getByRole('button', { name: '고양시 선택' })).toBeEnabled();
-
-    await userEvent.click(dialog.getByRole('button', { name: '경기 지역 선택' }));
     await expect(
       dialog.queryByRole('button', { name: '수원시 필터 해제' }),
     ).not.toBeInTheDocument();
-    await expect(dialog.getByRole('button', { name: '종로구 필터 해제' })).toBeInTheDocument();
-
+    await expect(
+      dialog.queryByRole('button', { name: '고양시 필터 해제' }),
+    ).not.toBeInTheDocument();
+    await expect(dialog.getByRole('button', { name: '서울 필터 해제' })).toBeInTheDocument();
+    await userEvent.click(dialog.getByRole('button', { name: '성동구 선택' }));
+    await userEvent.click(dialog.getByRole('button', { name: '성동구 선택' }));
+    await expect(dialog.getByRole('button', { name: '서울 필터 해제' })).toBeInTheDocument();
+    await userEvent.click(dialog.getByRole('button', { name: '성동구 선택' }));
+    await userEvent.click(dialog.getByRole('button', { name: '성동구 필터 해제' }));
+    await expect(dialog.getByRole('button', { name: '서울 필터 해제' })).toBeInTheDocument();
+    await userEvent.click(dialog.getByRole('button', { name: '서울 필터 해제' }));
+    await expect(dialog.getByText('시/도를 먼저 선택해주세요')).toBeInTheDocument();
     const filters: PlaceFilterState = {
-      regions: [
-        { regionId: 'seoul', districtIds: ['seongdong'] },
-        { regionId: 'gyeonggi', districtIds: ['suwon'] },
-      ],
+      regions: [{ regionId: 'gyeonggi', districtIds: ['suwon', 'goyang'] }],
       conceptIds: ['cafe'],
     };
-    const params = new URL(getPlaceSearchHref('성수', filters), 'http://localhost').searchParams;
+    const params = new URL(getPlaceSearchHref('', filters), 'http://localhost').searchParams;
+    await expect(
+      normalizePlaceFilters({
+        region: params.getAll('region'),
+        district: params.getAll('district'),
+        concept: params.getAll('concept'),
+      }),
+    ).toEqual(filters);
     const restored = normalizePlaceFilters({
-      region: params.getAll('region'),
-      district: params.getAll('district'),
-      concept: params.getAll('concept'),
+      region: ['gyeonggi', 'seoul'],
+      district: ['gyeonggi:suwon', 'seoul:seongdong'],
     });
-    await expect(restored).toEqual(filters);
-    await expect(normalizePlaceFilters({ region: 'seoul', district: 'seongdong' }).regions).toEqual(
-      [{ regionId: 'seoul', districtIds: ['seongdong'] }],
-    );
-    const fixtures = [
-      {
-        ...allPlaces[0],
-        id: 'seoul-fixture',
-        regionId: 'seoul',
-        districtId: 'seongdong',
-        category: '카페',
-      },
-      {
-        ...allPlaces[0],
-        id: 'gyeonggi-fixture',
-        regionId: 'gyeonggi',
-        districtId: 'suwon',
-        category: '카페',
-      },
-      {
-        ...allPlaces[0],
-        id: 'excluded-fixture',
-        regionId: 'gyeonggi',
-        districtId: 'goyang',
-        category: '카페',
-      },
-    ];
-    await expect(filterPlaces(fixtures, '', restored).map((place) => place.id)).toEqual([
-      'seoul-fixture',
-      'gyeonggi-fixture',
-    ]);
-  },
-};
-
-export const AllowsOnlyOneWholeRegion: Story = {
-  render: () => <PlaceSearchModalHarness initialQuery="" />,
-  play: async ({ canvasElement }) => {
-    await userEvent.click(within(canvasElement).getByRole('button', { name: '필터 열기' }));
-    const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 및 필터' }));
-    await userEvent.click(dialog.getByRole('button', { name: '서울 지역 선택' }));
-    await userEvent.click(dialog.getByRole('button', { name: '성동구 선택' }));
-    await userEvent.click(dialog.getByRole('button', { name: '경기 지역 선택' }));
-    await userEvent.click(dialog.getByRole('button', { name: '수원시 선택' }));
-    await userEvent.click(dialog.getByRole('button', { name: '부산 지역 선택' }));
-    await expect(dialog.getByText('3/12')).toBeInTheDocument();
-    await userEvent.click(dialog.getByRole('button', { name: '서울 지역 선택' }));
-    await userEvent.click(dialog.getByRole('button', { name: '서울 전체 지역 선택' }));
+    await expect(restored.regions).toEqual([{ regionId: 'seoul', districtIds: ['seongdong'] }]);
     await expect(
-      dialog.queryByRole('button', { name: '부산 - 전체 필터 해제' }),
-    ).not.toBeInTheDocument();
-    await expect(dialog.getByRole('button', { name: '서울 - 전체 필터 해제' })).toBeInTheDocument();
-    await expect(dialog.getByRole('button', { name: '수원시 필터 해제' })).toBeInTheDocument();
-    await userEvent.click(dialog.getByRole('button', { name: '경기 지역 선택' }));
-    await userEvent.click(dialog.getByRole('button', { name: '경기 전체 지역 선택' }));
-    await expect(
-      dialog.queryByRole('button', { name: '서울 - 전체 필터 해제' }),
-    ).not.toBeInTheDocument();
-    await expect(dialog.getByRole('button', { name: '경기 - 전체 필터 해제' })).toBeInTheDocument();
-    await expect(dialog.getByText('1/12')).toBeInTheDocument();
-    await expect(
-      normalizePlaceFilters({ region: ['seoul', 'busan', 'gyeonggi'], district: 'seoul:seongdong' })
-        .regions,
-    ).toEqual([
-      { regionId: 'seoul', districtIds: ['seongdong'] },
-      { regionId: 'gyeonggi', districtIds: [] },
-    ]);
+      filterPlaces(
+        [
+          { ...allPlaces[0], regionId: 'gyeonggi', districtId: 'suwon', category: '카페' },
+          { ...allPlaces[0], id: 'excluded', regionId: 'seoul', districtId: 'seongdong' },
+        ],
+        '',
+        filters,
+      ),
+    ).toHaveLength(1);
   },
 };
