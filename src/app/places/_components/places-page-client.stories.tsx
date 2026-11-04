@@ -1,13 +1,32 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
 import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
+
+import { regionQueryOptions } from '@/shared/api';
 
 import { emptyPlaceFilters } from '../_model/place-filters';
 import { allPlaces } from '../_model/recommended-places';
+import { regionFixtures } from '../_model/regions.fixtures';
 import { PlacesPageClient } from './places-page-client';
 
 const meta = {
   title: 'App/Places/PlacesPageClient',
   component: PlacesPageClient,
+  decorators: [
+    (Story) => {
+      const [client] = useState(() => {
+        const queryClient = new QueryClient();
+        queryClient.setQueryData(regionQueryOptions.queryKey, regionFixtures);
+        return queryClient;
+      });
+      return (
+        <QueryClientProvider client={client}>
+          <Story />
+        </QueryClientProvider>
+      );
+    },
+  ],
   args: {
     allPlaces,
     initialFilters: emptyPlaceFilters,
@@ -58,5 +77,17 @@ export const RevealFiltersOnSearchFocus: Story = {
     await expect(
       await screen.findByRole('dialog', { name: '장소 검색 및 필터' }),
     ).toBeInTheDocument();
+  },
+};
+
+export const RestoreLastValidServerRegion: Story = {
+  args: {
+    initialFilters: { regions: [{ regionId: '99', districtIds: [] }], conceptIds: [] },
+    filterParams: { region: ['11', '99'], district: ['11:200'] },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByRole('button', { name: '성동구 필터 해제' })).toBeVisible();
+    await expect(canvas.getByText('13곳을 찾았어요')).toBeVisible();
   },
 };

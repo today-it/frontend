@@ -37,6 +37,7 @@ export default async function PlacesPage({
       key={routeKey}
       allPlaces={allPlaces}
       initialFilters={filters}
+      filterParams={params}
       initialQuery={query}
     >
       {selectedSection && !isSearchMode ? (

@@ -3,6 +3,7 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { emptyPlaceFilters } from '../_model/place-filters';
 import { allPlaces } from '../_model/recommended-places';
+import { placeRegionFixtures } from '../_model/regions.fixtures';
 import { PlaceSearchResults } from './place-search-results';
 
 const meta = {
@@ -10,6 +11,7 @@ const meta = {
   component: PlaceSearchResults,
   args: {
     allPlaces,
+    regions: placeRegionFixtures,
     filters: emptyPlaceFilters,
     query: '성수',
     onSearch: fn(),
@@ -32,14 +34,14 @@ export const LoadMore: Story = {
 
 export const RemoveDistrictAndReset: Story = {
   args: {
-    filters: { regions: [{ regionId: 'seoul', districtIds: ['seongdong'] }], conceptIds: ['cafe'] },
+    filters: { regions: [{ regionId: '11', districtIds: ['200'] }], conceptIds: ['cafe'] },
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
     await userEvent.click(canvas.getByRole('button', { name: '성동구 필터 해제' }));
     await expect(args.onSearch).toHaveBeenCalledWith('성수', {
-      regions: [{ regionId: 'seoul', districtIds: [] }],
+      regions: [{ regionId: '11', districtIds: [] }],
       conceptIds: ['cafe'],
     });
     await userEvent.click(canvas.getByRole('button', { name: '전체 초기화' }));
@@ -50,7 +52,7 @@ export const RemoveDistrictAndReset: Story = {
 export const EmptyResults: Story = {
   args: {
     query: '존재하지않는장소',
-    filters: { regions: [{ regionId: 'seoul', districtIds: ['seongdong'] }], conceptIds: ['cafe'] },
+    filters: { regions: [{ regionId: '11', districtIds: ['200'] }], conceptIds: ['cafe'] },
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);

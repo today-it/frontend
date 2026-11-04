@@ -14,8 +14,9 @@ import {
   MAX_PLACE_FILTERS,
   placeConcepts,
   type PlaceFilterState,
-  placeRegions,
+  type RegionOption,
   updatePlaceRegionSelection,
+  validatePlaceFilters,
 } from '../_model/place-filters';
 import { PlaceFilterChips } from './place-filter-chips';
 
@@ -24,6 +25,9 @@ type PlaceFilterTab = 'region' | 'category';
 interface PlaceSearchModalProps {
   allPlaces: readonly PlaceSummary[];
   initialFilters: PlaceFilterState;
+  regions: readonly RegionOption[];
+  regionNotice?: ReactNode;
+  regionsReady?: boolean;
   query: string;
   onQueryChange: (query: string) => void;
   onClose: () => void;
@@ -32,6 +36,9 @@ interface PlaceSearchModalProps {
 
 export function PlaceSearchModal({
   allPlaces,
+  regions,
+  regionNotice,
+  regionsReady = true,
   initialFilters,
   query,
   onQueryChange,
@@ -39,13 +46,18 @@ export function PlaceSearchModal({
   onSubmit,
 }: PlaceSearchModalProps) {
   const [activeTab, setActiveTab] = useState<PlaceFilterTab>('region');
-  const [draftFilters, setDraftFilters] = useState(initialFilters);
+  const [draft, setDraftFilters] = useState<PlaceFilterState | null>(null);
+  const draftFilters = validatePlaceFilters(
+    draft ?? initialFilters,
+    regionsReady ? regions : undefined,
+  );
   const selectedCount = getPlaceFilterCount(draftFilters);
   const hasSearchConditions = Boolean(query.trim() || selectedCount);
-  const previewCount = filterPlaces(allPlaces, query, draftFilters).length;
+  const canSubmit = hasSearchConditions && regionsReady;
+  const previewCount = filterPlaces(allPlaces, query, draftFilters, regions).length;
   const regionSelection = draftFilters.regions[0];
   const activeRegionId = regionSelection?.regionId ?? null;
-  const selectedRegion = placeRegions.find((region) => region.id === activeRegionId);
+  const selectedRegion = regions.find((region) => region.id === activeRegionId);
   const districtIds = regionSelection?.districtIds ?? [];
   const districtOptions = selectedRegion?.districts ?? [];
 
@@ -87,7 +99,7 @@ export function PlaceSearchModal({
 
   /** 모달의 검색어와 임시 필터 상태를 부모에 전달해 적용합니다. */
   function submitSearch() {
-    if (hasSearchConditions) onSubmit(query, draftFilters);
+    if (canSubmit) onSubmit(query, draftFilters);
   }
 
   return (
@@ -108,7 +120,7 @@ export function PlaceSearchModal({
           <SearchBar
             autoFocus
             className="shrink-0"
-            searchDisabled={!query.trim()}
+            searchDisabled={!query.trim() || !regionsReady}
             onSearch={submitSearch}
             onValueChange={onQueryChange}
             value={query}
@@ -144,31 +156,23 @@ export function PlaceSearchModal({
             >
               {activeTab === 'region' ? (
                 <div className="flex flex-col gap-20">
-                  <FilterGroup label="시/도" chipsClassName="flex-nowrap gap-8">
-                    {placeRegions.map((region) => {
-                      const isSelected = activeRegionId === region.id;
-
-                      return (
-                        <button
-                          aria-label={`${region.label} 지역 선택`}
-                          aria-pressed={isSelected}
-                          key={region.id}
-                          onClick={() => selectRegion(region.id)}
-                          type="button"
-                          className={cn(
-                            'flex h-36 min-w-0 flex-1 cursor-pointer items-center justify-center gap-4 border-b border-transparent py-10 text-caption-c1 whitespace-nowrap text-text-tertiary outline-none focus-visible:ring-2 focus-visible:ring-border-active',
-                            isSelected && 'border-border-active text-text-primary',
-                          )}
-                        >
-                          {region.label}
-                          {isSelected ? (
-                            <span className="text-caption-c2 text-text-brand">
-                              {districtIds.length || 1}
-                            </span>
-                          ) : null}
-                        </button>
-                      );
-                    })}
+                  {regionNotice}
+                  <FilterGroup
+                    label="시/도"
+                    hint="1개 선택"
+                    chipsClassName="flex-nowrap gap-0 overflow-x-auto"
+                  >
+                    {regions.map((region) => (
+                      <Chip
+                        aria-label={`${region.label} 지역 선택`}
+                        key={region.id}
+                        onPressedChange={() => selectRegion(region.id)}
+                        pressed={activeRegionId === region.id}
+                        variant="radio"
+                      >
+                        {region.label}
+                      </Chip>
+                    ))}
                   </FilterGroup>
 
                   <FilterGroup
@@ -178,6 +182,11 @@ export function PlaceSearchModal({
                   >
                     {selectedRegion ? (
                       <>
+                        {districtOptions.length === 0 ? (
+                          <p className="text-caption-c2 text-text-tertiary">
+                            선택할 시/군/구가 없어요. 시/도 전체로 검색할 수 있어요.
+                          </p>
+                        ) : null}
                         {districtOptions.map((district) => {
                           const isSelected = districtIds.includes(district.id);
 
@@ -258,7 +267,15 @@ export function PlaceSearchModal({
                     tabIndex={selectedCount > 0 ? 0 : undefined}
                   >
                     <div className="flex flex-wrap gap-x-8 gap-y-12">
-                      <PlaceFilterChips filters={draftFilters} onChange={setDraftFilters} />
+                      {regionsReady ? (
+                        <PlaceFilterChips
+                          regions={regions}
+                          filters={draftFilters}
+                          onChange={setDraftFilters}
+                        />
+                      ) : (
+                        <p className="text-caption-c2 text-text-tertiary">지역 정보 확인 중</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -274,8 +291,12 @@ export function PlaceSearchModal({
                     <Icon name="refresh" size={16} />
                     선택 초기화
                   </button>
-                  <Button disabled={!hasSearchConditions} onClick={submitSearch} size="sm">
-                    {hasSearchConditions ? `장소 ${previewCount}곳 보기` : '장소 보기'}
+                  <Button disabled={!canSubmit} onClick={submitSearch} size="sm">
+                    {!regionsReady
+                      ? '지역 정보 확인 중'
+                      : hasSearchConditions
+                        ? `장소 ${previewCount}곳 보기`
+                        : '장소 보기'}
                   </Button>
                 </div>
               </div>

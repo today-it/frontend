@@ -1,3 +1,5 @@
+import type { Region } from '@/shared/api';
+
 import type { PlaceSummary } from './place';
 
 export interface PlaceRegionSelection {
@@ -19,95 +21,63 @@ export interface RegionOption {
 export const MAX_PLACE_FILTERS = 12;
 export const MAX_PLACE_DISTRICTS = 3;
 
-const seoulDistricts = [
-  ['jongno', '종로구'],
-  ['jung', '중구'],
-  ['yongsan', '용산구'],
-  ['seongdong', '성동구'],
-  ['gwangjin', '광진구'],
-  ['dongdaemun', '동대문구'],
-  ['jungnang', '중랑구'],
-  ['seongbuk', '성북구'],
-  ['gangbuk', '강북구'],
-  ['dobong', '도봉구'],
-  ['nowon', '노원구'],
-  ['eunpyeong', '은평구'],
-  ['seodaemun', '서대문구'],
-  ['mapo', '마포구'],
-  ['yangcheon', '양천구'],
-  ['gangseo', '강서구'],
-  ['guro', '구로구'],
-  ['geumcheon', '금천구'],
-  ['yeongdeungpo', '영등포구'],
-  ['dongjak', '동작구'],
-  ['gwanak', '관악구'],
-  ['seocho', '서초구'],
-  ['gangnam', '강남구'],
-  ['songpa', '송파구'],
-  ['gangdong', '강동구'],
-] as const satisfies readonly (readonly [string, string])[];
+/** 서버 이름은 유지하고, 좁은 시/도 탭에만 기존 약칭을 사용합니다. */
+const regionLabels: Record<string, string> = {
+  '11': '서울',
+  '12': '전남광주',
+  '26': '부산',
+  '27': '대구',
+  '28': '인천',
+  '30': '대전',
+  '31': '울산',
+  '36': '세종',
+  '41': '경기',
+  '43': '충북',
+  '44': '충남',
+  '47': '경북',
+  '48': '경남',
+  '50': '제주',
+  '51': '강원',
+  '52': '전북',
+};
 
-const gyeonggiDistricts = [
-  ['gapyeong', '가평군'],
-  ['goyang', '고양시'],
-  ['gwacheon', '과천시'],
-  ['gwangmyeong', '광명시'],
-  ['gwangju', '광주시'],
-  ['guri', '구리시'],
-  ['gunpo', '군포시'],
-  ['gimpo', '김포시'],
-  ['namyangju', '남양주시'],
-  ['dongducheon', '동두천시'],
-  ['bucheon', '부천시'],
-  ['seongnam', '성남시'],
-  ['suwon', '수원시'],
-  ['siheung', '시흥시'],
-  ['ansan', '안산시'],
-  ['anseong', '안성시'],
-  ['anyang', '안양시'],
-  ['yangju', '양주시'],
-  ['yangpyeong', '양평군'],
-  ['yeoju', '여주시'],
-  ['yeoncheon', '연천군'],
-  ['osan', '오산시'],
-  ['yongin', '용인시'],
-  ['uiwang', '의왕시'],
-  ['uijeongbu', '의정부시'],
-  ['icheon', '이천시'],
-  ['paju', '파주시'],
-  ['pyeongtaek', '평택시'],
-  ['pocheon', '포천시'],
-  ['hanam', '하남시'],
-  ['hwaseong', '화성시'],
-] as const satisfies readonly (readonly [string, string])[];
-
-/**
- * ID와 이름 쌍으로 정의된 구/군 항목을 옵션 객체로 변환합니다.
- * @param entries 구/군 ID와 표시 이름의 순서가 보존된 쌍 목록
- * @returns ID와 이름을 가진 구/군 옵션 목록
- */
-function toDistrictOptions(entries: readonly (readonly [string, string])[]) {
-  return entries.map(([id, label]) => ({ id, label }));
-}
-
-export const placeRegions: readonly RegionOption[] = [
-  { id: 'seoul', label: '서울', districts: toDistrictOptions(seoulDistricts) },
-  { id: 'busan', label: '부산', districts: [] },
-  { id: 'daegu', label: '대구', districts: [] },
-  { id: 'incheon', label: '인천', districts: [] },
-  { id: 'daejeon', label: '대전', districts: [] },
-  { id: 'ulsan', label: '울산', districts: [] },
-  { id: 'sejong', label: '세종', districts: [] },
-  { id: 'gyeonggi', label: '경기', districts: toDistrictOptions(gyeonggiDistricts) },
-  { id: 'gangwon', label: '강원', districts: [] },
-  { id: 'chungbuk', label: '충북', districts: [] },
-  { id: 'chungnam', label: '충남', districts: [] },
-  { id: 'gyeongbuk', label: '경북', districts: [] },
-  { id: 'gyeongnam', label: '경남', districts: [] },
-  { id: 'jeonbuk', label: '전북', districts: [] },
-  { id: 'jeonnam-gwangju', label: '전남광주', districts: [] },
-  { id: 'jeju', label: '제주', districts: [] },
+const regionOrder = [
+  '11',
+  '26',
+  '27',
+  '28',
+  '30',
+  '31',
+  '36',
+  '41',
+  '51',
+  '43',
+  '44',
+  '47',
+  '48',
+  '52',
+  '12',
+  '50',
 ];
+
+export function toPlaceRegions(regions: readonly Region[]): RegionOption[] {
+  return regions
+    .map((region) => ({
+      id: region.sidoCode,
+      label: regionLabels[region.sidoCode] ?? region.sidoName,
+      districts: region.sigungus.map((district) => ({
+        id: district.sigunguCode,
+        label: district.sigunguName,
+      })),
+    }))
+    .sort((a, b) => {
+      const aIndex = regionOrder.indexOf(a.id);
+      const bIndex = regionOrder.indexOf(b.id);
+      return (
+        (aIndex < 0 ? regionOrder.length : aIndex) - (bIndex < 0 ? regionOrder.length : bIndex)
+      );
+    });
+}
 
 export const placeConcepts = [
   { id: 'restaurant', label: '음식점', categoryTerms: ['음식점'] },
@@ -179,12 +149,14 @@ export function getPlaceSearchHref(query: string, filters: PlaceFilterState) {
 
 /**
  * URL 검색 파라미터를 유효하고 중복 없는 장소 필터 상태로 정규화합니다.
+ * 지역 목록을 받기 전에는 코드 형식만 검사해 URL 선택을 보존하고, 조회 후 실제 소속을 검증합니다.
  * 알 수 없는 지역/구군/카테고리를 제외하고 전체 필터 수를 최대 개수로 제한합니다.
  * @param params URL 검색 파라미터
  * @returns 검증 및 정규화된 장소 필터 상태
  */
 export function normalizePlaceFilters(
   params: Record<string, string | string[] | undefined>,
+  regionOptions?: readonly RegionOption[],
 ): PlaceFilterState {
   const rawRegions = [params.region ?? []].flat();
   const rawDistricts = [params.district ?? []].flat();
@@ -192,15 +164,19 @@ export function normalizePlaceFilters(
   let regionFilters: PlaceFilterState = emptyPlaceFilters;
 
   for (const regionId of new Set(rawRegions)) {
-    const region = placeRegions.find((option) => option.id === regionId);
-    if (!region) continue;
+    const region = regionOptions?.find((option) => option.id === regionId);
+    if (!/^\d{2}$/.test(regionId) || (regionOptions && !region)) continue;
     const validDistrictIds = [
       ...new Set(
         rawDistricts.map((id) =>
           id.startsWith(`${regionId}:`) ? id.slice(regionId.length + 1) : id,
         ),
       ),
-    ].filter((id) => region.districts.some((district) => district.id === id));
+    ].filter(
+      (id) =>
+        /^\d{3}$/.test(id) &&
+        (!regionOptions || region?.districts.some((district) => district.id === id)),
+    );
     const remainingRegions = MAX_PLACE_DISTRICTS;
     regionFilters = updatePlaceRegionSelection(
       regionFilters,
@@ -218,6 +194,20 @@ export function normalizePlaceFilters(
   };
 }
 
+/** URL에서 복원한 선택과 모달의 임시 선택을 같은 지역 목록으로 검증합니다. */
+export function validatePlaceFilters(filters: PlaceFilterState, regions?: readonly RegionOption[]) {
+  return normalizePlaceFilters(
+    {
+      region: filters.regions.map((region) => region.regionId),
+      district: filters.regions.flatMap((region) =>
+        region.districtIds.map((id) => `${region.regionId}:${id}`),
+      ),
+      concept: filters.conceptIds,
+    },
+    regions,
+  );
+}
+
 /**
  * 검색어와 선택 필터에 모두 맞는 장소만 입력 순서대로 반환합니다.
  * 검색어, 지역, 카테고리 조건은 AND로 결합하고, 여러 지역과 여러 카테고리는 각각 OR로 비교합니다.
@@ -230,6 +220,7 @@ export function filterPlaces(
   places: readonly PlaceSummary[],
   query: string,
   filters: PlaceFilterState,
+  regionOptions: readonly RegionOption[] = [],
 ) {
   const queryTerms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   const selectedConcepts = placeConcepts.filter((concept) =>
@@ -239,8 +230,8 @@ export function filterPlaces(
   return places.filter((place) => {
     const searchableText = [place.name, place.category, place.neighborhood]
       .concat([
-        getRegionLabel(place.regionId ?? null),
-        getDistrictLabel(place.regionId ?? null, place.districtId ?? ''),
+        getRegionLabel(place.regionId ?? null, regionOptions),
+        getDistrictLabel(place.regionId ?? null, place.districtId ?? '', regionOptions),
       ])
       .filter(Boolean)
       .join(' ')
@@ -268,8 +259,8 @@ export function filterPlaces(
  * @param id 조회할 지역 ID. `null`이면 빈 문자열을 반환합니다.
  * @returns 지역 표시 이름 또는 빈 문자열
  */
-export function getRegionLabel(id: string | null) {
-  return placeRegions.find((region) => region.id === id)?.label ?? '';
+export function getRegionLabel(id: string | null, regionOptions: readonly RegionOption[]) {
+  return regionOptions.find((region) => region.id === id)?.label ?? '';
 }
 
 /**
@@ -278,9 +269,13 @@ export function getRegionLabel(id: string | null) {
  * @param districtId 조회할 구/군 ID
  * @returns 구/군 표시 이름 또는 빈 문자열
  */
-export function getDistrictLabel(regionId: string | null, districtId: string) {
+export function getDistrictLabel(
+  regionId: string | null,
+  districtId: string,
+  regionOptions: readonly RegionOption[],
+) {
   return (
-    placeRegions
+    regionOptions
       .find((region) => region.id === regionId)
       ?.districts.find((district) => district.id === districtId)?.label ?? ''
   );

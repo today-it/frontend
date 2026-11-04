@@ -5,21 +5,23 @@ import {
   getRegionLabel,
   placeConcepts,
   type PlaceFilterState,
+  type RegionOption,
 } from '../_model/place-filters';
 
 interface PlaceFilterChipsProps {
   filters: PlaceFilterState;
+  regions: readonly RegionOption[];
   onChange: (filters: PlaceFilterState) => void;
 }
 
-export function PlaceFilterChips({ filters, onChange }: PlaceFilterChipsProps) {
+export function PlaceFilterChips({ filters, onChange, regions }: PlaceFilterChipsProps) {
   return (
     <>
       {filters.regions.flatMap((region) =>
         region.districtIds.length === 0 ? (
           <RemovableFilterChip
             key={region.regionId}
-            label={getRegionLabel(region.regionId)}
+            label={getRegionLabel(region.regionId, regions)}
             onRemove={() =>
               onChange({
                 ...filters,
@@ -31,7 +33,7 @@ export function PlaceFilterChips({ filters, onChange }: PlaceFilterChipsProps) {
           region.districtIds.map((districtId) => (
             <RemovableFilterChip
               key={`${region.regionId}:${districtId}`}
-              label={getDistrictLabel(region.regionId, districtId)}
+              label={getDistrictLabel(region.regionId, districtId, regions)}
               onRemove={() =>
                 onChange({
                   ...filters,

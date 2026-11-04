@@ -11,6 +11,7 @@ import {
   filterPlaces,
   getPlaceFilterCount,
   type PlaceFilterState,
+  type RegionOption,
 } from '../_model/place-filters';
 import { PlaceCard } from './place-card';
 import { PlaceFilterChips } from './place-filter-chips';
@@ -20,12 +21,14 @@ const PAGE_SIZE = 8;
 interface PlaceSearchResultsProps {
   allPlaces: readonly PlaceSummary[];
   filters: PlaceFilterState;
+  regions: readonly RegionOption[];
   query: string;
   onSearch: (query: string, filters: PlaceFilterState) => void;
 }
 
 export function PlaceSearchResults({
   allPlaces,
+  regions,
   filters,
   query,
   onSearch,
@@ -33,7 +36,7 @@ export function PlaceSearchResults({
   const titleId = useId();
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const openLogin = useLoginModalStore((state) => state.openLogin);
-  const places = filterPlaces(allPlaces, query, filters);
+  const places = filterPlaces(allPlaces, query, filters, regions);
   const visiblePlaces = places.slice(0, visibleCount);
   const hasQuery = Boolean(query);
   const hasFilters = getPlaceFilterCount(filters) > 0;
@@ -73,7 +76,11 @@ export function PlaceSearchResults({
 
             {hasFilters ? (
               <div aria-label="선택한 필터" className="flex flex-wrap gap-8">
-                <PlaceFilterChips filters={filters} onChange={(next) => onSearch(query, next)} />
+                <PlaceFilterChips
+                  regions={regions}
+                  filters={filters}
+                  onChange={(next) => onSearch(query, next)}
+                />
               </div>
             ) : null}
           </div>

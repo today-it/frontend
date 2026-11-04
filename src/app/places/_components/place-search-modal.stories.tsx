@@ -13,6 +13,7 @@ import {
   type PlaceFilterState,
 } from '../_model/place-filters';
 import { allPlaces } from '../_model/recommended-places';
+import { placeRegionFixtures } from '../_model/regions.fixtures';
 import { PlaceSearchModal } from './place-search-modal';
 
 function PlaceSearchModalHarness({ initialQuery = '성수 카페' }: { initialQuery?: string }) {
@@ -30,6 +31,7 @@ function PlaceSearchModalHarness({ initialQuery = '성수 카페' }: { initialQu
       </p>
       {open ? (
         <PlaceSearchModal
+          regions={placeRegionFixtures}
           allPlaces={allPlaces}
           initialFilters={appliedFilters}
           onClose={() => setOpen(false)}
@@ -172,7 +174,13 @@ export const SingleProvinceSelection: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole('button', { name: '필터 열기' }));
     const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 및 필터' }));
-    await userEvent.click(dialog.getByRole('button', { name: '경기 지역 선택' }));
+    const province = dialog.getByRole('button', { name: '경기 지역 선택' });
+    await userEvent.click(province);
+    await expect(dialog.getByText('1개 선택')).toBeVisible();
+    await expect(province).toHaveAttribute('data-variant', 'radio');
+    await expect(province).toHaveTextContent(/^경기$/);
+    await expect(province.getBoundingClientRect().width).toBe(52);
+    await expect(province.getBoundingClientRect().height).toBe(36);
     await expect(dialog.getByRole('button', { name: '경기 필터 해제' })).toBeInTheDocument();
     await expect(
       dialog.queryByRole('button', { name: '경기 전체 지역 선택' }),
@@ -196,7 +204,7 @@ export const SingleProvinceSelection: Story = {
     await userEvent.click(dialog.getByRole('button', { name: '서울 필터 해제' }));
     await expect(dialog.getByText('시/도를 먼저 선택해주세요')).toBeInTheDocument();
     const filters: PlaceFilterState = {
-      regions: [{ regionId: 'gyeonggi', districtIds: ['suwon', 'goyang'] }],
+      regions: [{ regionId: '41', districtIds: ['110', '280'] }],
       conceptIds: ['cafe'],
     };
     const params = new URL(getPlaceSearchHref('', filters), 'http://localhost').searchParams;
@@ -208,19 +216,33 @@ export const SingleProvinceSelection: Story = {
       }),
     ).toEqual(filters);
     const restored = normalizePlaceFilters({
-      region: ['gyeonggi', 'seoul'],
-      district: ['gyeonggi:suwon', 'seoul:seongdong'],
+      region: ['41', '11'],
+      district: ['41:110', '11:200'],
     });
-    await expect(restored.regions).toEqual([{ regionId: 'seoul', districtIds: ['seongdong'] }]);
+    await expect(restored.regions).toEqual([{ regionId: '11', districtIds: ['200'] }]);
     await expect(
       filterPlaces(
         [
-          { ...allPlaces[0], regionId: 'gyeonggi', districtId: 'suwon', category: '카페' },
-          { ...allPlaces[0], id: 'excluded', regionId: 'seoul', districtId: 'seongdong' },
+          { ...allPlaces[0], regionId: '41', districtId: '110', category: '카페' },
+          { ...allPlaces[0], id: 'excluded', regionId: '11', districtId: '200' },
         ],
         '',
         filters,
       ),
     ).toHaveLength(1);
+  },
+};
+
+export const ProvinceWithoutDistricts: Story = {
+  render: () => <PlaceSearchModalHarness initialQuery="" />,
+  play: async ({ canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole('button', { name: '필터 열기' }));
+    const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 및 필터' }));
+    await userEvent.click(dialog.getByRole('button', { name: '세종 지역 선택' }));
+    await expect(
+      dialog.getByText('선택할 시/군/구가 없어요. 시/도 전체로 검색할 수 있어요.'),
+    ).toBeVisible();
+    await expect(dialog.getByRole('button', { name: '세종 필터 해제' })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: '장소 0곳 보기' })).toBeEnabled();
   },
 };
