@@ -39,7 +39,7 @@ export function SocialLoginButton({
     <ButtonPrimitive
       aria-label={label ?? providerLabels[provider]}
       className={cn(
-        'inline-flex size-social-button shrink-0 cursor-pointer items-center justify-center rounded-full border-(length:--td-border-width-sm) p-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-default',
+        'inline-flex size-social-button shrink-0 cursor-pointer items-center justify-center rounded-full border-sm p-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-default',
         isKakao ? 'border-brand-kakao bg-brand-kakao' : 'border-border-default bg-surface-default',
         className,
       )}

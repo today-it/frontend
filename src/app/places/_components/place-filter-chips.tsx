@@ -73,7 +73,7 @@ function RemovableFilterChip({ label, onRemove }: { label: string; onRemove: () 
   return (
     <button
       aria-label={`${label} 필터 해제`}
-      className="inline-flex h-chip shrink-0 cursor-pointer items-center justify-center gap-6 rounded-full border-(length:--td-border-width-sm) border-border-active bg-surface-inverse px-20 py-10 text-caption-c1 text-text-inverse outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
+      className="inline-flex h-chip shrink-0 cursor-pointer items-center justify-center gap-6 rounded-full border-sm border-border-active bg-surface-inverse px-20 py-10 text-caption-c1 text-text-inverse outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
       onClick={onRemove}
       type="button"
     >

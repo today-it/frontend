@@ -52,7 +52,7 @@ export function PasswordInput({
   return (
     <div
       className={cn(
-        'flex h-input w-form-width max-w-full items-center gap-8 rounded-full border-(length:--td-border-width-sm) bg-surface-default px-24 transition-colors',
+        'flex h-input w-form-width max-w-full items-center gap-8 rounded-full border-sm bg-surface-default px-24 transition-colors',
         isInvalid
           ? 'border-border-error focus-within:border-border-error'
           : 'border-border-default focus-within:border-border-focus',
