@@ -10,7 +10,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: '선택 가능한 공용 Chip 컴포넌트입니다.',
+        component:
+          '기본 Chip은 시/군/구·컨셉의 복수 선택에 사용합니다. variant=radio는 시/도 단일 선택용 52×36px 칩이며, 단일 선택 상태는 부모에서 제어합니다.',
       },
     },
   },
@@ -52,6 +53,21 @@ export const AllStates: Story = {
       </Chip>
       <Chip defaultPressed>선택됨</Chip>
       <Chip disabled>비활성화됨</Chip>
+    </div>
+  ),
+};
+
+export const RadioStates: Story = {
+  render: () => (
+    <div className="flex">
+      <Chip variant="radio">서울</Chip>
+      <Chip variant="radio" defaultPressed>
+        부산
+      </Chip>
+      <Chip variant="radio" disabled>
+        경기
+      </Chip>
+      <Chip variant="radio">전남광주</Chip>
     </div>
   ),
 };

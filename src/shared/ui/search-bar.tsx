@@ -19,6 +19,8 @@ export interface SearchBarProps {
   placeholder?: string;
   /** 검색 버튼 표시 여부 */
   showButton?: boolean;
+  /** 검색 버튼과 Enter 제출을 비활성화합니다. */
+  searchDisabled?: boolean;
   /** 입력에 자동 포커스할지 여부 */
   autoFocus?: boolean;
   /** Search Bar에 추가할 클래스 이름 */
@@ -41,11 +43,12 @@ export function SearchBar({
   onValueChange,
   placeholder = '검색어를 입력해주세요',
   showButton = true,
+  searchDisabled = false,
   value,
 }: SearchBarProps) {
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSearch?.();
+    if (!searchDisabled) onSearch?.();
   }
 
   return (
@@ -75,7 +78,8 @@ export function SearchBar({
       {showButton ? (
         <button
           aria-label="검색 실행"
-          className="flex size-48 shrink-0 cursor-pointer items-center justify-center rounded-full bg-surface-inverse text-icon-inverse transition-colors hover:bg-state-inverse-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus"
+          disabled={searchDisabled}
+          className="flex size-48 shrink-0 cursor-pointer items-center justify-center rounded-full bg-surface-inverse text-icon-inverse transition-colors hover:bg-state-inverse-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-focus disabled:cursor-default"
           type="submit"
         >
           <Icon name="search" size={24} tone="inherit" />

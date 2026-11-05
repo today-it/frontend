@@ -71,3 +71,10 @@ export const WithoutSearchButton: Story = {
     showButton: false,
   },
 };
+
+export const SearchDisabled: Story = {
+  args: { searchDisabled: true },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByRole('button', { name: '검색 실행' })).toBeDisabled();
+  },
+};

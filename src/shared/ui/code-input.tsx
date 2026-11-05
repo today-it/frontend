@@ -84,7 +84,7 @@ export function CodeInput({
   return (
     <div
       className={cn(
-        'relative flex h-input w-form-width max-w-full items-center rounded-full border-(length:--td-border-width-sm) bg-surface-default px-24 transition-colors',
+        'relative flex h-input w-form-width max-w-full items-center rounded-full border-sm bg-surface-default px-24 transition-colors',
         isInvalid
           ? 'border-border-error focus-within:border-border-error'
           : isSuccess

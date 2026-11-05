@@ -45,10 +45,7 @@ export function Modal({
   return (
     <DialogPrimitive.Root disablePointerDismissal={disablePointerDismissal} {...props}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Backdrop
-          className="fixed inset-0 z-50 bg-overlay-scrim transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none"
-          data-slot="modal-backdrop"
-        />
+        <ModalBackdrop />
         <DialogPrimitive.Popup
           className={cn(
             'fixed top-1/2 left-1/2 z-50 flex w-modal-width max-w-[calc(100%-32px)] -translate-x-1/2 -translate-y-1/2 flex-col gap-24 rounded-xl bg-surface-default px-20 py-40 shadow-modal transition-opacity duration-150 outline-none data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none',
@@ -70,6 +67,25 @@ export function Modal({
         </DialogPrimitive.Popup>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
+  );
+}
+
+export interface ModalBackdropProps extends Omit<DialogPrimitive.Backdrop.Props, 'className'> {
+  /** 스크림에 추가할 클래스 이름 */
+  className?: string;
+}
+
+/** 기본 Modal과 직접 조립한 Dialog에서 함께 사용하는 스크림입니다. */
+export function ModalBackdrop({ className, ...props }: ModalBackdropProps) {
+  return (
+    <DialogPrimitive.Backdrop
+      className={cn(
+        'fixed inset-0 z-50 bg-overlay-scrim transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none',
+        className,
+      )}
+      data-slot="modal-backdrop"
+      {...props}
+    />
   );
 }
 

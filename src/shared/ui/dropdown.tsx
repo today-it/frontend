@@ -60,7 +60,7 @@ export function Dropdown({
       <Select.Trigger
         aria-label={label}
         className={cn(
-          'group flex h-dropdown w-dropdown-width max-w-full cursor-pointer items-center justify-between gap-8 rounded-xl border-(length:--td-border-width-sm) border-border-default bg-surface-default px-20 py-16 text-body-b2 text-text-primary outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-popup-open:border-border-focus data-disabled:cursor-default data-disabled:bg-state-disabled data-disabled:text-text-muted',
+          'group flex h-dropdown w-dropdown-width max-w-full cursor-pointer items-center justify-between gap-8 rounded-xl border-sm border-border-default bg-surface-default px-20 py-16 text-body-b2 text-text-primary outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-popup-open:border-border-focus data-disabled:cursor-default data-disabled:bg-state-disabled data-disabled:text-text-muted',
           className,
         )}
         data-slot="dropdown-trigger"
@@ -87,7 +87,7 @@ export function Dropdown({
           sideOffset={4}
         >
           <Select.Popup
-            className="w-[var(--anchor-width)] overflow-hidden rounded-xl border-(length:--td-border-width-sm) border-border-default bg-surface-default py-8 text-caption-c1 text-text-primary shadow-dropdown outline-none"
+            className="w-[var(--anchor-width)] overflow-hidden rounded-xl border-sm border-border-default bg-surface-default py-8 text-caption-c1 text-text-primary shadow-dropdown outline-none"
             data-slot="dropdown-popup"
           >
             <Select.List className="max-h-[var(--available-height)] overflow-y-auto outline-none">

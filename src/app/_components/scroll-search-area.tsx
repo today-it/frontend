@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { cn } from '@/shared/lib';
 import { Divider, SearchBar } from '@/shared/ui';
 
 /** 아래로 스크롤하면 숨고, 위로 스크롤하면 고정 상단 바 아래에 나타납니다. */
-export function ScrollSearchArea() {
+export function ScrollSearchArea({ children }: { children?: ReactNode }) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -36,12 +36,12 @@ export function ScrollSearchArea() {
           aria-hidden={!isVisible}
           inert={!isVisible}
           className={cn(
-            'mx-auto flex w-full max-w-header-width flex-col bg-surface-default transition-transform duration-300 ease-out motion-reduce:transition-none',
+            'flex w-full flex-col bg-surface-default transition-transform duration-300 ease-out motion-reduce:transition-none',
             isVisible ? 'pointer-events-auto translate-y-0' : '-translate-y-full',
           )}
         >
-          <div className="flex w-full justify-center pt-18 pb-36">
-            <SearchBar className="w-full" placeholder="검색어를 입력해주세요" />
+          <div className="mx-auto flex w-full max-w-header-width justify-center pt-18 pb-36">
+            {children ?? <SearchBar className="w-full" placeholder="검색어를 입력해주세요" />}
           </div>
           <Divider />
         </div>

@@ -61,6 +61,8 @@ const semanticSpacingTokens = [
   'info-row-label-width',
 ];
 
+const semanticBorderWidthTokens = ['sm', 'md', 'lg'];
+
 const twMerge = extendTailwindMerge({
   extend: {
     theme: {
@@ -78,6 +80,8 @@ const twMerge = extendTailwindMerge({
       ],
     },
     classGroups: {
+      // Keep these semantic values in sync with --border-width-* in globals.css.
+      'border-w': [{ border: semanticBorderWidthTokens }],
       shadow: [{ shadow: ['dropdown', 'toast', 'modal'] }],
     },
   },
