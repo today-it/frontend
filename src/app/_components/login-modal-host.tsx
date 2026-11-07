@@ -9,9 +9,10 @@ const LoginModals = dynamic(() => import('./login-modals').then((module) => modu
 
 export function LoginModalHost() {
   const isOpen = useLoginModalStore((state) => state.isOpen);
+  const socialSignup = useLoginModalStore((state) => state.socialSignup);
   const closeLogin = useLoginModalStore((state) => state.closeLogin);
 
   useEffect(() => () => closeLogin(), [closeLogin]);
 
-  return isOpen ? <LoginModals onCloseComplete={closeLogin} /> : null;
+  return isOpen ? <LoginModals onCloseComplete={closeLogin} socialSignup={socialSignup} /> : null;
 }
