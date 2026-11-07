@@ -58,6 +58,12 @@ export const signupProfileSchema = z.object({
 
 export type SignupProfileValues = z.infer<typeof signupProfileSchema>;
 
+// 소셜 가입은 비밀번호를 입력받지 않습니다. password는 폼 타입을 맞추려고 두고 검증하지 않습니다.
+export const signupSocialProfileSchema = z.object({
+  nickname: nicknameSchema,
+  password: z.string(),
+});
+
 /** 닉네임이 클라이언트 규칙에 맞는지 확인합니다. */
 export function isValidNickname(value: string) {
   return nicknameSchema.safeParse(value).success;

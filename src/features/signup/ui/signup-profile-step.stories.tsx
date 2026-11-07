@@ -188,6 +188,19 @@ export const RequestError: Story = {
   },
 };
 
+export const SocialSignup: Story = {
+  args: { defaultNickname: '또르끄막두', nicknameStatus: 'available', hasPassword: false },
+};
+
+export const SocialSignupError: Story = {
+  args: {
+    defaultNickname: '또르끄막두',
+    nicknameStatus: 'available',
+    hasPassword: false,
+    submitErrorMessage: '인증 시간이 지났어요. 처음부터 다시 시도해주세요.',
+  },
+};
+
 // 1x1 투명 PNG입니다. 실제로 불러올 수 있는 이미지여야 Avatar가 미리보기를 표시합니다.
 const pixelPng = Uint8Array.from(
   atob(

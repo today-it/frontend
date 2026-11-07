@@ -14,17 +14,46 @@ export const signupRequestErrorMessage = '요청을 처리하지 못했어요. �
  * 가입 요청을 서버가 거절한 이유입니다.
  * `verificationExpired`는 이메일 인증이 만료된 경우, `emailRegistered`는 그 사이 이메일이 가입된 경우,
  * `nicknameDuplicated`는 닉네임이 이미 사용 중인 경우입니다.
+ * `socialTokenExpired`는 소셜 가입 토큰이 만료된 경우, `socialRegistered`는 이미 가입된 소셜 계정인 경우입니다.
  */
-export type SignupSubmitError = 'verificationExpired' | 'emailRegistered' | 'nicknameDuplicated';
+export type SignupSubmitError =
+  | 'verificationExpired'
+  | 'emailRegistered'
+  | 'nicknameDuplicated'
+  | 'socialTokenExpired'
+  | 'socialRegistered';
+
+/** 소셜 가입에서 서버에 보내는 제공자 값 */
+export type SignupSocialProvider = 'GOOGLE' | 'KAKAO';
+
+/** 소셜 가입이 실패했을 때 표시하는 문구 */
+export const signupSocialErrorMessages = {
+  socialTokenExpired: '인증 시간이 지났어요. 처음부터 다시 시도해주세요.',
+  socialRegistered: '이미 가입된 계정이에요. 로그인해주세요.',
+} as const;
 
 /** 이메일로 가입할 때 서버에 보내는 값 */
-export interface SignupRequest extends SignupProfileValues {
+export interface SignupLocalRequest extends SignupProfileValues {
+  kind: 'local';
   email: string;
   /** 인증코드 확인으로 받은 인증 완료 토큰 */
   verificationToken: string;
   /** 동의한 약관 */
   agreedIds: readonly SignupTermId[];
 }
+
+/** 소셜 계정으로 가입할 때 서버에 보내는 값 */
+export interface SignupSocialRequest {
+  kind: 'social';
+  provider: SignupSocialProvider;
+  /** 소셜 로그인 응답으로 받은 가입용 임시 토큰 */
+  signupToken: string;
+  nickname: string;
+  /** 동의한 약관 */
+  agreedIds: readonly SignupTermId[];
+}
+
+export type SignupRequest = SignupLocalRequest | SignupSocialRequest;
 
 /**
  * 회원가입 모달이 호출하는 서버 요청입니다.

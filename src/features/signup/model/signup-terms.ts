@@ -34,6 +34,11 @@ export const signupTerms = [
 type SignupTerm = (typeof signupTerms)[number];
 export type SignupTermId = SignupTerm['id'];
 
+/** 문자열 목록에서 실제 약관 id만 남깁니다. */
+export function parseAgreedIds(values: readonly string[]): SignupTermId[] {
+  return signupTerms.filter(({ id }) => values.includes(id)).map(({ id }) => id);
+}
+
 /** 모든 약관에 동의했는지 확인합니다. */
 export function isAllTermsAgreed(agreedIds: readonly SignupTermId[]) {
   return signupTerms.every(({ id }) => agreedIds.includes(id));

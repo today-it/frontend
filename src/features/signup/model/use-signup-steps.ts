@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { type SignupApi } from './signup-api';
+import { type SignupApi, signupSocialErrorMessages, type SignupSocialProvider } from './signup-api';
 import {
   SIGNUP_CODE_EXPIRES_SECONDS,
   type SignupCodeError,
@@ -21,20 +21,34 @@ const SEND_LIMIT_BLOCK_MS = 30 * 60 * 1000;
 
 type SignupStep = 'terms' | 'email' | 'profile' | 'complete' | 'preference';
 
+type SignupSocialError = keyof typeof signupSocialErrorMessages;
+
+/** 소셜 인증을 마치고 가입만 남았을 때 전달하는 값 */
+export interface SignupSocialSession {
+  provider: SignupSocialProvider;
+  signupToken: string;
+  /** 소셜 버튼을 누르기 전에 동의한 약관. 비어 있으면 약관 동의부터 진행합니다. */
+  agreedIds: readonly SignupTermId[];
+}
+
 interface UseSignupStepsOptions {
   api: SignupApi;
   /** 가입 완료 안내에서 나중에 설정하거나, 선호 지역·컨셉을 저장하거나 건너뛰어 가입이 끝났을 때 호출됩니다. */
   onComplete: () => void;
+  /** 소셜 가입으로 진행할 때의 인증 정보. 없으면 이메일 가입으로 진행합니다. */
+  social?: SignupSocialSession;
 }
 
 /**
  * 회원가입 모달의 단계 이동과 서버 요청 상태를 관리합니다. 요청은 한 번에 하나만 보내고,
  * `reset`을 호출하면 처음 단계로 돌아가며 진행 중이던 요청의 응답은 무시합니다.
  */
-export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
-  const [step, setStep] = useState<SignupStep>('terms');
+export function useSignupSteps({ api, onComplete, social }: UseSignupStepsOptions) {
+  // 소셜 가입은 약관에 이미 동의했으면 프로필 단계부터 시작합니다.
+  const initialStep: SignupStep = social && social.agreedIds.length > 0 ? 'profile' : 'terms';
+  const [step, setStep] = useState<SignupStep>(initialStep);
   const [phase, setPhase] = useState<SignupEmailPhase>('email');
-  const [agreedIds, setAgreedIds] = useState<SignupTermId[]>([]);
+  const [agreedIds, setAgreedIds] = useState<SignupTermId[]>([...(social?.agreedIds ?? [])]);
   const [email, setEmail] = useState('');
   const [verificationToken, setVerificationToken] = useState('');
   const [isResendBlocked, setIsResendBlocked] = useState(false);
@@ -42,6 +56,7 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
   const [codeError, setCodeError] = useState<SignupCodeError>();
   const [nicknameStatus, setNicknameStatus] = useState<SignupNicknameStatus>();
   const [passwordError, setPasswordError] = useState<SignupPasswordServerError>();
+  const [socialError, setSocialError] = useState<SignupSocialError>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestFailed, setRequestFailed] = useState(false);
   const {
@@ -103,9 +118,9 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
     isSubmittingRef.current = false;
     setIsSubmitting(false);
     setRequestFailed(false);
-    setStep('terms');
+    setStep(initialStep);
     setPhase('email');
-    setAgreedIds([]);
+    setAgreedIds([...(social?.agreedIds ?? [])]);
     setEmail('');
     setVerificationToken('');
     setIsResendBlocked(false);
@@ -113,12 +128,14 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
     setCodeError(undefined);
     setNicknameStatus(undefined);
     setPasswordError(undefined);
+    setSocialError(undefined);
     resetCountdown();
-  }, [resetCountdown]);
+  }, [initialStep, resetCountdown, social]);
 
   function agreeTerms(nextAgreedIds: SignupTermId[]) {
     setAgreedIds(nextAgreedIds);
-    setStep('email');
+    // 소셜 가입은 이메일 인증을 거치지 않습니다.
+    setStep(social ? 'profile' : 'email');
   }
 
   function requestCode(nextEmail: string) {
@@ -233,8 +250,18 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
   }
 
   function submitProfile(profile: SignupProfileValues) {
+    setSocialError(undefined);
     void submit(
-      () => api.signup({ ...profile, email, verificationToken, agreedIds }),
+      () =>
+        social
+          ? api.signup({
+              kind: 'social',
+              provider: social.provider,
+              signupToken: social.signupToken,
+              nickname: profile.nickname,
+              agreedIds,
+            })
+          : api.signup({ kind: 'local', ...profile, email, verificationToken, agreedIds }),
       (result) => {
         if (result === 'created') {
           setStep('complete');
@@ -243,6 +270,11 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
 
         if (result === 'nicknameDuplicated') {
           setNicknameStatus('duplicated');
+          return;
+        }
+
+        if (result === 'socialTokenExpired' || result === 'socialRegistered') {
+          setSocialError(result);
           return;
         }
 
@@ -294,6 +326,7 @@ export function useSignupSteps({ api, onComplete }: UseSignupStepsOptions) {
     timerSeconds: secondsLeft,
     nicknameStatus,
     passwordError,
+    socialErrorMessage: socialError ? signupSocialErrorMessages[socialError] : undefined,
     isSubmitting,
     requestFailed,
     isResendBlocked,

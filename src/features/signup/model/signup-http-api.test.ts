@@ -211,6 +211,7 @@ describe('createHttpSignupApi.checkNickname', () => {
 
 describe('createHttpSignupApi.signup', () => {
   const request = {
+    kind: 'local',
     email: 'a@b.com',
     nickname: '유저',
     password: 'Password123!',
@@ -243,11 +244,42 @@ describe('createHttpSignupApi.signup', () => {
   });
 
   it('명세에 없는 서버 오류는 던진다', async () => {
-    mockFetch(fail(409, 'GOOGLE_ACCOUNT_ALREADY_EXISTS'));
+    mockFetch(fail(500, 'INTERNAL_SERVER_ERROR'));
 
     await expect(createHttpSignupApi().signup(request)).rejects.toMatchObject({
-      status: 409,
-      code: 'GOOGLE_ACCOUNT_ALREADY_EXISTS',
+      status: 500,
+      code: 'INTERNAL_SERVER_ERROR',
     });
+  });
+
+  const socialRequest = {
+    kind: 'social',
+    provider: 'GOOGLE',
+    signupToken: 'signup-token-1',
+    nickname: '유저',
+    agreedIds: ['service', 'privacy'],
+  } as const;
+
+  it('소셜 가입 본문은 가입 토큰을 보내고 이메일·비밀번호를 보내지 않는다', async () => {
+    const fetchMock = mockFetch(ok({ memberId: 'id' }, 201));
+
+    await expect(createHttpSignupApi().signup(socialRequest)).resolves.toBe('created');
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({
+      provider: 'GOOGLE',
+      signupToken: 'signup-token-1',
+      nickname: '유저',
+      agreements: { TOS: true, ACCOUNT_PRIVACY: true, PREFERENCE: false, PROFILE_IMAGE: false },
+    });
+  });
+
+  it.each([
+    [400, 'GOOGLE_SIGNUP_TOKEN_INVALID', 'socialTokenExpired'],
+    [400, 'KAKAO_SIGNUP_TOKEN_INVALID', 'socialTokenExpired'],
+    [409, 'GOOGLE_ACCOUNT_ALREADY_EXISTS', 'socialRegistered'],
+    [409, 'KAKAO_ACCOUNT_ALREADY_EXISTS', 'socialRegistered'],
+  ])('소셜 가입의 %i %s는 %s를 반환한다', async (status, code, expected) => {
+    mockFetch(fail(status, code));
+
+    await expect(createHttpSignupApi().signup(socialRequest)).resolves.toBe(expected);
   });
 });

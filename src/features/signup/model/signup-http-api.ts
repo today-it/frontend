@@ -120,20 +120,41 @@ export function createHttpSignupApi(): SignupApi {
       }
     },
 
-    async signup({ agreedIds, email, nickname, password, verificationToken }) {
+    async signup(request) {
+      const body =
+        request.kind === 'social'
+          ? {
+              provider: request.provider,
+              signupToken: request.signupToken,
+              nickname: request.nickname,
+              agreements: toAgreements(request.agreedIds),
+            }
+          : {
+              provider: 'LOCAL',
+              email: request.email,
+              emailVerificationToken: request.verificationToken,
+              password: request.password,
+              nickname: request.nickname,
+              agreements: toAgreements(request.agreedIds),
+            };
+
       try {
-        await apiRequest('/api/v1/auth/signup', {
-          method: 'POST',
-          body: {
-            provider: 'LOCAL',
-            email,
-            emailVerificationToken: verificationToken,
-            password,
-            nickname,
-            agreements: toAgreements(agreedIds),
-          },
-        });
+        await apiRequest('/api/v1/auth/signup', { method: 'POST', body });
       } catch (error) {
+        if (
+          isApiError(error, 400, 'GOOGLE_SIGNUP_TOKEN_INVALID') ||
+          isApiError(error, 400, 'KAKAO_SIGNUP_TOKEN_INVALID')
+        ) {
+          return 'socialTokenExpired';
+        }
+
+        if (
+          isApiError(error, 409, 'GOOGLE_ACCOUNT_ALREADY_EXISTS') ||
+          isApiError(error, 409, 'KAKAO_ACCOUNT_ALREADY_EXISTS')
+        ) {
+          return 'socialRegistered';
+        }
+
         if (isApiError(error, 400, 'EMAIL_VERIFICATION_TOKEN_INVALID')) {
           return 'verificationExpired';
         }

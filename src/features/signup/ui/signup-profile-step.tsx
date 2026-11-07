@@ -15,6 +15,7 @@ import {
   type SignupPasswordServerError,
   signupProfileSchema,
   type SignupProfileValues,
+  signupSocialProfileSchema,
 } from '../model/signup-profile';
 import { useNicknameCheckRequest } from '../model/use-nickname-check-request';
 import { SignupFieldMessage, SignupFieldMessageSlot } from './signup-field-message';
@@ -42,6 +43,10 @@ export interface SignupProfileStepProps {
   isSubmitting?: boolean;
   /** 서버 요청이 실패했는지 나타냅니다. 닉네임을 다시 입력하거나 회원가입을 다시 눌러 재시도합니다. */
   requestError?: boolean;
+  /** 비밀번호를 입력받을지 여부. 소셜 가입은 비밀번호가 없으므로 끕니다. */
+  hasPassword?: boolean;
+  /** 요청 실패 문구 대신 표시할 가입 오류 문구 */
+  submitErrorMessage?: string;
   /** 닉네임이 사용 가능하고 입력이 검증을 통과했을 때 회원가입을 누르면 호출되는 함수 */
   onSubmit: (profile: SignupProfileValues) => void;
 }
@@ -53,6 +58,7 @@ export interface SignupProfileStepProps {
 export function SignupProfileStep({
   defaultNickname = '',
   defaultPassword = '',
+  hasPassword = true,
   isAvatarDisabled = false,
   isSubmitting = false,
   nicknameStatus,
@@ -63,6 +69,7 @@ export function SignupProfileStep({
   onSubmit,
   passwordError,
   requestError = false,
+  submitErrorMessage,
 }: SignupProfileStepProps) {
   const nicknameMessageId = useId();
   const passwordMessageId = useId();
@@ -73,7 +80,7 @@ export function SignupProfileStep({
     handleSubmit,
     trigger,
   } = useForm<SignupProfileValues>({
-    resolver: zodResolver(signupProfileSchema),
+    resolver: zodResolver(hasPassword ? signupProfileSchema : signupSocialProfileSchema),
     mode: 'onChange',
     defaultValues: { nickname: defaultNickname, password: defaultPassword },
   });
@@ -109,7 +116,8 @@ export function SignupProfileStep({
   const passwordMessage =
     (isSubmitted ? errors.password?.message : undefined) ??
     (passwordError !== undefined ? signupPasswordMessages[passwordError] : undefined);
-  const isSubmitDisabled = !isNicknameAvailable || password === '';
+  const isSubmitDisabled = !isNicknameAvailable || (hasPassword && password === '');
+  const errorMessage = submitErrorMessage ?? (requestError ? signupRequestErrorMessage : undefined);
 
   return (
     <>
@@ -179,41 +187,41 @@ export function SignupProfileStep({
           </SignupFieldMessageSlot>
         </div>
 
-        <div className="flex flex-col gap-12">
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <PasswordInput
-                aria-describedby={passwordMessage ? passwordMessageId : undefined}
-                aria-invalid={passwordMessage !== undefined}
-                aria-label="비밀번호"
-                autoComplete="new-password"
-                className="w-full"
-                maxLength={SIGNUP_PASSWORD_MAX_LENGTH}
-                name={field.name}
-                onBlur={field.onBlur}
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  onPasswordChange?.(value);
-                }}
-                placeholder="비밀번호를 입력해주세요"
-                ref={field.ref}
-                value={field.value}
-              />
-            )}
-          />
-          <SignupFieldMessageSlot>
-            {passwordMessage ? (
-              <SignupFieldMessage id={passwordMessageId}>{passwordMessage}</SignupFieldMessage>
-            ) : null}
-          </SignupFieldMessageSlot>
-        </div>
+        {hasPassword ? (
+          <div className="flex flex-col gap-12">
+            <Controller
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <PasswordInput
+                  aria-describedby={passwordMessage ? passwordMessageId : undefined}
+                  aria-invalid={passwordMessage !== undefined}
+                  aria-label="비밀번호"
+                  autoComplete="new-password"
+                  className="w-full"
+                  maxLength={SIGNUP_PASSWORD_MAX_LENGTH}
+                  name={field.name}
+                  onBlur={field.onBlur}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    onPasswordChange?.(value);
+                  }}
+                  placeholder="비밀번호를 입력해주세요"
+                  ref={field.ref}
+                  value={field.value}
+                />
+              )}
+            />
+            <SignupFieldMessageSlot>
+              {passwordMessage ? (
+                <SignupFieldMessage id={passwordMessageId}>{passwordMessage}</SignupFieldMessage>
+              ) : null}
+            </SignupFieldMessageSlot>
+          </div>
+        ) : null}
 
-        {requestError ? (
-          <SignupFieldMessage className="text-center">
-            {signupRequestErrorMessage}
-          </SignupFieldMessage>
+        {errorMessage ? (
+          <SignupFieldMessage className="text-center">{errorMessage}</SignupFieldMessage>
         ) : null}
 
         <Button

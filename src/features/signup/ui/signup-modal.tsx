@@ -6,7 +6,8 @@ import { Logo, Modal } from '@/shared/ui';
 
 import { type SignupApi } from '../model/signup-api';
 import { createHttpSignupApi } from '../model/signup-http-api';
-import { useSignupSteps } from '../model/use-signup-steps';
+import { type SignupTermId } from '../model/signup-terms';
+import { type SignupSocialSession, useSignupSteps } from '../model/use-signup-steps';
 import { SignupCompleteStep } from './signup-complete-step';
 import { SignupEmailStep } from './signup-email-step';
 import { SignupPreferenceStep } from './signup-preference-step';
@@ -28,6 +29,10 @@ export interface SignupModalProps {
   api?: SignupApi;
   /** 가입 완료 안내에서 나중에 설정하거나, 선호 지역·컨셉을 저장하거나 건너뛰어 가입이 끝났을 때 호출되는 함수 */
   onComplete?: () => void;
+  /** 소셜 인증을 마치고 가입만 남았을 때의 정보. 주면 이메일 인증 없이 프로필 단계로 진행합니다. */
+  social?: SignupSocialSession;
+  /** 소셜 로그인 버튼을 눌렀을 때 호출되는 함수. 그때까지 동의한 약관을 함께 넘깁니다. */
+  onSocialLogin?: (provider: 'google' | 'kakao', agreedIds: readonly SignupTermId[]) => void;
 }
 
 /**
@@ -47,7 +52,9 @@ export function SignupModal({
   onComplete,
   onLogin,
   onOpenChange,
+  onSocialLogin,
   open,
+  social,
 }: SignupModalProps) {
   // api를 생략했을 때 렌더마다 새로 만들지 않도록 한 번만 만듭니다.
   const [defaultApi] = useState(() => createHttpSignupApi());
@@ -57,6 +64,7 @@ export function SignupModal({
       onOpenChange(false);
       onComplete?.();
     },
+    social,
   });
 
   return (
@@ -93,6 +101,7 @@ export function SignupModal({
           onLogin={onLogin}
           onRequestCode={flow.requestCode}
           onResendCode={flow.resendCode}
+          onSocialLogin={(provider) => onSocialLogin?.(provider, flow.agreedIds)}
           onVerifyCode={flow.verifyCode}
           phase={flow.phase}
           requestError={flow.requestFailed}
@@ -102,6 +111,7 @@ export function SignupModal({
 
       {flow.step === 'profile' ? (
         <SignupProfileStep
+          hasPassword={!social}
           isAvatarDisabled={!flow.agreedIds.includes('profile-image')}
           isSubmitting={flow.isSubmitting}
           nicknameStatus={flow.nicknameStatus}
@@ -111,6 +121,7 @@ export function SignupModal({
           onSubmit={flow.submitProfile}
           passwordError={flow.passwordError}
           requestError={flow.requestFailed}
+          submitErrorMessage={flow.socialErrorMessage}
         />
       ) : null}
 
