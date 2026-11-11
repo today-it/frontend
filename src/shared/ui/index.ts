@@ -53,6 +53,8 @@ export type { SearchBarProps } from './search-bar';
 export { SearchBar } from './search-bar';
 export type { SectionHeaderProps } from './section-header';
 export { SectionHeader } from './section-header';
+export type { SkeletonProps } from './skeleton';
+export { Skeleton } from './skeleton';
 export type { SocialLoginButtonProps } from './social-login-button';
 export { SocialLoginButton } from './social-login-button';
 export type { TabProps } from './tab';
