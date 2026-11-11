@@ -105,6 +105,10 @@ export const ToggleLike: Story = {
     );
   },
   play: async ({ canvasElement }) => {
+    const detailLink = within(canvasElement).getByRole('link', {
+      name: recommendedPlaces[0].name,
+    });
+    await expect(detailLink).toHaveAttribute('href', `/places/${recommendedPlaces[0].id}`);
     const trigger = within(canvasElement).getByRole('button', { name: /좋아요/ });
     await expect(trigger).toHaveAttribute('aria-pressed', 'false');
     await userEvent.click(trigger);
