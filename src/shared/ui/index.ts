@@ -6,6 +6,7 @@ export type { ButtonProps } from './button';
 export { Button, buttonVariants } from './button';
 export type { ButtonLinkProps } from './button-link';
 export { ButtonLink } from './button-link';
+export { Card, CardContent } from './card';
 export type { CarouselButtonProps, CarouselDirection } from './carousel-button';
 export { CarouselButton } from './carousel-button';
 export type { CarouselIndicatorProps } from './carousel-indicator';
