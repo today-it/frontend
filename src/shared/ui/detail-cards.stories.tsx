@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, within } from 'storybook/test';
 
 import { Card, CardContent } from './card';
+import { InfoTag } from './info-tag';
 import { MenuCard } from './menu-card';
 
 const meta = {
@@ -32,6 +33,7 @@ export const MenuWithoutBadge: Story = { args: { signature: false } };
 export const LongMenu: Story = {
   args: { name: '긴 이름으로 등록된 시그니처 스페셜 블렌드 아메리카노' },
 };
+export const Amenity: Story = { render: () => <InfoTag icon="parking">주차 가능</InfoTag> };
 export const Surface: Story = {
   render: () => (
     <Card>

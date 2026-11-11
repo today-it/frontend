@@ -31,6 +31,8 @@ export type { IconName, IconProps, IconTone } from './icon';
 export { Icon } from './icon';
 export type { IconButtonProps } from './icon-button';
 export { IconButton } from './icon-button';
+export type { InfoTagProps } from './info-tag';
+export { InfoTag } from './info-tag';
 export type { LoadMoreButtonProps } from './load-more-button';
 export { LoadMoreButton } from './load-more-button';
 export type { LogoProps } from './logo';
