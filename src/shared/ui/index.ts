@@ -35,6 +35,8 @@ export type { LoadMoreButtonProps } from './load-more-button';
 export { LoadMoreButton } from './load-more-button';
 export type { LogoProps } from './logo';
 export { Logo } from './logo';
+export type { MenuCardProps } from './menu-card';
+export { MenuCard } from './menu-card';
 export type { ModalBackdropProps, ModalProps, ModalTitleProps } from './modal';
 export { Modal, ModalBackdrop, ModalTitle } from './modal';
 export type { PasswordInputProps } from './password-input';
