@@ -65,3 +65,4 @@ export type { TextInputProps } from './text-input';
 export { TextInput } from './text-input';
 export type { TextLinkProps } from './text-link';
 export { TextLink } from './text-link';
+export { ToastProvider, useToast } from './toast';
