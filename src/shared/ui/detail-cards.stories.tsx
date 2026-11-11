@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect, fn, within } from 'storybook/test';
 
 import { Card, CardContent } from './card';
+import { CourseListItem } from './course-list-item';
 import { Icon } from './icon';
 import { InfoCard } from './info-card';
 import { InfoTag } from './info-tag';
@@ -52,6 +53,20 @@ export const Information: Story = {
       ]}
       action={<span>안내 영역</span>}
     />
+  ),
+};
+export const Course: Story = {
+  render: () => (
+    <div className="w-place-card-width max-w-full">
+      <CourseListItem
+        name="성수 감성 데이트 코스"
+        region="성수"
+        tags={['3시간', '감성']}
+        date="2026.10.12"
+        likes={128}
+        onClick={fn()}
+      />
+    </div>
   ),
 };
 export const Surface: Story = {

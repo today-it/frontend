@@ -19,6 +19,8 @@ export type { CodeInputProps } from './code-input';
 export { CodeInput } from './code-input';
 export type { ConfettiProps } from './confetti';
 export { Confetti } from './confetti';
+export type { CourseListItemProps } from './course-list-item';
+export { CourseListItem } from './course-list-item';
 export type { DividerProps } from './divider';
 export { Divider } from './divider';
 export type { DropdownOption, DropdownProps } from './dropdown';
