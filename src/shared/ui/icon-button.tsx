@@ -8,29 +8,40 @@ export interface IconButtonProps extends ButtonPrimitive.Props {
   icon: IconName;
   /** 버튼의 접근성 이름 */
   label: string;
-  /** IconButton에 추가할 클래스 이름 */
+  /** 버튼의 모양 (기본값: `default`, `round`는 48px 원형) */
+  variant?: 'default' | 'round';
+  /** 추가 클래스 이름 */
   className?: string;
   children?: never;
 }
 
 /**
- * 공용 IconButton 컴포넌트입니다.
+ * 아이콘만 표시하는 공용 IconButton 컴포넌트입니다.
  *
  * @example
  * ```tsx
  * <IconButton icon="close" label="닫기" />
- * <IconButton icon="search" label="검색" />
  * ```
  */
-export function IconButton({ className, icon, label, ...props }: IconButtonProps) {
+export function IconButton({
+  className,
+  icon,
+  label,
+  variant = 'default',
+  ...props
+}: IconButtonProps) {
   return (
     <ButtonPrimitive
       aria-label={label}
       className={cn(
-        'inline-flex size-icon-button shrink-0 cursor-pointer items-center justify-center rounded-lg bg-surface-default p-0 text-icon-default transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 enabled:hover:bg-state-hover enabled:active:bg-state-pressed disabled:pointer-events-none disabled:cursor-default',
+        'inline-flex shrink-0 cursor-pointer items-center justify-center p-0 text-icon-default transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 enabled:hover:bg-state-hover enabled:active:bg-state-pressed disabled:pointer-events-none disabled:cursor-default',
+        variant === 'round'
+          ? 'size-48 rounded-full border border-border-default bg-surface-default'
+          : 'size-icon-button rounded-lg bg-surface-default',
         className,
       )}
       data-slot="icon-button"
+      data-variant={variant}
       {...props}
     >
       <Icon name={icon} size={24} tone="inherit" />
