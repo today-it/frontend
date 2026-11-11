@@ -10,25 +10,20 @@ export interface ButtonProps
   extends
     Omit<ButtonPrimitive.Props, 'render' | 'nativeButton'>,
     VariantProps<typeof buttonVariants> {
-  /** 버튼의 크기. 기본값은 `lg`입니다. */
+  /** 버튼 크기 (기본값: `lg`) */
   size?: ButtonSize;
-  /** 버튼의 용도. 기본값은 `primary`이며 주요 CTA에는 `cta`를 사용합니다. */
+  /** 버튼 스타일 유형 (기본값: `primary`, 주요 CTA는 `cta`) */
   variant?: 'primary' | 'cta';
-  /** 텍스트 앞에 표시할 장식용 아이콘. */
+  /** 텍스트 앞에 표시할 아이콘 */
   icon?: IconName;
 }
 
 /**
- * 공용 Button 컴포넌트입니다.
- *
- * 버튼 동작에 사용합니다. 화면 이동에는 링크를 사용하고, 버튼 모양의 이동 링크는 `ButtonLink`를 사용합니다.
+ * 클릭 동작을 처리하는 공용 Button 컴포넌트입니다. 화면 이동에는 Link 또는 ButtonLink를 사용합니다.
  *
  * @example
  * ```tsx
  * <Button>저장</Button>
- * <Button size="md">다음</Button>
- * <Button size="sm" disabled>삭제</Button>
- * <Button icon="check">완료</Button>
  * ```
  */
 export function Button({
@@ -52,10 +47,7 @@ export function Button({
           name={icon}
           size={size === 'sm' ? 16 : 20}
           tone="inherit"
-          className={cn(
-            variant === 'primary' && 'text-icon-inverse',
-            'group-disabled/button:text-text-muted',
-          )}
+          className={cn('text-icon-inverse', 'group-disabled/button:text-text-muted')}
         />
       )}
       {children}
