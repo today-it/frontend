@@ -26,7 +26,7 @@ export const buttonVariants = cva(
       variant: {
         primary:
           'bg-surface-inverse text-text-inverse enabled:hover:bg-state-inverse-hover enabled:active:bg-state-inverse-pressed',
-        cta: 'bg-surface-cta text-text-primary enabled:hover:bg-state-cta-hover enabled:active:bg-state-cta-pressed',
+        cta: 'bg-surface-cta text-text-inverse enabled:hover:bg-state-cta-hover enabled:active:bg-state-cta-pressed',
       },
     },
     defaultVariants: { size: 'lg', variant: 'primary' },

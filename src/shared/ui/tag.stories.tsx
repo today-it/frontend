@@ -24,7 +24,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByText('태그')).toHaveStyle({ fontSize: '12px' });
+  },
+};
 
 export const Category: Story = {
   args: {

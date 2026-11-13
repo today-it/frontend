@@ -35,9 +35,9 @@ export const Default: Story = {
     await expect(Math.round(bounds.width)).toBeLessThanOrEqual(190);
     await expect(bounds.height).toBe(48);
     await expect(getComputedStyle(button).backgroundColor).toBe('rgb(255, 255, 255)');
-    await expect(getComputedStyle(button).borderTopColor).toBe('rgb(198, 198, 198)');
-    await expect(getComputedStyle(label).color).toBe('rgb(28, 28, 28)');
-    await expect(getComputedStyle(count).color).toBe('rgb(71, 71, 71)');
+    await expect(getComputedStyle(button).borderTopColor).toBe('rgb(193, 198, 203)');
+    await expect(getComputedStyle(label).color).toBe('rgb(26, 28, 30)');
+    await expect(getComputedStyle(count).color).toBe('rgb(65, 71, 77)');
     await expect(getComputedStyle(button).fontWeight).toBe('500');
   },
 };
@@ -48,7 +48,7 @@ export const Hover: Story = {
   },
   play: async ({ canvasElement }) => {
     const button = within(canvasElement).getByRole('button', { name: '더 불러오기 8 / 20' });
-    await expect(getComputedStyle(button).backgroundColor).toBe('rgb(226, 226, 226)');
+    await expect(getComputedStyle(button).backgroundColor).toBe('rgb(224, 226, 228)');
   },
 };
 
@@ -58,7 +58,7 @@ export const Pressed: Story = {
   },
   play: async ({ canvasElement }) => {
     const button = within(canvasElement).getByRole('button', { name: '더 불러오기 8 / 20' });
-    await expect(getComputedStyle(button).backgroundColor).toBe('rgb(198, 198, 198)');
+    await expect(getComputedStyle(button).backgroundColor).toBe('rgb(193, 198, 203)');
   },
 };
 
