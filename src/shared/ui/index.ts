@@ -27,6 +27,8 @@ export type { DividerProps } from './divider';
 export { Divider } from './divider';
 export type { DropdownOption, DropdownProps } from './dropdown';
 export { Dropdown } from './dropdown';
+export type { FilterAccordionProps } from './filter-accordion';
+export { FilterAccordion } from './filter-accordion';
 export type { FilterTabProps } from './filter-tab';
 export { FilterTab } from './filter-tab';
 export type { FooterProps } from './footer';
