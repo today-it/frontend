@@ -49,6 +49,8 @@ export type { ModalBackdropProps, ModalProps, ModalTitleProps } from './modal';
 export { Modal, ModalBackdrop, ModalTitle } from './modal';
 export type { PasswordInputProps } from './password-input';
 export { PasswordInput } from './password-input';
+export type { RegionRowProps } from './region-row';
+export { RegionRow } from './region-row';
 export type { ScrollTopButtonProps } from './scroll-top-button';
 export { ScrollTopButton } from './scroll-top-button';
 export type { SearchBarProps } from './search-bar';
