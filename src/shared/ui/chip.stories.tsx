@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, fn, userEvent } from 'storybook/test';
 
 import { Chip } from './chip';
 
@@ -11,7 +12,7 @@ const meta = {
     docs: {
       description: {
         component:
-          '기본 Chip은 시/군/구·컨셉의 복수 선택에 사용합니다. variant=radio는 시/도 단일 선택용 52×36px 칩이며, 단일 선택 상태는 부모에서 제어합니다.',
+          '기본 Chip은 시/군/구 / 컨셉의 복수 선택에 사용합니다. variant=radio는 시/도 단일 선택용 52×36px 칩이며, 단일 선택 상태는 부모에서 제어합니다.',
       },
     },
   },
@@ -70,4 +71,34 @@ export const RadioStates: Story = {
       <Chip variant="radio">전남광주</Chip>
     </div>
   ),
+};
+
+export const TogglesAndKeepsSize: Story = {
+  args: { onPressedChange: fn() },
+  render: (args) => (
+    <div className="flex items-center gap-16">
+      <Chip {...args}>카페</Chip>
+      <Chip disabled onPressedChange={args.onPressedChange}>
+        맛집
+      </Chip>
+    </div>
+  ),
+  play: async ({ args, canvas }) => {
+    const chip = canvas.getByRole('button', { name: '카페' });
+    const rect = chip.getBoundingClientRect();
+    await expect(rect.height).toBe(36);
+    await expect(getComputedStyle(chip).paddingLeft).toBe('20px');
+    await expect(chip).toHaveAttribute('aria-pressed', 'false');
+
+    await userEvent.click(chip);
+    await expect(chip).toHaveAttribute('aria-pressed', 'true');
+    await expect(chip).toHaveAttribute('data-pressed');
+
+    await userEvent.keyboard(' ');
+    await expect(chip).toHaveAttribute('aria-pressed', 'false');
+    await expect(args.onPressedChange).toHaveBeenCalledTimes(2);
+
+    await userEvent.click(canvas.getByRole('button', { name: '맛집' }), { pointerEventsCheck: 0 });
+    await expect(args.onPressedChange).toHaveBeenCalledTimes(2);
+  },
 };

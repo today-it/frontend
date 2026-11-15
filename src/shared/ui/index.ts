@@ -15,6 +15,8 @@ export type { CheckboxProps } from './checkbox';
 export { Checkbox } from './checkbox';
 export type { ChipProps } from './chip';
 export { Chip } from './chip';
+export type { ChipRemovableProps } from './chip-removable';
+export { ChipRemovable } from './chip-removable';
 export type { CodeInputProps } from './code-input';
 export { CodeInput } from './code-input';
 export type { ConfettiProps } from './confetti';

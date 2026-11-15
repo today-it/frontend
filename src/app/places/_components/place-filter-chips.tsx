@@ -1,4 +1,4 @@
-import { Icon } from '@/shared/ui';
+import { ChipRemovable } from '@/shared/ui';
 
 import {
   getDistrictLabel,
@@ -19,7 +19,7 @@ export function PlaceFilterChips({ filters, onChange, regions }: PlaceFilterChip
     <>
       {filters.regions.flatMap((region) =>
         region.districtIds.length === 0 ? (
-          <RemovableFilterChip
+          <ChipRemovable
             key={region.regionId}
             label={getRegionLabel(region.regionId, regions)}
             onRemove={() =>
@@ -31,7 +31,7 @@ export function PlaceFilterChips({ filters, onChange, regions }: PlaceFilterChip
           />
         ) : (
           region.districtIds.map((districtId) => (
-            <RemovableFilterChip
+            <ChipRemovable
               key={`${region.regionId}:${districtId}`}
               label={getDistrictLabel(region.regionId, districtId, regions)}
               onRemove={() =>
@@ -53,7 +53,7 @@ export function PlaceFilterChips({ filters, onChange, regions }: PlaceFilterChip
         if (!concept) return null;
 
         return (
-          <RemovableFilterChip
+          <ChipRemovable
             key={concept.id}
             label={concept.label}
             onRemove={() =>
@@ -66,19 +66,5 @@ export function PlaceFilterChips({ filters, onChange, regions }: PlaceFilterChip
         );
       })}
     </>
-  );
-}
-
-function RemovableFilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
-  return (
-    <button
-      aria-label={`${label} 필터 해제`}
-      className="inline-flex h-chip shrink-0 cursor-pointer items-center justify-center gap-6 rounded-full border-sm border-border-active bg-surface-inverse px-20 py-10 text-caption-c1 text-text-inverse outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2"
-      onClick={onRemove}
-      type="button"
-    >
-      <span>{label}</span>
-      <Icon name="close" size={16} tone="inherit" />
-    </button>
   );
 }
