@@ -62,7 +62,7 @@ export const ScrollDirection: Story = {
     const canvas = within(canvasElement);
     window.scrollTo(0, 0);
     await waitFor(() => expect(canvas.getByRole('searchbox')).toBeInTheDocument());
-    await expect(canvas.getByRole('search').getBoundingClientRect().top).toBe(132);
+    await expect(canvas.getByRole('search').getBoundingClientRect().top).toBe(90);
     window.scrollTo(0, 500);
     await waitFor(() => expect(canvas.queryByRole('searchbox')).not.toBeInTheDocument());
     window.scrollTo(0, 200);

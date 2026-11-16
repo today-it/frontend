@@ -21,6 +21,8 @@ export interface TopHeaderProps {
   navigation?: HeaderNavigation;
   /** 헤더나 스크롤 검색 영역에 표시할 검색 요소 */
   searchContent?: ReactNode;
+  /** 스크롤 검색 영역에 필터 바가 포함되는지 여부 (기본값: `false`) */
+  hasFilters?: boolean;
 }
 
 /**
@@ -34,6 +36,7 @@ export function TopHeader({
   nickname = '닉네임',
   navigation = 'tabs',
   searchContent,
+  hasFilters = false,
 }: TopHeaderProps) {
   if (navigation === 'search') {
     return (
@@ -56,13 +59,13 @@ export function TopHeader({
   return (
     <header>
       <div className="fixed inset-x-0 top-0 z-50 w-full bg-surface-default">
-        <div className="relative mx-auto flex h-header-height w-full max-w-header-width items-center justify-between px-24">
+        <div className="relative mx-auto flex h-header-height w-full max-w-[1920px] items-center justify-between gap-8 px-16 sm:gap-0 sm:px-24 lg:px-48">
           <Link aria-label="ToDayIt 장소 목록" className="no-underline" href="/">
             <Logo />
           </Link>
           <nav
             aria-label="주요 메뉴"
-            className="absolute bottom-20 left-1/2 flex h-tab-height -translate-x-1/2"
+            className="flex h-header-height sm:absolute sm:bottom-0 sm:left-1/2 sm:-translate-x-1/2"
           >
             <Tab active={activeSection === 'places'} href="/places">
               장소
@@ -75,7 +78,7 @@ export function TopHeader({
         </div>
       </div>
       <div aria-hidden="true" className="h-header-height w-full shrink-0" />
-      <ScrollSearchArea>{searchContent}</ScrollSearchArea>
+      <ScrollSearchArea hasFilters={hasFilters}>{searchContent}</ScrollSearchArea>
     </header>
   );
 }
@@ -84,14 +87,14 @@ function HeaderAccount({ auth, nickname }: Pick<TopHeaderProps, 'auth' | 'nickna
   return auth === 'member' ? (
     <div
       aria-label={`프로필: ${nickname}`}
-      className="flex h-profile-chip w-profile-chip-width shrink-0 items-center gap-12 pr-8 pl-10"
+      className="flex h-profile-chip w-auto shrink-0 items-center px-0 sm:w-profile-chip-width sm:gap-12 sm:pr-8 sm:pl-10"
       role="group"
     >
       <Avatar alt="" className="rounded-full" size="sm" />
-      <span className="shrink-0 text-caption-c1 whitespace-nowrap text-text-primary">
+      <span className="hidden shrink-0 text-caption-c1 whitespace-nowrap text-text-primary sm:block">
         {nickname}
       </span>
-      <Icon name="chevron-down" size={24} />
+      <Icon className="hidden sm:block" name="chevron-down" size={24} />
     </div>
   ) : (
     <HeaderLoginButton />

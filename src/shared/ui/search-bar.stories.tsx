@@ -78,3 +78,22 @@ export const SearchDisabled: Story = {
     await expect(within(canvasElement).getByRole('button', { name: '검색 실행' })).toBeDisabled();
   },
 };
+
+export const DesignSpecVerification: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const form = canvas.getByRole('search');
+    const input = canvas.getByRole('searchbox');
+    const button = canvas.getByRole('button', { name: '검색 실행' });
+
+    const formRect = form.getBoundingClientRect();
+    await expect(formRect.height).toBe(56);
+
+    const buttonRect = button.getBoundingClientRect();
+    await expect(buttonRect.width).toBe(40);
+    await expect(buttonRect.height).toBe(40);
+
+    const computedInputStyle = window.getComputedStyle(input);
+    await expect(computedInputStyle.fontSize).toBe('16px');
+  },
+};

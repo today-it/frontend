@@ -13,7 +13,7 @@ export interface TabProps extends Omit<ComponentProps<typeof Link>, 'aria-curren
 }
 
 /**
- * 페이지 사이를 이동하는 내비게이션 Tab입니다.
+ * 페이지 사이를 이동하는 공용 Tab 컴포넌트입니다.
  *
  * @example
  * ```tsx
@@ -26,7 +26,7 @@ export function Tab({ active = false, children, className, ...props }: TabProps)
     <Link
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'inline-flex h-tab-height min-w-tab-width shrink-0 items-center justify-center border-b-4 px-16 whitespace-nowrap no-underline transition-colors outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2',
+        'inline-flex h-tab-height min-w-56 shrink-0 items-center justify-center border-b-4 px-8 whitespace-nowrap no-underline transition-colors outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 sm:min-w-tab-width sm:px-16',
         active
           ? 'border-border-active text-text-primary'
           : 'border-transparent text-text-muted hover:text-text-secondary',
@@ -36,7 +36,7 @@ export function Tab({ active = false, children, className, ...props }: TabProps)
       data-slot="tab"
       {...props}
     >
-      <span className="text-heading-h2">{children}</span>
+      <span className="text-body-b2 sm:text-heading-h2">{children}</span>
     </Link>
   );
 }

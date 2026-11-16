@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, within } from 'storybook/test';
 
 import { Tab } from './tab';
 
@@ -50,4 +51,22 @@ export const AllStates: Story = {
       </Tab>
     </nav>
   ),
+};
+
+export const CompactContainer: Story = {
+  render: () => (
+    <div className="flex w-[375px] items-center justify-between px-16">
+      <Tab active href="/places">
+        장소
+      </Tab>
+      <Tab href="/courses">코스</Tab>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const placeTab = canvas.getByRole('link', { name: '장소' });
+    const courseTab = canvas.getByRole('link', { name: '코스' });
+    await expect(placeTab).toBeVisible();
+    await expect(courseTab).toBeVisible();
+  },
 };

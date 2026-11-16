@@ -411,12 +411,12 @@
   --td-size-place-card-thumbnail-height: var(--td-number-252);
   --td-size-place-card-thumbnail-height-lg: var(--td-number-336);
   --td-size-header-width: var(--td-number-1440);
-  --td-size-header-height: var(--td-number-114);
+  --td-size-header-height: var(--td-number-72);
   --td-size-tab-width: var(--td-number-122);
-  --td-size-tab-height: var(--td-number-74);
+  --td-size-tab-height: var(--td-number-72);
   --td-size-filter-tab-height: var(--td-number-56);
   --td-size-search-bar-width: var(--td-number-900);
-  --td-size-search-bar-height: var(--td-number-70);
+  --td-size-search-bar-height: var(--td-number-56);
   --td-size-section-header-width: var(--td-number-1440);
   --td-size-button-scroll-top: var(--td-number-72);
   --td-size-modal-width: var(--td-number-480);
