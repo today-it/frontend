@@ -28,7 +28,7 @@ export function FilterTab({ className, count, filled = false, label, ...props }:
   return (
     <TogglePrimitive
       className={cn(
-        'group inline-flex h-filter-tab-height min-w-0 flex-1 cursor-pointer items-center justify-between gap-16 rounded-full bg-transparent px-32 transition-colors outline-none select-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-pressed:bg-surface-subtle data-disabled:pointer-events-none data-disabled:cursor-default',
+        'group inline-flex h-filter-tab-height min-w-0 flex-1 cursor-pointer items-center justify-between gap-8 rounded-full bg-transparent px-16 transition-colors outline-none select-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2 data-pressed:bg-surface-subtle sm:gap-16 sm:px-32 data-disabled:pointer-events-none data-disabled:cursor-default',
         className,
       )}
       data-slot="filter-tab"
@@ -53,7 +53,7 @@ export function FilterTab({ className, count, filled = false, label, ...props }:
         ) : null}
       </span>
       <Icon
-        className="shrink-0 group-data-disabled:text-icon-disabled"
+        className="shrink-0 group-data-pressed:rotate-180 group-data-disabled:text-icon-disabled"
         name="chevron-down"
         size={24}
         tone="default"
