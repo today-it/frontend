@@ -12,14 +12,17 @@ import { Button, SearchBar } from '@/shared/ui';
 import type { PlaceSummary } from '../_model/place';
 import {
   getPlaceFilterCount,
+  getPlaceRegionFilterCount,
   getPlaceSearchHref,
   normalizePlaceFilters,
   type PlaceFilterState,
   toPlaceRegions,
   validatePlaceFilters,
 } from '../_model/place-filters';
+import { PlaceFilterBar, type PlaceFilterTab } from './place-filter-bar';
 import { PlaceSearchModal } from './place-search-modal';
 import { PlaceSearchResults } from './place-search-results';
+import { PlaceSearchSuggestionPopup } from './place-search-suggestion-popup';
 
 interface PlacesPageClientProps {
   allPlaces: readonly PlaceSummary[];
@@ -68,13 +71,16 @@ export function PlacesPageClient({
     </p>
   ) : undefined;
   const [queryDraft, setQueryDraft] = useState(initialQuery);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [openPanel, setOpenPanel] = useState<'search' | PlaceFilterTab | null>(null);
+  const lastTriggerRef = useRef<'search' | 'region' | 'category'>('search');
   const searchTriggerRef = useRef<HTMLDivElement>(null);
+  const regionTabTriggerRef = useRef<HTMLButtonElement>(null);
+  const categoryTabTriggerRef = useRef<HTMLButtonElement>(null);
   const ignoreRestoredFocus = useRef(false);
   const isSearchMode = Boolean(initialQuery || getPlaceFilterCount(filters));
 
   /**
-   * 검색어와 필터를 장소 목록 URL로 직렬화해 이동합니다.
+   * 검색어와 필터를 장소 목록 URL로 직렬화해 이동한다.
    * @param query 이동할 때 적용할 검색어
    * @param filters 이동할 때 적용할 지역 및 카테고리 필터
    */
@@ -82,18 +88,41 @@ export function PlacesPageClient({
     router.push(getPlaceSearchHref(query, filters));
   }
 
-  /** 필터 모달을 닫고 포커스를 검색창으로 되돌립니다. */
-  function closeSearch() {
+  /**
+   * 트리거(검색창 또는 필터 탭)에 맞춰 검색 제안 팝업 또는 필터 팝업을 연다.
+   * @param source 팝업을 연 트리거 (`search` / `region` / `category`)
+   */
+  function openSearch(source: 'search' | 'region' | 'category') {
+    if (ignoreRestoredFocus.current) {
+      ignoreRestoredFocus.current = false;
+      return;
+    }
+    lastTriggerRef.current = source;
+    setOpenPanel(source);
+  }
+
+  /**
+   * 열린 팝업을 닫고 `returnTab`이 전달되면 해당 탭으로, 없으면 팝업을 열었던 트리거로 포커스를 복귀한다.
+   * @param returnTab 활성 필터 탭 재클릭으로 닫힐 때 포커스를 돌려줄 탭
+   */
+  function closeSearch(returnTab?: PlaceFilterTab) {
+    const target = returnTab ?? lastTriggerRef.current;
     ignoreRestoredFocus.current = true;
-    setIsSearchOpen(false);
+    setOpenPanel(null);
     requestAnimationFrame(() => {
-      searchTriggerRef.current?.querySelector('input')?.focus();
+      if (target === 'category') {
+        categoryTabTriggerRef.current?.focus();
+      } else if (target === 'region') {
+        regionTabTriggerRef.current?.focus();
+      } else {
+        searchTriggerRef.current?.querySelector('input')?.focus();
+      }
       ignoreRestoredFocus.current = false;
     });
   }
 
   /**
-   * 현재 검색어와 필터를 적용한 뒤 결과 화면으로 이동합니다.
+   * 현재 검색어와 필터를 적용한 뒤 결과 화면으로 이동한다.
    * @param query 적용할 검색어
    * @param filters 적용할 지역 및 카테고리 필터
    */
@@ -109,28 +138,32 @@ export function PlacesPageClient({
         auth={member ? 'member' : 'guest'}
         nickname={member?.nickname}
         searchContent={
-          <div
-            className="w-full max-w-search-bar-width"
-            ref={searchTriggerRef}
-            onFocus={() => {
-              if (ignoreRestoredFocus.current) {
-                ignoreRestoredFocus.current = false;
-                return;
-              }
-              setIsSearchOpen(true);
-            }}
-            onClick={() => {
-              ignoreRestoredFocus.current = false;
-              setIsSearchOpen(true);
-            }}
-          >
-            <SearchBar
+          <div className="flex w-full max-w-search-bar-width flex-col gap-12">
+            <div
               className="w-full"
-              searchDisabled={!queryDraft.trim()}
-              onSearch={() => navigateWithFilters(queryDraft, filters)}
-              onValueChange={setQueryDraft}
-              placeholder="검색어를 입력해주세요"
-              value={queryDraft}
+              ref={searchTriggerRef}
+              onFocus={(event) => {
+                if (event.target instanceof HTMLInputElement) openSearch('search');
+              }}
+              onClick={(event) => {
+                if (event.target instanceof HTMLInputElement) openSearch('search');
+              }}
+            >
+              <SearchBar
+                className="w-full"
+                searchDisabled={!queryDraft.trim()}
+                onSearch={() => submitSearch(queryDraft, filters)}
+                onValueChange={setQueryDraft}
+                placeholder="검색어를 입력해주세요"
+                value={queryDraft}
+              />
+            </div>
+            <PlaceFilterBar
+              categoryCount={filters.conceptIds.length}
+              categoryTabRef={categoryTabTriggerRef}
+              onTabClick={(tab) => openSearch(tab)}
+              regionCount={getPlaceRegionFilterCount(filters)}
+              regionTabRef={regionTabTriggerRef}
             />
           </div>
         }
@@ -152,17 +185,29 @@ export function PlacesPageClient({
         children
       )}
 
-      {isSearchOpen ? (
-        <PlaceSearchModal
+      {openPanel === 'search' ? (
+        <PlaceSearchSuggestionPopup
           allPlaces={allPlaces}
-          regions={regions ?? []}
-          regionNotice={regionNotice}
-          regionsReady={regions !== undefined}
-          initialFilters={filters}
           onClose={closeSearch}
           onQueryChange={setQueryDraft}
+          onSearch={() => submitSearch(queryDraft, filters)}
+          onSelect={(place) => {
+            closeSearch();
+            router.push(`/places/${encodeURIComponent(place.id)}`);
+          }}
+          query={queryDraft}
+        />
+      ) : openPanel ? (
+        <PlaceSearchModal
+          allPlaces={allPlaces}
+          initialFilters={filters}
+          initialTab={openPanel}
+          onClose={closeSearch}
           onSubmit={submitSearch}
           query={queryDraft}
+          regionNotice={regionNotice}
+          regions={regions ?? []}
+          regionsReady={regions !== undefined}
         />
       ) : null}
     </>

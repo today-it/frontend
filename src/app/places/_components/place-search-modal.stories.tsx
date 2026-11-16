@@ -18,7 +18,7 @@ import { PlaceSearchModal } from './place-search-modal';
 
 function PlaceSearchModalHarness({ initialQuery = '성수 카페' }: { initialQuery?: string }) {
   const [open, setOpen] = useState(false);
-  const [draftQuery, setDraftQuery] = useState(initialQuery);
+  const draftQuery = initialQuery;
   const [appliedFilters, setAppliedFilters] = useState<PlaceFilterState>(emptyPlaceFilters);
 
   return (
@@ -35,7 +35,6 @@ function PlaceSearchModalHarness({ initialQuery = '성수 카페' }: { initialQu
           allPlaces={allPlaces}
           initialFilters={appliedFilters}
           onClose={() => setOpen(false)}
-          onQueryChange={setDraftQuery}
           onSubmit={(_, filters) => {
             setAppliedFilters(filters);
             setOpen(false);
@@ -63,7 +62,7 @@ export const ApplyCombinedFilters: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: '필터 열기' }));
 
-    const dialog = await screen.findByRole('dialog', { name: '장소 검색 및 필터' });
+    const dialog = await screen.findByRole('dialog', { name: '장소 필터' });
     await userEvent.click(within(dialog).getByRole('button', { name: '서울 지역 선택' }));
     await userEvent.click(within(dialog).getByRole('button', { name: '성동구 선택' }));
     await userEvent.click(within(dialog).getByRole('button', { name: '카테고리 필터' }));
@@ -84,7 +83,7 @@ export const ApplyCombinedFilters: Story = {
 export const CapsDistrictsAtThree: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole('button', { name: '필터 열기' }));
-    const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 및 필터' }));
+    const dialog = within(await screen.findByRole('dialog', { name: '장소 필터' }));
     await userEvent.click(dialog.getByRole('button', { name: '서울 지역 선택' }));
     for (const district of ['종로구', '중구', '용산구']) {
       await userEvent.click(dialog.getByRole('button', { name: `${district} 선택` }));
@@ -119,12 +118,11 @@ export const EmptyAndQueryOnly: Story = {
   render: () => <PlaceSearchModalHarness initialQuery="" />,
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole('button', { name: '필터 열기' }));
-    const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 및 필터' }));
+    const dialog = within(await screen.findByRole('dialog', { name: '장소 필터' }));
     await expect(dialog.getByRole('button', { name: '장소 보기' })).toBeDisabled();
-    await expect(dialog.getByRole('button', { name: '검색 실행' })).toBeDisabled();
-    await userEvent.type(dialog.getByRole('searchbox'), '성수 카페');
+    await expect(dialog.queryByRole('searchbox')).not.toBeInTheDocument();
+    await userEvent.click(dialog.getByRole('button', { name: '서울 지역 선택' }));
     await expect(dialog.getByRole('button', { name: /장소 \d+곳 보기/ })).toBeEnabled();
-    await expect(dialog.getByRole('button', { name: '검색 실행' })).toBeEnabled();
     await userEvent.click(dialog.getByRole('button', { name: /장소 \d+곳 보기/ }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   },
@@ -135,7 +133,7 @@ export const SelectedFilterAreaKeepsItsHeight: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: '필터 열기' }));
 
-    const dialog = await screen.findByRole('dialog', { name: '장소 검색 및 필터' });
+    const dialog = await screen.findByRole('dialog', { name: '장소 필터' });
     const selectedSection = dialog.querySelector('[data-slot="selected-filter-section"]');
     const selectedFilters = dialog.querySelector('[data-slot="selected-filters"]');
     const viewButton = within(dialog).getByRole('button', { name: /장소 \d+곳 보기/ });
@@ -173,7 +171,7 @@ export const SingleProvinceSelection: Story = {
   render: () => <PlaceSearchModalHarness initialQuery="" />,
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole('button', { name: '필터 열기' }));
-    const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 및 필터' }));
+    const dialog = within(await screen.findByRole('dialog', { name: '장소 필터' }));
     const province = dialog.getByRole('button', { name: '경기 지역 선택' });
     await userEvent.click(province);
     await expect(dialog.getByText('1개 선택')).toBeVisible();
@@ -237,12 +235,138 @@ export const ProvinceWithoutDistricts: Story = {
   render: () => <PlaceSearchModalHarness initialQuery="" />,
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole('button', { name: '필터 열기' }));
-    const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 및 필터' }));
+    const dialog = within(await screen.findByRole('dialog', { name: '장소 필터' }));
     await userEvent.click(dialog.getByRole('button', { name: '세종 지역 선택' }));
     await expect(
       dialog.getByText('선택할 시/군/구가 없어요. 시/도 전체로 검색할 수 있어요.'),
     ).toBeVisible();
     await expect(dialog.getByRole('button', { name: '세종 필터 해제' })).toBeVisible();
     await expect(dialog.getByRole('button', { name: '장소 0곳 보기' })).toBeEnabled();
+  },
+};
+
+function RegionsLoadingHarness() {
+  const [open, setOpen] = useState(true);
+  const query = '성수';
+
+  return (
+    <div className="p-24">
+      {open ? (
+        <PlaceSearchModal
+          allPlaces={allPlaces}
+          initialFilters={emptyPlaceFilters}
+          onClose={() => setOpen(false)}
+          onSubmit={() => {}}
+          query={query}
+          regionNotice={
+            <div className="py-16 text-center text-caption-c2 text-text-tertiary" role="status">
+              <p>지역 정보를 불러오고 있어요.</p>
+            </div>
+          }
+          regions={[]}
+          regionsReady={false}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+export const RegionsLoadingState: Story = {
+  render: () => <RegionsLoadingHarness />,
+  play: async () => {
+    const dialog = within(await screen.findByRole('dialog', { name: '장소 필터' }));
+    await expect(dialog.getByRole('status')).toHaveTextContent('지역 정보를 불러오고 있어요.');
+    const submitButton = dialog.getByRole('button', { name: '지역 정보 확인 중' });
+    await expect(submitButton).toBeDisabled();
+    await expect(dialog.queryByRole('searchbox')).not.toBeInTheDocument();
+    await expect(dialog.getByRole('button', { name: '지역 필터' })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: '카테고리 필터' })).toBeVisible();
+  },
+};
+
+function RegionsEmptyHarness() {
+  const [open, setOpen] = useState(true);
+  const query = '';
+
+  return (
+    <div className="p-24">
+      {open ? (
+        <PlaceSearchModal
+          allPlaces={allPlaces}
+          initialFilters={emptyPlaceFilters}
+          onClose={() => setOpen(false)}
+          onSubmit={() => {}}
+          query={query}
+          regionNotice={
+            <div className="py-16 text-center text-caption-c2 text-text-tertiary" role="status">
+              <p>등록된 지역 정보가 없어요.</p>
+            </div>
+          }
+          regions={[]}
+          regionsReady={true}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+export const RegionsEmptyState: Story = {
+  render: () => <RegionsEmptyHarness />,
+  play: async () => {
+    const dialog = within(await screen.findByRole('dialog', { name: '장소 필터' }));
+    await expect(dialog.getByRole('status')).toHaveTextContent('등록된 지역 정보가 없어요.');
+    await expect(dialog.queryByRole('searchbox')).not.toBeInTheDocument();
+    await expect(dialog.getByRole('button', { name: '지역 필터' })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: '카테고리 필터' })).toBeVisible();
+  },
+};
+
+function RegionsErrorRetryHarness() {
+  const [open, setOpen] = useState(true);
+  const [isError, setIsError] = useState(true);
+  const query = '성수';
+
+  return (
+    <div className="p-24">
+      {open ? (
+        <PlaceSearchModal
+          allPlaces={allPlaces}
+          initialFilters={emptyPlaceFilters}
+          onClose={() => setOpen(false)}
+          onSubmit={() => {}}
+          query={query}
+          regionNotice={
+            isError ? (
+              <div
+                className="flex flex-col items-center justify-center gap-12 py-16 text-caption-c2 text-text-tertiary"
+                role="alert"
+              >
+                <p>지역 정보를 불러오지 못했어요.</p>
+                <Button onClick={() => setIsError(false)} size="sm">
+                  다시 시도
+                </Button>
+              </div>
+            ) : null
+          }
+          regions={isError ? [] : placeRegionFixtures}
+          regionsReady={!isError}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+export const RegionsErrorRetryState: Story = {
+  render: () => <RegionsErrorRetryHarness />,
+  play: async () => {
+    const dialog = within(await screen.findByRole('dialog', { name: '장소 필터' }));
+    await expect(dialog.getByRole('alert')).toHaveTextContent('지역 정보를 불러오지 못했어요.');
+    const retryButton = dialog.getByRole('button', { name: '다시 시도' });
+    await expect(retryButton).toBeVisible();
+
+    await userEvent.click(retryButton);
+    await waitFor(() => expect(dialog.queryByRole('alert')).not.toBeInTheDocument());
+    await expect(await dialog.findByRole('button', { name: '서울 지역 선택' })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: '장소 13곳 보기' })).toBeEnabled();
   },
 };

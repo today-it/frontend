@@ -1,16 +1,17 @@
 'use client';
 
 import { Dialog } from '@base-ui/react/dialog';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 import { cn } from '@/shared/lib';
-import { Button, Chip, FilterTab, Icon, ModalBackdrop, ModalTitle, SearchBar } from '@/shared/ui';
+import { Button, Chip, Icon, ModalBackdrop, ModalTitle } from '@/shared/ui';
 
 import type { PlaceSummary } from '../_model/place';
 import {
   emptyPlaceFilters,
   filterPlaces,
   getPlaceFilterCount,
+  getPlaceRegionFilterCount,
   MAX_PLACE_FILTERS,
   placeConcepts,
   type PlaceFilterState,
@@ -18,34 +19,42 @@ import {
   updatePlaceRegionSelection,
   validatePlaceFilters,
 } from '../_model/place-filters';
+import { PlaceFilterBar, type PlaceFilterTab } from './place-filter-bar';
 import { PlaceFilterChips } from './place-filter-chips';
 
-type PlaceFilterTab = 'region' | 'category';
+export type { PlaceFilterTab };
 
-interface PlaceSearchModalProps {
+export interface PlaceSearchModalProps {
   allPlaces: readonly PlaceSummary[];
   initialFilters: PlaceFilterState;
+  initialTab?: PlaceFilterTab;
   regions: readonly RegionOption[];
   regionNotice?: ReactNode;
   regionsReady?: boolean;
   query: string;
-  onQueryChange: (query: string) => void;
-  onClose: () => void;
+  onClose: (returnTab?: PlaceFilterTab) => void;
   onSubmit: (query: string, filters: PlaceFilterState) => void;
 }
 
+/**
+ * 장소 목록에서 지역과 카테고리 조건을 선택하는 필터 전용 팝업 컴포넌트입니다.
+ *
+ * 검색창을 포함하지 않으며, 상단 `PlaceFilterBar`에서 활성화된 탭을 다시 클릭하면 팝업을 닫고 해당 탭으로 포커스를 돌려줍니다.
+ */
 export function PlaceSearchModal({
   allPlaces,
   regions,
   regionNotice,
   regionsReady = true,
   initialFilters,
+  initialTab = 'region',
   query,
-  onQueryChange,
   onClose,
   onSubmit,
 }: PlaceSearchModalProps) {
-  const [activeTab, setActiveTab] = useState<PlaceFilterTab>('region');
+  const regionTabRef = useRef<HTMLButtonElement>(null);
+  const categoryTabRef = useRef<HTMLButtonElement>(null);
+  const [activeTab, setActiveTab] = useState<PlaceFilterTab>(initialTab);
   const [draft, setDraftFilters] = useState<PlaceFilterState | null>(null);
   const draftFilters = validatePlaceFilters(
     draft ?? initialFilters,
@@ -61,13 +70,13 @@ export function PlaceSearchModal({
   const districtIds = regionSelection?.districtIds ?? [];
   const districtOptions = selectedRegion?.districts ?? [];
 
-  /** 시/도를 바꾸면 이전 지역 선택을 교체하고 해당 시/도 칩을 추가합니다. */
+  /** 시/도를 바꾸면 이전 지역 선택을 교체하고 해당 시/도 칩을 추가한다. */
   function selectRegion(regionId: string) {
     if (activeRegionId === regionId) return;
     setDraftFilters(updatePlaceRegionSelection(draftFilters, regionId, []));
   }
 
-  /** 현재 시/군/구 선택을 최대 3개까지 전환합니다. */
+  /** 현재 시/군/구 선택을 최대 3개까지 전환한다. */
   function toggleDistrict(districtId: string) {
     if (!activeRegionId) return;
     const nextDistrictIds = districtIds.includes(districtId)
@@ -77,7 +86,7 @@ export function PlaceSearchModal({
   }
 
   /**
-   * 최대 필터 선택 개수를 지키며 카테고리 선택을 전환합니다.
+   * 최대 필터 선택 개수를 지키며 카테고리 선택을 전환한다.
    * @param conceptId 전환할 카테고리 ID
    */
   function toggleConcept(conceptId: string) {
@@ -92,12 +101,12 @@ export function PlaceSearchModal({
     });
   }
 
-  /** 모든 임시 필터와 현재 시/도 패널을 초기화합니다. */
+  /** 모든 임시 필터와 현재 시/도 패널을 초기화한다. */
   function resetFilters() {
     setDraftFilters(emptyPlaceFilters);
   }
 
-  /** 모달의 검색어와 임시 필터 상태를 부모에 전달해 적용합니다. */
+  /** 현재 검색어 초안과 임시 필터 상태를 부모에 전달해 적용한다. */
   function submitSearch() {
     if (canSubmit) onSubmit(query, draftFilters);
   }
@@ -113,39 +122,26 @@ export function PlaceSearchModal({
       <Dialog.Portal>
         <ModalBackdrop />
         <Dialog.Popup
-          className="fixed top-[calc(var(--spacing-header-height)_+_var(--spacing-18))] left-1/2 z-50 flex max-h-[calc(100dvh_-_var(--spacing-header-height)_-_var(--spacing-18)_-_var(--spacing-24))] w-search-bar-width max-w-[calc(100vw_-_32px)] -translate-x-1/2 flex-col gap-12 overflow-hidden transition-opacity duration-150 outline-none data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none"
+          className="fixed top-[calc(var(--spacing-header-height)_+_var(--spacing-18)_+_var(--spacing-search-bar-height)_+_var(--spacing-12))] left-1/2 z-50 flex max-h-[calc(100dvh_-_var(--spacing-header-height)_-_var(--spacing-18)_-_var(--spacing-search-bar-height)_-_var(--spacing-12)_-_var(--spacing-24))] w-search-bar-width max-w-[calc(100vw_-_32px)] -translate-x-1/2 flex-col gap-12 overflow-hidden transition-opacity duration-150 outline-none data-ending-style:opacity-0 data-starting-style:opacity-0 motion-reduce:transition-none"
           data-slot="modal"
+          finalFocus={false}
+          initialFocus={initialTab === 'category' ? categoryTabRef : regionTabRef}
         >
-          <ModalTitle className="sr-only">장소 검색 및 필터</ModalTitle>
-          <SearchBar
-            autoFocus
-            className="shrink-0"
-            searchDisabled={!query.trim() || !regionsReady}
-            onSearch={submitSearch}
-            onValueChange={onQueryChange}
-            value={query}
+          <ModalTitle className="sr-only">장소 필터</ModalTitle>
+          <PlaceFilterBar
+            activeTab={activeTab}
+            categoryTabRef={categoryTabRef}
+            regionTabRef={regionTabRef}
+            categoryCount={draftFilters.conceptIds.length}
+            onTabClick={(tab) => {
+              if (activeTab === tab) {
+                onClose(activeTab);
+              } else {
+                setActiveTab(tab);
+              }
+            }}
+            regionCount={getPlaceRegionFilterCount(draftFilters)}
           />
-          <div
-            aria-label="필터 종류"
-            className="flex w-full shrink-0 rounded-full border border-border-default bg-surface-default"
-          >
-            <FilterTab
-              aria-label="지역 필터"
-              onPressedChange={(pressed) => {
-                if (pressed) setActiveTab('region');
-              }}
-              pressed={activeTab === 'region'}
-              label="지역"
-            />
-            <FilterTab
-              aria-label="카테고리 필터"
-              onPressedChange={(pressed) => {
-                if (pressed) setActiveTab('category');
-              }}
-              pressed={activeTab === 'category'}
-              label="카테고리"
-            />
-          </div>
 
           <div className="flex min-h-0 w-full flex-col overflow-hidden rounded-3xl bg-surface-default">
             <div
