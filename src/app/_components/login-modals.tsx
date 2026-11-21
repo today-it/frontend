@@ -81,6 +81,9 @@ export function LoginModals({
 
       if (nextResult.status === 'success') {
         localStorage.setItem('accessToken', nextResult.accessToken);
+        localStorage.setItem('refreshToken', nextResult.refreshToken);
+        localStorage.setItem('expiresIn', String(nextResult.expiresIn));
+        localStorage.setItem('member', JSON.stringify(nextResult.member));
         handleOpenChange(false);
         onComplete?.();
       } else if (nextResult.status === 'locked') {

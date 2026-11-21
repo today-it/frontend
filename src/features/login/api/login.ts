@@ -10,6 +10,8 @@ const loginResponseSchema = z.object({
     expiresIn: z.number(),
     member: z.object({
       memberId: z.string(),
+      nickname: z.string(),
+      coupleConnected: z.boolean(),
       roles: z.array(z.string()),
     }),
   }),
@@ -37,7 +39,7 @@ export async function login(values: LoginValues): Promise<LoginSubmitResult> {
 
   if (response.ok) {
     const data = loginResponseSchema.parse(await response.json());
-    return { status: 'success', accessToken: data.data.accessToken };
+    return { status: 'success', ...data.data };
   }
 
   if (response.status === 401) {

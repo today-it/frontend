@@ -56,6 +56,9 @@ export function OAuthCallback({ provider }: OAuthCallbackProps) {
 
         if (result.status === 'success') {
           localStorage.setItem('accessToken', result.accessToken);
+          localStorage.setItem('refreshToken', result.refreshToken);
+          localStorage.setItem('expiresIn', String(result.expiresIn));
+          localStorage.setItem('member', JSON.stringify(result.member));
         } else {
           openSocialSignup({ provider, signupToken: result.signupToken, agreedIds });
         }

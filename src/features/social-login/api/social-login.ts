@@ -7,11 +7,29 @@ import { type SocialProvider } from '../model/social-login';
  * 이미 가입한 회원은 액세스 토큰을, 아직 가입하지 않은 사용자는 가입용 토큰을 받습니다.
  */
 export type SocialLoginResult =
-  { status: 'success'; accessToken: string } | { status: 'signupRequired'; signupToken: string };
+  | {
+      status: 'success';
+      accessToken: string;
+      refreshToken: string;
+      expiresIn: number;
+      member: SocialLoginMember;
+    }
+  | { status: 'signupRequired'; signupToken: string };
+
+/** 소셜 로그인한 회원 정보 */
+export interface SocialLoginMember {
+  memberId: string;
+  nickname: string;
+  coupleConnected: boolean;
+  roles: string[];
+}
 
 interface SocialLoginResponse {
   isNewMember: boolean;
   accessToken?: string;
+  refreshToken?: string;
+  expiresIn?: number;
+  member?: SocialLoginMember;
   signupToken?: string;
 }
 
@@ -34,9 +52,15 @@ export async function socialLogin(
     return { status: 'signupRequired', signupToken: data.signupToken };
   }
 
-  if (!data.accessToken) {
+  if (!data.accessToken || !data.refreshToken || data.expiresIn === undefined || !data.member) {
     throw new Error('액세스 토큰을 받지 못했습니다.');
   }
 
-  return { status: 'success', accessToken: data.accessToken };
+  return {
+    status: 'success',
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
+    expiresIn: data.expiresIn,
+    member: data.member,
+  };
 }

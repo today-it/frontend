@@ -3,9 +3,23 @@ import { z } from 'zod';
 /** 외부 로그인 결과로 표시하는 이메일·비밀번호 불일치와 로그인 잠금 오류 */
 export type LoginServerError = 'invalid' | 'locked';
 
+/** 로그인한 회원 정보 */
+export interface LoginMember {
+  memberId: string;
+  nickname: string;
+  coupleConnected: boolean;
+  roles: string[];
+}
+
 /** 로그인 제출 결과입니다. 실패 횟수가 없으면 횟수 표시는 생략합니다. */
 export type LoginSubmitResult =
-  | { status: 'success'; accessToken: string }
+  | {
+      status: 'success';
+      accessToken: string;
+      refreshToken: string;
+      expiresIn: number;
+      member: LoginMember;
+    }
   | { status: 'locked' }
   | {
       status: 'invalid';
