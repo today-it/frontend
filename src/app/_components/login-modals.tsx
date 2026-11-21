@@ -110,6 +110,10 @@ export function LoginModals({
       <SignupModal
         loginHref="/login"
         onCloseComplete={handleCloseComplete}
+        onComplete={
+          // 가입 응답에 토큰이 없어 로그인을 한 번 더 요청합니다.
+          socialSignup ? () => startSocialLogin(socialSignup.provider) : onComplete
+        }
         onLogin={() => switchModal('login')}
         onOpenChange={(open) => setActiveModal(open ? 'signup' : null)}
         onSocialLogin={(provider, agreedIds) => startSocialLogin(provider, agreedIds)}
