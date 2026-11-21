@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { type ReactNode, useRef, useState } from 'react';
 
 import { TopHeader } from '@/app/_components/top-header';
+import { useSessionStore } from '@/app/_model/session-store';
 import { regionQueryOptions } from '@/shared/api';
 import { Button, SearchBar } from '@/shared/ui';
 
@@ -35,6 +36,7 @@ export function PlacesPageClient({
   filterParams,
   initialQuery,
 }: PlacesPageClientProps) {
+  const member = useSessionStore((state) => state.member);
   const router = useRouter();
   const regionsQuery = useQuery(regionQueryOptions);
   const regions = regionsQuery.data ? toPlaceRegions(regionsQuery.data) : undefined;
@@ -104,7 +106,8 @@ export function PlacesPageClient({
     <>
       <TopHeader
         activeSection="places"
-        auth="guest"
+        auth={member ? 'member' : 'guest'}
+        nickname={member?.nickname}
         searchContent={
           <div
             className="w-full max-w-search-bar-width"

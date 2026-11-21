@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import { useLoginModalStore } from '@/app/_model/login-modal-store';
+import { useSessionStore } from '@/app/_model/session-store';
 import {
   getSocialRedirectUri,
   socialLogin,
@@ -23,6 +24,7 @@ interface OAuthCallbackProps {
 export function OAuthCallback({ provider }: OAuthCallbackProps) {
   const router = useRouter();
   const openSocialSignup = useLoginModalStore((state) => state.openSocialSignup);
+  const loadStoredMember = useSessionStore((state) => state.loadStoredMember);
   const [failed, setFailed] = useState(false);
   // 인가 코드는 한 번만 쓸 수 있으므로 effect가 다시 실행돼도 요청을 한 번만 보냅니다.
   const isHandledRef = useRef(false);
@@ -59,6 +61,7 @@ export function OAuthCallback({ provider }: OAuthCallbackProps) {
           localStorage.setItem('refreshToken', result.refreshToken);
           localStorage.setItem('expiresIn', String(result.expiresIn));
           localStorage.setItem('member', JSON.stringify(result.member));
+          loadStoredMember();
         } else {
           openSocialSignup({ provider, signupToken: result.signupToken, agreedIds });
         }
@@ -68,7 +71,7 @@ export function OAuthCallback({ provider }: OAuthCallbackProps) {
         setFailed(true);
       }
     })();
-  }, [openSocialSignup, provider, router]);
+  }, [loadStoredMember, openSocialSignup, provider, router]);
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-16 p-24">

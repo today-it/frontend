@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 
+import { useSessionStore } from '@/app/_model/session-store';
 import {
   login,
   LoginStep,
@@ -27,6 +28,7 @@ export function LoginModals({
   onPasswordReset,
   socialSignup,
 }: LoginModalsProps) {
+  const loadStoredMember = useSessionStore((state) => state.loadStoredMember);
   const [social] = useState<SignupSocialSession | undefined>(() =>
     socialSignup
       ? {
@@ -84,6 +86,7 @@ export function LoginModals({
         localStorage.setItem('refreshToken', nextResult.refreshToken);
         localStorage.setItem('expiresIn', String(nextResult.expiresIn));
         localStorage.setItem('member', JSON.stringify(nextResult.member));
+        loadStoredMember();
         handleOpenChange(false);
         onComplete?.();
       } else if (nextResult.status === 'locked') {
