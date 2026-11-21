@@ -32,7 +32,6 @@ function PlaceSearchModalHarness({ initialQuery = '성수 카페' }: { initialQu
       {open ? (
         <PlaceSearchModal
           regions={placeRegionFixtures}
-          allPlaces={allPlaces}
           initialFilters={appliedFilters}
           onClose={() => setOpen(false)}
           onSubmit={(_, filters) => {
@@ -250,7 +249,6 @@ function RegionsLoadingHarness() {
     <div className="p-24">
       {open ? (
         <PlaceSearchModal
-          allPlaces={allPlaces}
           initialFilters={emptyPlaceFilters}
           onClose={() => setOpen(false)}
           onSubmit={() => {}}
@@ -286,7 +284,6 @@ function RegionsArriveHarness() {
   return (
     <div className="p-24">
       <PlaceSearchModal
-        allPlaces={allPlaces}
         initialFilters={emptyPlaceFilters}
         onClose={() => {}}
         onSubmit={() => {}}
@@ -327,7 +324,6 @@ function RegionsEmptyHarness() {
     <div className="p-24">
       {open ? (
         <PlaceSearchModal
-          allPlaces={allPlaces}
           initialFilters={emptyPlaceFilters}
           onClose={() => setOpen(false)}
           onSubmit={() => {}}
@@ -365,7 +361,6 @@ function RegionsErrorRetryHarness() {
     <div className="p-24">
       {open ? (
         <PlaceSearchModal
-          allPlaces={allPlaces}
           initialFilters={emptyPlaceFilters}
           onClose={() => setOpen(false)}
           onSubmit={() => {}}
@@ -432,7 +427,6 @@ export const GroupedDistricts: Story = {
 export const RestoredDistrictKeepsExplorationOnClear: Story = {
   render: () => (
     <PlaceSearchModal
-      allPlaces={allPlaces}
       initialFilters={normalizePlaceFilters(
         { region: '41', district: '41:135' },
         placeRegionFixtures,

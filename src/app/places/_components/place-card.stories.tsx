@@ -100,7 +100,7 @@ export const ToggleLike: Story = {
         {...args}
         liked={liked}
         onLikeClick={() => setLiked((previous) => !previous)}
-        place={{ ...args.place, likeCount: args.place.likeCount + Number(liked) }}
+        place={{ ...args.place, likeCount: (args.place.likeCount ?? 0) + Number(liked) }}
       />
     );
   },

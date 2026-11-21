@@ -1,15 +1,15 @@
 'use client';
 
 import { Dialog } from '@base-ui/react/dialog';
-import { type ReactNode, useRef, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
+import { placesInfiniteQueryOptions } from '@/shared/api';
 import { cn } from '@/shared/lib';
 import { Button, Chip, Icon, ModalBackdrop, ModalTitle, RegionRow } from '@/shared/ui';
 
-import type { PlaceSummary } from '../_model/place';
 import {
   emptyPlaceFilters,
-  filterPlaces,
   getPlaceDistrictGroups,
   getPlaceFilterCount,
   getPlaceRegionFilterCount,
@@ -20,6 +20,7 @@ import {
   type RegionOption,
   togglePlaceGroupedDistrictSelection,
   togglePlaceRegionWhole,
+  toPlaceApiParams,
   validatePlaceFilters,
 } from '../_model/place-filters';
 import { PlaceFilterBar, type PlaceFilterTab } from './place-filter-bar';
@@ -28,7 +29,6 @@ import { PlaceFilterChips } from './place-filter-chips';
 export type { PlaceFilterTab };
 
 export interface PlaceSearchModalProps {
-  allPlaces: readonly PlaceSummary[];
   initialFilters: PlaceFilterState;
   initialTab?: PlaceFilterTab;
   regions: readonly RegionOption[];
@@ -45,7 +45,6 @@ export interface PlaceSearchModalProps {
  * 검색창을 포함하지 않으며, 상단 `PlaceFilterBar`에서 활성화된 탭을 다시 클릭하면 팝업을 닫고 해당 탭으로 포커스를 돌려줍니다.
  */
 export function PlaceSearchModal({
-  allPlaces,
   regions,
   regionNotice,
   regionsReady = true,
@@ -66,7 +65,30 @@ export function PlaceSearchModal({
   const selectedCount = getPlaceFilterCount(draftFilters);
   const hasSearchConditions = Boolean(query.trim() || selectedCount);
   const canSubmit = hasSearchConditions && regionsReady;
-  const previewCount = filterPlaces(allPlaces, query, draftFilters, regions).length;
+  const placesParams = toPlaceApiParams(draftFilters, query, regions);
+  const previewQuery = useInfiniteQuery({
+    ...placesInfiniteQueryOptions(placesParams),
+    enabled: hasSearchConditions && regionsReady,
+  });
+  const previewPages = previewQuery.data?.pages ?? [];
+  const fetchNextPreviewPage = previewQuery.fetchNextPage;
+  const hasNextPreviewPage = previewQuery.hasNextPage;
+  const isFetchingNextPreviewPage = previewQuery.isFetchingNextPage;
+  const isPreviewError = previewQuery.isError;
+  const previewPlaces = Array.from(
+    new Map(
+      previewPages.flatMap((page) => page.content.map((place) => [place.placeId, place])),
+    ).values(),
+  );
+  const previewComplete = !query.trim() || !hasNextPreviewPage;
+  const queryTerms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  const previewCount = queryTerms.length
+    ? previewComplete
+      ? previewPlaces.filter((place) =>
+          queryTerms.every((term) => place.name.toLocaleLowerCase().includes(term)),
+        ).length
+      : undefined
+    : previewPages[0]?.totalElements;
   const regionSelection = draftFilters.regions[0];
   const [viewRegionId, setViewRegionId] = useState<string | null>(
     regionSelection?.regionId ?? regions[0]?.id ?? null,
@@ -85,6 +107,12 @@ export function PlaceSearchModal({
         group.children.some((child) => districtIds.includes(child.id)),
       )?.district.id ?? null);
   const activeDistrict = districtGroups.find((group) => group.district.id === activeDistrictId);
+
+  useEffect(() => {
+    if (query.trim() && hasNextPreviewPage && !isFetchingNextPreviewPage && !isPreviewError) {
+      void fetchNextPreviewPage();
+    }
+  }, [fetchNextPreviewPage, hasNextPreviewPage, isFetchingNextPreviewPage, isPreviewError, query]);
 
   function setDraftFilters(next: PlaceFilterState) {
     setViewDistrictId(activeDistrictId);
@@ -384,10 +412,23 @@ export function PlaceSearchModal({
                   <Button disabled={!canSubmit} onClick={submitSearch} size="sm">
                     {!regionsReady
                       ? '지역 정보 확인 중'
-                      : hasSearchConditions
-                        ? `장소 ${previewCount}곳 보기`
-                        : '장소 보기'}
+                      : !hasSearchConditions
+                        ? '장소 보기'
+                        : isPreviewError
+                          ? '장소 수 확인 실패'
+                          : previewCount === undefined
+                            ? '장소 수 확인 중'
+                            : `장소 ${previewCount}곳 보기`}
                   </Button>
+                  {hasSearchConditions && isPreviewError ? (
+                    <button
+                      className="text-caption-c2 text-text-secondary underline"
+                      onClick={() => void previewQuery.refetch()}
+                      type="button"
+                    >
+                      장소 수 다시 확인
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>

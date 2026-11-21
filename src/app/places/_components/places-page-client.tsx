@@ -1,21 +1,22 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { type ReactNode, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import { TopHeader } from '@/app/_components/top-header';
 import { useSessionStore } from '@/app/_model/session-store';
-import { regionQueryOptions } from '@/shared/api';
+import { placesInfiniteQueryOptions, regionQueryOptions } from '@/shared/api';
 import { Button, SearchBar } from '@/shared/ui';
 
-import type { PlaceSummary } from '../_model/place';
+import { toPlaceSummary } from '../_model/place';
 import {
   getPlaceFilterCount,
   getPlaceRegionFilterCount,
   getPlaceSearchHref,
   normalizePlaceFilters,
   type PlaceFilterState,
+  toPlaceApiParams,
   toPlaceRegions,
   validatePlaceFilters,
 } from '../_model/place-filters';
@@ -25,7 +26,6 @@ import { PlaceSearchResults } from './place-search-results';
 import { PlaceSearchSuggestionPopup } from './place-search-suggestion-popup';
 
 interface PlacesPageClientProps {
-  allPlaces: readonly PlaceSummary[];
   children: ReactNode;
   initialFilters: PlaceFilterState;
   filterParams?: Record<string, string | string[] | undefined>;
@@ -33,7 +33,6 @@ interface PlacesPageClientProps {
 }
 
 export function PlacesPageClient({
-  allPlaces,
   children,
   initialFilters,
   filterParams,
@@ -46,6 +45,48 @@ export function PlacesPageClient({
   const filters = filterParams
     ? normalizePlaceFilters(filterParams, regions)
     : validatePlaceFilters(initialFilters, regions);
+  const isSearchMode = Boolean(initialQuery || getPlaceFilterCount(filters));
+  const placeParams = toPlaceApiParams(filters, initialQuery, regions ?? []);
+  const shouldFetchPlaces = isSearchMode && regions !== undefined;
+  const placesQuery = useInfiniteQuery({
+    ...placesInfiniteQueryOptions(placeParams),
+    enabled: shouldFetchPlaces,
+  });
+  const pages = placesQuery.data?.pages ?? [];
+  const fetchNextPlacesPage = placesQuery.fetchNextPage;
+  const hasNextPlacesPage = placesQuery.hasNextPage;
+  const isFetchingNextPlacesPage = placesQuery.isFetchingNextPage;
+  const isPlacesError = placesQuery.isError;
+  const places = Array.from(
+    new Map(
+      pages.flatMap((page) =>
+        page.content.map((place) => {
+          const summary = toPlaceSummary(place);
+          return [summary.id, summary] as const;
+        }),
+      ),
+    ).values(),
+  );
+  const isSearchComplete = !initialQuery.trim() || !hasNextPlacesPage;
+
+  useEffect(() => {
+    if (
+      shouldFetchPlaces &&
+      initialQuery.trim() &&
+      hasNextPlacesPage &&
+      !isFetchingNextPlacesPage &&
+      !isPlacesError
+    ) {
+      void fetchNextPlacesPage();
+    }
+  }, [
+    initialQuery,
+    fetchNextPlacesPage,
+    hasNextPlacesPage,
+    isFetchingNextPlacesPage,
+    isPlacesError,
+    shouldFetchPlaces,
+  ]);
   const regionNotice = !regions ? (
     <div
       className="flex min-h-48 flex-col items-center justify-center gap-12 py-16 text-caption-c2 text-text-tertiary"
@@ -77,7 +118,6 @@ export function PlacesPageClient({
   const regionTabTriggerRef = useRef<HTMLButtonElement>(null);
   const categoryTabTriggerRef = useRef<HTMLButtonElement>(null);
   const ignoreRestoredFocus = useRef(false);
-  const isSearchMode = Boolean(initialQuery || getPlaceFilterCount(filters));
 
   /**
    * 검색어와 필터를 장소 목록 URL로 직렬화해 이동한다.
@@ -175,7 +215,29 @@ export function PlacesPageClient({
         ) : (
           <PlaceSearchResults
             regions={regions}
-            allPlaces={allPlaces}
+            places={places}
+            totalCount={
+              initialQuery.trim()
+                ? places.filter((place) =>
+                    initialQuery
+                      .trim()
+                      .toLocaleLowerCase()
+                      .split(/\s+/)
+                      .every((term) => place.name.toLocaleLowerCase().includes(term)),
+                  ).length
+                : (pages[0]?.totalElements ?? 0)
+            }
+            isLoading={shouldFetchPlaces && placesQuery.isPending}
+            isError={isPlacesError}
+            isSearchComplete={isSearchComplete}
+            isFetchingNextPage={isFetchingNextPlacesPage}
+            hasNextPage={Boolean(hasNextPlacesPage)}
+            onRetry={() => void placesQuery.refetch()}
+            onLoadMore={() => {
+              if (hasNextPlacesPage && !isFetchingNextPlacesPage) {
+                void fetchNextPlacesPage();
+              }
+            }}
             filters={filters}
             onSearch={navigateWithFilters}
             query={initialQuery}
@@ -187,7 +249,6 @@ export function PlacesPageClient({
 
       {openPanel === 'search' ? (
         <PlaceSearchSuggestionPopup
-          allPlaces={allPlaces}
           onClose={closeSearch}
           onQueryChange={setQueryDraft}
           onSearch={() => submitSearch(queryDraft, filters)}
@@ -199,7 +260,6 @@ export function PlacesPageClient({
         />
       ) : openPanel ? (
         <PlaceSearchModal
-          allPlaces={allPlaces}
           initialFilters={filters}
           initialTab={openPanel}
           onClose={closeSearch}

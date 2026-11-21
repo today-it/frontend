@@ -6,7 +6,6 @@ import { PlaceRecommendationSection } from './_components/place-recommendation-s
 import { PlacesPageClient } from './_components/places-page-client';
 import { normalizePlaceFilters } from './_model/place-filters';
 import { findPlaceSection, placeSections } from './_model/place-sections';
-import { allPlaces } from './_model/recommended-places';
 
 export const metadata: Metadata = {
   title: '장소 목록 | ToDayIt',
@@ -35,7 +34,6 @@ export default async function PlacesPage({
   return (
     <PlacesPageClient
       key={routeKey}
-      allPlaces={allPlaces}
       initialFilters={filters}
       filterParams={params}
       initialQuery={query}

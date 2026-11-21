@@ -8,18 +8,26 @@ import { Button, Icon, LoadMoreButton, ScrollTopButton } from '@/shared/ui';
 import type { PlaceSummary } from '../_model/place';
 import {
   emptyPlaceFilters,
-  filterPlaces,
   getPlaceFilterCount,
   type PlaceFilterState,
   type RegionOption,
 } from '../_model/place-filters';
 import { PlaceCard } from './place-card';
+import { PlaceCardSkeleton } from './place-card-skeleton';
 import { PlaceFilterChips } from './place-filter-chips';
 
 const PAGE_SIZE = 8;
 
 interface PlaceSearchResultsProps {
-  allPlaces: readonly PlaceSummary[];
+  places: readonly PlaceSummary[];
+  totalCount: number;
+  isLoading: boolean;
+  isError: boolean;
+  isSearchComplete: boolean;
+  isFetchingNextPage: boolean;
+  hasNextPage: boolean;
+  onRetry: () => void;
+  onLoadMore: () => void;
   filters: PlaceFilterState;
   regions: readonly RegionOption[];
   query: string;
@@ -27,21 +35,34 @@ interface PlaceSearchResultsProps {
 }
 
 export function PlaceSearchResults({
-  allPlaces,
   regions,
   filters,
   query,
   onSearch,
+  places,
+  totalCount,
+  isLoading,
+  isError,
+  isSearchComplete,
+  isFetchingNextPage,
+  hasNextPage: hasApiNextPage,
+  onRetry,
+  onLoadMore,
 }: PlaceSearchResultsProps) {
   const titleId = useId();
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const openLogin = useLoginModalStore((state) => state.openLogin);
-  const places = filterPlaces(allPlaces, query, filters, regions);
-  const visiblePlaces = places.slice(0, visibleCount);
+  const queryTerms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  const matchedPlaces = queryTerms.length
+    ? places.filter((place) =>
+        queryTerms.every((term) => place.name.toLocaleLowerCase().includes(term)),
+      )
+    : places;
+  const visiblePlaces = matchedPlaces.slice(0, visibleCount);
   const hasQuery = Boolean(query);
   const hasFilters = getPlaceFilterCount(filters) > 0;
   const heading = hasQuery ? `‘${query}’ 검색 결과` : '필터 결과';
-  const hasMore = visibleCount < places.length;
+  const hasMore = visibleCount < matchedPlaces.length || hasApiNextPage;
   const resetLabel =
     hasQuery && hasFilters ? '전체 초기화' : hasFilters ? '필터 초기화' : '검색 초기화';
 
@@ -61,7 +82,9 @@ export function PlaceSearchResults({
                   {heading}
                 </h1>
                 <p aria-live="polite" className="text-body-b2 text-text-secondary">
-                  {places.length}곳을 찾았어요
+                  {isLoading || (hasQuery && !isSearchComplete)
+                    ? '장소를 찾고 있어요'
+                    : `${hasQuery ? matchedPlaces.length : totalCount}곳을 찾았어요`}
                 </p>
               </div>
               <button
@@ -85,7 +108,27 @@ export function PlaceSearchResults({
             ) : null}
           </div>
 
-          {places.length === 0 ? (
+          {isError ? (
+            <section
+              className="flex min-h-[376px] flex-col items-center justify-center gap-16"
+              role="alert"
+            >
+              <h2 className="text-heading-h3 text-text-primary">장소를 불러오지 못했어요</h2>
+              <p className="text-body-b2 text-text-tertiary">잠시 후 다시 시도해 주세요.</p>
+              <Button onClick={onRetry} size="md">
+                다시 시도
+              </Button>
+            </section>
+          ) : isLoading || (hasQuery && !isSearchComplete) ? (
+            <div
+              className="grid grid-cols-1 gap-x-32 gap-y-48 sm:grid-cols-2 lg:grid-cols-4"
+              aria-label="장소 불러오는 중"
+            >
+              {Array.from({ length: 8 }, (_, index) => (
+                <PlaceCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : matchedPlaces.length === 0 && isSearchComplete ? (
             <section
               aria-labelledby={`${titleId}-empty`}
               className="flex min-h-[376px] w-full flex-1 flex-col items-center justify-center gap-24 text-center"
@@ -118,10 +161,15 @@ export function PlaceSearchResults({
               {hasMore ? (
                 <LoadMoreButton
                   className="self-center"
-                  count={`${visiblePlaces.length} / ${places.length}`}
-                  onClick={() =>
-                    setVisibleCount((count) => Math.min(count + PAGE_SIZE, places.length))
-                  }
+                  count={`${visiblePlaces.length} / ${hasQuery ? matchedPlaces.length : totalCount}`}
+                  onClick={() => {
+                    if (visibleCount < matchedPlaces.length) {
+                      setVisibleCount((count) => Math.min(count + PAGE_SIZE, matchedPlaces.length));
+                    } else {
+                      onLoadMore();
+                    }
+                  }}
+                  disabled={isFetchingNextPage}
                 />
               ) : null}
             </>

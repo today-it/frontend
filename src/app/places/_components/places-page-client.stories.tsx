@@ -7,7 +7,6 @@ import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
 import { regionQueryOptions } from '@/shared/api';
 
 import { emptyPlaceFilters } from '../_model/place-filters';
-import { allPlaces } from '../_model/recommended-places';
 import { regionFixtures } from '../_model/regions.fixtures';
 import { PlacesPageClient } from './places-page-client';
 
@@ -29,7 +28,6 @@ const meta = {
     },
   ],
   args: {
-    allPlaces,
     initialFilters: emptyPlaceFilters,
     initialQuery: '',
     children: (
@@ -341,17 +339,14 @@ export const SelectSuggestionOpensDetail: Story = {
 
 export const EncodeSuggestionPlaceId: Story = {
   args: {
-    allPlaces: [{ ...allPlaces[0], id: 'place/with space?name=#test' }],
-    initialQuery: '블루엘리펀트',
+    initialQuery: '도예 원데이 클래스',
   },
   play: async ({ canvasElement }) => {
     getRouter().push.mockClear();
     await userEvent.click(within(canvasElement).getByRole('searchbox'));
     const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 제안' }));
-    await userEvent.click(dialog.getByRole('button', { name: /블루엘리펀트 스페이스 성수/ }));
+    await userEvent.click(dialog.getByRole('button', { name: /도예 원데이 클래스/ }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
-    await expect(getRouter().push).toHaveBeenCalledWith(
-      '/places/place%2Fwith%20space%3Fname%3D%23test',
-    );
+    await expect(getRouter().push).toHaveBeenCalledWith('/places/1');
   },
 };

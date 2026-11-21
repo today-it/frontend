@@ -10,10 +10,18 @@ const meta = {
   title: 'App/Places/PlaceSearchResults',
   component: PlaceSearchResults,
   args: {
-    allPlaces,
+    places: allPlaces,
+    totalCount: allPlaces.length,
+    isLoading: false,
+    isError: false,
+    isSearchComplete: true,
+    isFetchingNextPage: false,
+    hasNextPage: false,
+    onRetry: fn(),
+    onLoadMore: fn(),
     regions: placeRegionFixtures,
     filters: emptyPlaceFilters,
-    query: '성수',
+    query: '',
     onSearch: fn(),
   },
   parameters: { layout: 'fullscreen' },
@@ -34,7 +42,10 @@ export const LoadMore: Story = {
 
 export const RemoveDistrictAndReset: Story = {
   args: {
+    places: allPlaces.filter((place) => place.category === '카페·디저트'),
+    totalCount: 2,
     filters: { regions: [{ regionId: '11', districtIds: ['200'] }], conceptIds: ['cafe'] },
+    query: '성수',
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
@@ -51,6 +62,8 @@ export const RemoveDistrictAndReset: Story = {
 
 export const EmptyResults: Story = {
   args: {
+    places: [],
+    totalCount: 0,
     query: '존재하지않는장소',
     filters: { regions: [{ regionId: '11', districtIds: ['200'] }], conceptIds: ['cafe'] },
   },

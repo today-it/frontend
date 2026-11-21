@@ -35,21 +35,24 @@ export function PlaceCard({
   place,
   eager = false,
   size = 'md',
-  liked = false,
+  liked,
   onLikeClick,
 }: PlaceCardProps) {
   const imageSrc = place.imageSrc;
+  const isLiked = liked ?? place.liked ?? false;
   const likeClassName =
     'relative z-10 inline-flex cursor-pointer items-center gap-4 rounded-full bg-surface-default py-8 pr-12 pl-10 text-caption-c1 text-text-secondary shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-border-active focus-visible:ring-offset-2';
   const likeContent = (
     <>
       <Icon
-        name={liked ? 'favorite-filled' : 'favorite'}
+        name={isLiked ? 'favorite-filled' : 'favorite'}
         size={20}
         tone="inherit"
-        className={liked ? 'text-icon-liked' : 'text-icon-default'}
+        className={isLiked ? 'text-icon-liked' : 'text-icon-default'}
       />
-      <span aria-hidden="true">{compactCount.format(place.likeCount)}</span>
+      {place.likeCount !== undefined ? (
+        <span aria-hidden="true">{compactCount.format(place.likeCount)}</span>
+      ) : null}
     </>
   );
 
@@ -69,13 +72,14 @@ export function PlaceCard({
             loading={eager ? 'eager' : 'lazy'}
             sizes="336px"
             src={imageSrc}
+            unoptimized={imageSrc.startsWith('https://placehold.co/1200x800')}
           />
         ) : (
           <div aria-label={`${place.name} 사진 없음`} className="absolute inset-0" role="img" />
         )}
         <button
-          aria-label={`${place.name} 좋아요 ${count.format(place.likeCount)}개`}
-          aria-pressed={liked}
+          aria-label={`${place.name} 좋아요${place.likeCount === undefined ? '' : ` ${count.format(place.likeCount)}개`}`}
+          aria-pressed={isLiked}
           className={likeClassName}
           onClick={onLikeClick}
           type="button"
@@ -94,8 +98,9 @@ export function PlaceCard({
           </Link>
         </h3>
         <p className="w-full truncate text-body-b3 text-text-secondary">
-          {place.neighborhood} ·{' '}
-          {`★ ${place.rating.toFixed(1)} · 리뷰 ${count.format(place.reviewCount)}`}
+          {place.rating !== undefined && place.reviewCount !== undefined
+            ? `${place.neighborhood} / ★ ${place.rating.toFixed(1)} / 리뷰 ${count.format(place.reviewCount)}`
+            : `${place.address ?? place.neighborhood}${place.viewCount === undefined ? '' : ` / 조회수 ${count.format(place.viewCount)}`}`}
         </p>
       </div>
     </article>

@@ -1,14 +1,15 @@
 'use client';
 
 import { Dialog } from '@base-ui/react/dialog';
+import { useQuery } from '@tanstack/react-query';
 
-import { Icon, ModalBackdrop, ModalTitle, SearchBar } from '@/shared/ui';
+import { getAllPlaces } from '@/shared/api';
+import { Button, Icon, ModalBackdrop, ModalTitle, SearchBar } from '@/shared/ui';
 
 import type { PlaceSummary } from '../_model/place';
+import { toPlaceSummary } from '../_model/place';
 
 export interface PlaceSearchSuggestionPopupProps {
-  /** 제안 후보로 사용할 전체 장소 목록 */
-  allPlaces: readonly PlaceSummary[];
   /** 현재 검색어 입력값 */
   query: string;
   /** 검색어 입력값 변경 핸들러 */
@@ -27,15 +28,27 @@ export interface PlaceSearchSuggestionPopupProps {
  * 전달받은 장소 목록에서 장소 이름(`name`)만 공백 제거 및 대소문자 구분 없이 부분 일치로 찾으며, `neighborhood`는 보조 문구로만 표시합니다. 추천 장소를 선택하면 `onSelect` 콜백을 호출하고, 검색을 실행하면 `onSearch` 콜백을 호출합니다.
  */
 export function PlaceSearchSuggestionPopup({
-  allPlaces,
   query,
   onQueryChange,
   onSearch,
   onClose,
   onSelect,
 }: PlaceSearchSuggestionPopupProps) {
-  // MVP에서는 장소 이름만 부분 검색하고 보조 지역 문구와 카테고리는 매칭에서 제외한다.
   const normalizedQuery = query.trim().toLocaleLowerCase();
+  const placesQuery = useQuery({
+    queryKey: ['places', 'suggestions'],
+    queryFn: ({ signal }) => getAllPlaces({ size: 100 }, { signal }),
+    enabled: Boolean(normalizedQuery),
+    staleTime: 5 * 60 * 1000,
+  });
+  const allPlaces = Array.from(
+    new Map(
+      (placesQuery.data ?? []).map((place) => {
+        const summary = toPlaceSummary(place);
+        return [summary.id, summary] as const;
+      }),
+    ).values(),
+  );
   const suggestions = normalizedQuery
     ? allPlaces.filter((place) => place.name.toLocaleLowerCase().includes(normalizedQuery))
     : [];
@@ -66,7 +79,18 @@ export function PlaceSearchSuggestionPopup({
           />
           <div className="min-h-0 overflow-y-auto rounded-3xl bg-surface-default p-18">
             <p className="py-12 pl-16 text-caption-c1 text-text-muted">장소</p>
-            {suggestions.length > 0 ? (
+            {placesQuery.isError ? (
+              <div className="flex flex-col items-center gap-12 px-16 py-24" role="alert">
+                <p className="text-body-b3 text-text-muted">검색 제안을 불러오지 못했어요.</p>
+                <Button onClick={() => void placesQuery.refetch()} size="sm">
+                  다시 시도
+                </Button>
+              </div>
+            ) : placesQuery.isLoading ? (
+              <p className="px-16 py-24 text-body-b3 text-text-muted" role="status">
+                장소를 검색하고 있어요.
+              </p>
+            ) : suggestions.length > 0 ? (
               <ul>
                 {suggestions.map((place) => (
                   <li key={place.id}>

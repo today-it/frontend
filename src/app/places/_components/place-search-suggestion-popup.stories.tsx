@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
 import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test';
 
-import { allPlaces } from '../_model/recommended-places';
 import { PlaceSearchSuggestionPopup } from './place-search-suggestion-popup';
 
 const onSearch = fn();
@@ -12,7 +11,6 @@ function SuggestionHarness({ initialQuery = '' }: { initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery);
   return (
     <PlaceSearchSuggestionPopup
-      allPlaces={allPlaces}
       onClose={() => {}}
       onQueryChange={setQuery}
       onSearch={onSearch}
@@ -54,19 +52,17 @@ export const EmptyQuery: Story = {
 };
 
 export const NameMatchesAndNoAddressMatches: Story = {
-  render: () => <SuggestionHarness initialQuery="성수" />,
+  render: () => <SuggestionHarness initialQuery="도예" />,
   play: async () => {
     const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 제안' }));
-    const expected = allPlaces.filter((place) => place.name.includes('성수'));
-    await expect(dialog.getAllByRole('listitem')).toHaveLength(expected.length);
-    await expect(dialog.queryByText('서울숲')).not.toBeInTheDocument();
+    await expect(dialog.getByText('도예 원데이 클래스')).toBeVisible();
     const input = dialog.getByRole('searchbox');
     await userEvent.clear(input);
-    await userEvent.type(input, 'lcdc');
-    await expect(dialog.getByText('LCDC 서울')).toBeVisible();
-    await userEvent.click(dialog.getByRole('button', { name: /LCDC 서울/ }));
+    await userEvent.type(input, '종로 카페거리');
+    await expect(dialog.getByText('종로 카페거리')).toBeVisible();
+    await userEvent.click(dialog.getByRole('button', { name: /종로 카페거리/ }));
     await expect(onSelect).toHaveBeenCalledWith(
-      allPlaces.find((place) => place.name === 'LCDC 서울'),
+      expect.objectContaining({ id: '12', name: '종로 카페거리' }),
     );
     await userEvent.click(input);
     await userEvent.keyboard('{Enter}');
@@ -84,7 +80,7 @@ export const NoMatches: Story = {
 };
 
 export const KeyboardFocusStaysInside: Story = {
-  render: () => <SuggestionHarness initialQuery="성수" />,
+  render: () => <SuggestionHarness initialQuery="도예" />,
   play: async () => {
     const dialog = await screen.findByRole('dialog', { name: '장소 검색 제안' });
     const input = within(dialog).getByRole('searchbox');
@@ -98,7 +94,7 @@ export const KeyboardFocusStaysInside: Story = {
 };
 
 export const SuggestionDimensions: Story = {
-  render: () => <SuggestionHarness initialQuery="성수" />,
+  render: () => <SuggestionHarness initialQuery="도예" />,
   play: async () => {
     const popup = await screen.findByRole('dialog', { name: '장소 검색 제안' });
     const row = within(popup).getAllByRole('listitem')[0].querySelector('button')!;
