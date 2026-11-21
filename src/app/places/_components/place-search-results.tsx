@@ -149,7 +149,7 @@ export function PlaceSearchResults({
             <>
               <h2 className="sr-only">검색된 장소 목록</h2>
               <div
-                className="grid grid-cols-1 gap-x-32 gap-y-48 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+                className="grid grid-cols-1 gap-x-32 gap-y-48 sm:grid-cols-2 lg:grid-cols-4"
                 role="list"
               >
                 {visiblePlaces.map((place, index) => (
