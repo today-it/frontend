@@ -154,7 +154,14 @@ export const PreserveQueryAndFiltersOnClose: Story = {
       'true',
     );
     await expect(within(dialog2).queryByRole('searchbox')).not.toBeInTheDocument();
-    await userEvent.click(within(dialog2).getByRole('button', { name: '부산 지역 선택' }));
+    await userEvent.click(within(dialog2).getByRole('button', { name: '부산' }));
+    await userEvent.click(within(dialog2).getByRole('checkbox', { name: '중구' }));
+    await expect(
+      within(dialog2).getByRole('button', { name: '중구 필터 해제' }),
+    ).toBeInTheDocument();
+    await expect(
+      within(dialog2).queryByRole('button', { name: '성동구 필터 해제' }),
+    ).not.toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     await waitFor(() => expect(regionTab).toHaveFocus());
@@ -241,7 +248,12 @@ export const SubmitSearchKeepsAppliedFiltersOnly: Story = {
     getRouter().push.mockClear();
     await userEvent.click(canvas.getByRole('button', { name: '지역 필터' }));
     const filter = within(await screen.findByRole('dialog', { name: '장소 필터' }));
-    await userEvent.click(filter.getByRole('button', { name: '부산 지역 선택' }));
+    await userEvent.click(filter.getByRole('button', { name: '부산' }));
+    await userEvent.click(filter.getByRole('checkbox', { name: '중구' }));
+    await expect(filter.getByRole('button', { name: '중구 필터 해제' })).toBeInTheDocument();
+    await expect(
+      filter.queryByRole('button', { name: '성동구 필터 해제' }),
+    ).not.toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     await userEvent.click(canvas.getByRole('searchbox'));
@@ -270,7 +282,8 @@ export const ApplyFiltersKeepsQueryDraft: Story = {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     await userEvent.click(canvas.getByRole('button', { name: '지역 필터' }));
     const filter = within(await screen.findByRole('dialog', { name: '장소 필터' }));
-    await userEvent.click(filter.getByRole('button', { name: '서울 지역 선택' }));
+    await userEvent.click(filter.getByRole('button', { name: '서울' }));
+    await userEvent.click(filter.getByRole('checkbox', { name: '전체' }));
     await userEvent.click(filter.getByRole('button', { name: /장소 \d+곳 보기/ }));
     await waitFor(() => expect(getRouter().push).toHaveBeenCalledTimes(1));
     const href = getRouter().push.mock.calls[0][0];

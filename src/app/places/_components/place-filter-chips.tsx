@@ -40,7 +40,7 @@ export function PlaceFilterChips({ filters, onChange, regions }: PlaceFilterChip
                   regions: filters.regions.flatMap((entry) => {
                     if (entry.regionId !== region.regionId) return [entry];
                     const districtIds = entry.districtIds.filter((id) => id !== districtId);
-                    return [{ ...entry, districtIds }];
+                    return districtIds.length ? [{ ...entry, districtIds }] : [];
                   }),
                 })
               }
