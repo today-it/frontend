@@ -48,6 +48,14 @@ const placesParamsSchema = z.object({
   sort: z.literal('LATEST').default('LATEST'),
 });
 
+export const placeSearchParamsSchema = z.object({
+  keyword: z.string().trim(),
+  page: z.number().int().nonnegative().default(0),
+  size: z.number().int().min(1).max(100).default(20),
+});
+
+export type PlaceSearchParams = z.input<typeof placeSearchParamsSchema>;
+
 export type PlaceCategory = z.infer<typeof placeCategorySchema>;
 export type PlaceRegionFilter = z.infer<typeof placeRegionFilterSchema>;
 export type Place = z.infer<typeof placeSchema>;
@@ -94,8 +102,9 @@ export async function getAllPlaces(
 
 export function placesInfiniteQueryOptions(params: PlacesParams = {}) {
   const request = serializePlacesParams(params);
+  const queryKey: readonly unknown[] = ['places', 'infinite', request, params.query ?? ''];
   return infiniteQueryOptions({
-    queryKey: ['places', 'infinite', request, params.query ?? ''],
+    queryKey,
     initialPageParam: 0,
     queryFn: ({ pageParam, signal }) => getPlaces({ ...params, page: pageParam }, { signal }),
     getNextPageParam: (lastPage) =>
@@ -105,4 +114,27 @@ export function placesInfiniteQueryOptions(params: PlacesParams = {}) {
 
 export function usePlacesInfiniteQuery(params: PlacesParams = {}) {
   return useInfiniteQuery(placesInfiniteQueryOptions(params));
+}
+
+export async function searchPlaces(
+  params: PlaceSearchParams,
+  { signal }: RequestOptions = {},
+): Promise<PlacesPage> {
+  const data = await apiRequest<unknown>('/api/v1/places/search', {
+    query: placeSearchParamsSchema.parse(params),
+    signal,
+  });
+  return placesPageSchema.parse(data);
+}
+
+export function placeSearchInfiniteQueryOptions(params: Omit<PlaceSearchParams, 'page'>) {
+  const request = placeSearchParamsSchema.parse(params);
+  const queryKey: readonly unknown[] = ['places', 'search', request];
+  return infiniteQueryOptions({
+    queryKey,
+    initialPageParam: 0,
+    queryFn: ({ pageParam, signal }) => searchPlaces({ ...request, page: pageParam }, { signal }),
+    getNextPageParam: (lastPage) =>
+      lastPage.page + 1 < lastPage.totalPages ? lastPage.page + 1 : undefined,
+  });
 }

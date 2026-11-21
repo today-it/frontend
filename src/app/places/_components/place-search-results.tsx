@@ -53,11 +53,12 @@ export function PlaceSearchResults({
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const openLogin = useLoginModalStore((state) => state.openLogin);
   const queryTerms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  const matchedPlaces = queryTerms.length
-    ? places.filter((place) =>
-        queryTerms.every((term) => place.name.toLocaleLowerCase().includes(term)),
-      )
-    : places;
+  const matchedPlaces =
+    queryTerms.length && getPlaceFilterCount(filters) > 0
+      ? places.filter((place) =>
+          queryTerms.every((term) => place.name.toLocaleLowerCase().includes(term)),
+        )
+      : places;
   const visiblePlaces = matchedPlaces.slice(0, visibleCount);
   const hasQuery = Boolean(query);
   const hasFilters = getPlaceFilterCount(filters) > 0;
@@ -84,7 +85,7 @@ export function PlaceSearchResults({
                 <p aria-live="polite" className="text-body-b2 text-text-secondary">
                   {isLoading || (hasQuery && !isSearchComplete)
                     ? '장소를 찾고 있어요'
-                    : `${hasQuery ? matchedPlaces.length : totalCount}곳을 찾았어요`}
+                    : `${hasQuery && hasFilters ? matchedPlaces.length : totalCount}곳을 찾았어요`}
                 </p>
               </div>
               <button
@@ -161,11 +162,12 @@ export function PlaceSearchResults({
               {hasMore ? (
                 <LoadMoreButton
                   className="self-center"
-                  count={`${visiblePlaces.length} / ${hasQuery ? matchedPlaces.length : totalCount}`}
+                  count={`${visiblePlaces.length} / ${hasQuery && hasFilters ? matchedPlaces.length : totalCount}`}
                   onClick={() => {
                     if (visibleCount < matchedPlaces.length) {
                       setVisibleCount((count) => Math.min(count + PAGE_SIZE, matchedPlaces.length));
                     } else {
+                      setVisibleCount((count) => count + PAGE_SIZE);
                       onLoadMore();
                     }
                   }}

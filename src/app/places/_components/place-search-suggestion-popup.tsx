@@ -1,9 +1,10 @@
 'use client';
 
 import { Dialog } from '@base-ui/react/dialog';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useEffect, useRef } from 'react';
 
-import { getAllPlaces } from '@/shared/api';
+import { placeSearchInfiniteQueryOptions } from '@/shared/api';
 import { Button, Icon, ModalBackdrop, ModalTitle, SearchBar } from '@/shared/ui';
 
 import type { PlaceSummary } from '../_model/place';
@@ -25,7 +26,7 @@ export interface PlaceSearchSuggestionPopupProps {
 /**
  * 장소 검색창 포커스 또는 클릭 시 열리는 검색 제안 전용 팝업 컴포넌트입니다.
  *
- * 전달받은 장소 목록에서 장소 이름(`name`)만 공백 제거 및 대소문자 구분 없이 부분 일치로 찾으며, `neighborhood`는 보조 문구로만 표시합니다. 추천 장소를 선택하면 `onSelect` 콜백을 호출하고, 검색을 실행하면 `onSearch` 콜백을 호출합니다.
+ * 장소 이름 검색 API의 정렬 순서대로 추천하며, `neighborhood`는 보조 문구로만 표시합니다. 추천 장소를 선택하면 `onSelect` 콜백을 호출하고, 검색을 실행하면 `onSearch` 콜백을 호출합니다.
  */
 export function PlaceSearchSuggestionPopup({
   query,
@@ -34,24 +35,68 @@ export function PlaceSearchSuggestionPopup({
   onClose,
   onSelect,
 }: PlaceSearchSuggestionPopupProps) {
-  const normalizedQuery = query.trim().toLocaleLowerCase();
-  const placesQuery = useQuery({
-    queryKey: ['places', 'suggestions'],
-    queryFn: ({ signal }) => getAllPlaces({ size: 100 }, { signal }),
+  const normalizedQuery = query.trim();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const loadMoreTriggerRef = useRef<HTMLDivElement>(null);
+  const placesQuery = useInfiniteQuery({
+    ...placeSearchInfiniteQueryOptions({ keyword: normalizedQuery }),
     enabled: Boolean(normalizedQuery),
     staleTime: 5 * 60 * 1000,
   });
   const allPlaces = Array.from(
     new Map(
-      (placesQuery.data ?? []).map((place) => {
+      (placesQuery.data?.pages.flatMap((page) => page.content) ?? []).map((place) => {
         const summary = toPlaceSummary(place);
         return [summary.id, summary] as const;
       }),
     ).values(),
   );
-  const suggestions = normalizedQuery
-    ? allPlaces.filter((place) => place.name.toLocaleLowerCase().includes(normalizedQuery))
-    : [];
+  const suggestions = normalizedQuery ? allPlaces : [];
+  const { fetchNextPage, hasNextPage, isFetchNextPageError, isFetchingNextPage } = placesQuery;
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [normalizedQuery]);
+
+  useEffect(() => {
+    const root = scrollContainerRef.current;
+    const target = loadMoreTriggerRef.current;
+
+    if (
+      !root ||
+      !target ||
+      !normalizedQuery ||
+      !hasNextPage ||
+      isFetchingNextPage ||
+      isFetchNextPageError
+    ) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          void fetchNextPage();
+        }
+      },
+      {
+        root,
+        rootMargin: '0px 0px 80px 0px',
+      },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [
+    fetchNextPage,
+    hasNextPage,
+    isFetchNextPageError,
+    isFetchingNextPage,
+    normalizedQuery,
+    suggestions.length,
+  ]);
 
   return (
     <Dialog.Root
@@ -77,9 +122,12 @@ export function PlaceSearchSuggestionPopup({
             onValueChange={onQueryChange}
             value={query}
           />
-          <div className="min-h-0 overflow-y-auto rounded-3xl bg-surface-default p-18">
+          <div
+            ref={scrollContainerRef}
+            className="max-h-[402px] min-h-0 overflow-y-auto rounded-3xl bg-surface-default p-18"
+          >
             <p className="py-12 pl-16 text-caption-c1 text-text-muted">장소</p>
-            {placesQuery.isError ? (
+            {placesQuery.isError && suggestions.length === 0 ? (
               <div className="flex flex-col items-center gap-12 px-16 py-24" role="alert">
                 <p className="text-body-b3 text-text-muted">검색 제안을 불러오지 못했어요.</p>
                 <Button onClick={() => void placesQuery.refetch()} size="sm">
@@ -122,6 +170,22 @@ export function PlaceSearchSuggestionPopup({
                 {normalizedQuery ? '검색한 장소가 없어요.' : '장소 이름을 입력해주세요.'}
               </p>
             )}
+            {placesQuery.isFetchingNextPage ? (
+              <p className="px-16 py-12 text-center text-body-b3 text-text-muted" role="status">
+                장소를 더 불러오고 있어요.
+              </p>
+            ) : null}
+            {placesQuery.isFetchNextPageError ? (
+              <div className="flex flex-col items-center gap-12 px-16 py-12" role="alert">
+                <p className="text-body-b3 text-text-muted">장소를 더 불러오지 못했어요.</p>
+                <Button onClick={() => void placesQuery.fetchNextPage()} size="sm">
+                  다시 시도
+                </Button>
+              </div>
+            ) : null}
+            {placesQuery.hasNextPage && !placesQuery.isFetchNextPageError ? (
+              <div aria-hidden="true" className="h-1" ref={loadMoreTriggerRef} />
+            ) : null}
           </div>
         </Dialog.Popup>
       </Dialog.Portal>

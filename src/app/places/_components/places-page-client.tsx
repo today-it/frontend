@@ -6,7 +6,11 @@ import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import { TopHeader } from '@/app/_components/top-header';
 import { useSessionStore } from '@/app/_model/session-store';
-import { placesInfiniteQueryOptions, regionQueryOptions } from '@/shared/api';
+import {
+  placeSearchInfiniteQueryOptions,
+  placesInfiniteQueryOptions,
+  regionQueryOptions,
+} from '@/shared/api';
 import { Button, SearchBar } from '@/shared/ui';
 
 import { toPlaceSummary } from '../_model/place';
@@ -46,10 +50,13 @@ export function PlacesPageClient({
     ? normalizePlaceFilters(filterParams, regions)
     : validatePlaceFilters(initialFilters, regions);
   const isSearchMode = Boolean(initialQuery || getPlaceFilterCount(filters));
+  const isNameOnlySearch = Boolean(initialQuery.trim()) && getPlaceFilterCount(filters) === 0;
   const placeParams = toPlaceApiParams(filters, initialQuery, regions ?? []);
-  const shouldFetchPlaces = isSearchMode && regions !== undefined;
+  const shouldFetchPlaces = isSearchMode && (isNameOnlySearch || regions !== undefined);
   const placesQuery = useInfiniteQuery({
-    ...placesInfiniteQueryOptions(placeParams),
+    ...(isNameOnlySearch
+      ? placeSearchInfiniteQueryOptions({ keyword: initialQuery })
+      : placesInfiniteQueryOptions(placeParams)),
     enabled: shouldFetchPlaces,
   });
   const pages = placesQuery.data?.pages ?? [];
@@ -67,11 +74,12 @@ export function PlacesPageClient({
       ),
     ).values(),
   );
-  const isSearchComplete = !initialQuery.trim() || !hasNextPlacesPage;
+  const isSearchComplete = isNameOnlySearch || !initialQuery.trim() || !hasNextPlacesPage;
 
   useEffect(() => {
     if (
       shouldFetchPlaces &&
+      !isNameOnlySearch &&
       initialQuery.trim() &&
       hasNextPlacesPage &&
       !isFetchingNextPlacesPage &&
@@ -81,6 +89,7 @@ export function PlacesPageClient({
     }
   }, [
     initialQuery,
+    isNameOnlySearch,
     fetchNextPlacesPage,
     hasNextPlacesPage,
     isFetchingNextPlacesPage,
@@ -210,14 +219,14 @@ export function PlacesPageClient({
       />
 
       {isSearchMode ? (
-        !regions ? (
+        !regions && !isNameOnlySearch ? (
           <main className="mx-auto w-full max-w-search-bar-width px-24 py-48">{regionNotice}</main>
         ) : (
           <PlaceSearchResults
-            regions={regions}
+            regions={regions ?? []}
             places={places}
             totalCount={
-              initialQuery.trim()
+              initialQuery.trim() && !isNameOnlySearch
                 ? places.filter((place) =>
                     initialQuery
                       .trim()

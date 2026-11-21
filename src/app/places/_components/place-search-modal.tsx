@@ -4,7 +4,7 @@ import { Dialog } from '@base-ui/react/dialog';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 
-import { placesInfiniteQueryOptions } from '@/shared/api';
+import { placeSearchInfiniteQueryOptions, placesInfiniteQueryOptions } from '@/shared/api';
 import { cn } from '@/shared/lib';
 import { Button, Chip, Icon, ModalBackdrop, ModalTitle, RegionRow } from '@/shared/ui';
 
@@ -65,9 +65,12 @@ export function PlaceSearchModal({
   const selectedCount = getPlaceFilterCount(draftFilters);
   const hasSearchConditions = Boolean(query.trim() || selectedCount);
   const canSubmit = hasSearchConditions && regionsReady;
+  const isNameOnlySearch = Boolean(query.trim()) && selectedCount === 0;
   const placesParams = toPlaceApiParams(draftFilters, query, regions);
   const previewQuery = useInfiniteQuery({
-    ...placesInfiniteQueryOptions(placesParams),
+    ...(isNameOnlySearch
+      ? placeSearchInfiniteQueryOptions({ keyword: query })
+      : placesInfiniteQueryOptions(placesParams)),
     enabled: hasSearchConditions && regionsReady,
   });
   const previewPages = previewQuery.data?.pages ?? [];
@@ -80,15 +83,16 @@ export function PlaceSearchModal({
       previewPages.flatMap((page) => page.content.map((place) => [place.placeId, place])),
     ).values(),
   );
-  const previewComplete = !query.trim() || !hasNextPreviewPage;
+  const previewComplete = isNameOnlySearch || !query.trim() || !hasNextPreviewPage;
   const queryTerms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  const previewCount = queryTerms.length
-    ? previewComplete
-      ? previewPlaces.filter((place) =>
-          queryTerms.every((term) => place.name.toLocaleLowerCase().includes(term)),
-        ).length
-      : undefined
-    : previewPages[0]?.totalElements;
+  const previewCount =
+    queryTerms.length && !isNameOnlySearch
+      ? previewComplete
+        ? previewPlaces.filter((place) =>
+            queryTerms.every((term) => place.name.toLocaleLowerCase().includes(term)),
+          ).length
+        : undefined
+      : previewPages[0]?.totalElements;
   const regionSelection = draftFilters.regions[0];
   const [viewRegionId, setViewRegionId] = useState<string | null>(
     regionSelection?.regionId ?? regions[0]?.id ?? null,
@@ -109,10 +113,23 @@ export function PlaceSearchModal({
   const activeDistrict = districtGroups.find((group) => group.district.id === activeDistrictId);
 
   useEffect(() => {
-    if (query.trim() && hasNextPreviewPage && !isFetchingNextPreviewPage && !isPreviewError) {
+    if (
+      !isNameOnlySearch &&
+      query.trim() &&
+      hasNextPreviewPage &&
+      !isFetchingNextPreviewPage &&
+      !isPreviewError
+    ) {
       void fetchNextPreviewPage();
     }
-  }, [fetchNextPreviewPage, hasNextPreviewPage, isFetchingNextPreviewPage, isPreviewError, query]);
+  }, [
+    fetchNextPreviewPage,
+    hasNextPreviewPage,
+    isFetchingNextPreviewPage,
+    isPreviewError,
+    isNameOnlySearch,
+    query,
+  ]);
 
   function setDraftFilters(next: PlaceFilterState) {
     setViewDistrictId(activeDistrictId);
