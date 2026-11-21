@@ -32,6 +32,31 @@ export const placeSchema = z.object({
   imageUrls: z.array(z.string()),
 });
 
+export const placeDetailSchema = z.object({
+  placeId: z.number().int(),
+  name: z.string(),
+  category: placeCategorySchema,
+  address: z.string(),
+  location: z.object({ latitude: z.number(), longitude: z.number() }),
+  description: z.string().nullable(),
+  openingHours: z.array(
+    z.object({
+      openDate: z.string(),
+      startAt: z.string().nullable(),
+      endAt: z.string().nullable(),
+      breakStartAt: z.string().nullable(),
+      breakEndAt: z.string().nullable(),
+    }),
+  ),
+  images: z.array(z.string()),
+  averageStayMinutes: z.number().nonnegative(),
+  liked: z.boolean(),
+  scrapped: z.boolean(),
+  visitorInfo: z.record(z.string(), z.string()),
+});
+
+export type PlaceDetailResponse = z.infer<typeof placeDetailSchema>;
+
 export const placesPageSchema = z.object({
   content: z.array(placeSchema),
   page: z.number().int().nonnegative(),
@@ -137,4 +162,13 @@ export function placeSearchInfiniteQueryOptions(params: Omit<PlaceSearchParams, 
     getNextPageParam: (lastPage) =>
       lastPage.page + 1 < lastPage.totalPages ? lastPage.page + 1 : undefined,
   });
+}
+
+export async function getPlaceDetail(
+  placeId: number,
+  { signal }: RequestOptions = {},
+): Promise<PlaceDetailResponse> {
+  z.number().int().safe().parse(placeId);
+  const data = await apiRequest<unknown>(`/api/v1/places/${placeId}`, { signal });
+  return placeDetailSchema.parse(data);
 }

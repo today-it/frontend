@@ -2,10 +2,13 @@ export type { ApiRequestOptions } from './api-client';
 export { ApiError, apiRequest, isApiError } from './api-client';
 export {
   getAllPlaces,
+  getPlaceDetail,
   getPlaces,
   type Place,
   type PlaceCategory,
   placeCategorySchema,
+  type PlaceDetailResponse,
+  placeDetailSchema,
   type PlaceRegionFilter,
   placeRegionFilterSchema,
   placeSchema,

@@ -70,6 +70,17 @@ function PlaceDetailContent({
   const [dialog, setDialog] = useState<'map' | 'directions' | 'course' | 'scraps' | null>(null);
   const copying = useRef(false);
   const menus = filterPlaceMenus(place.menus, category);
+  const amenities = place.visitorInfo
+    ? place.visitorInfo.map(({ label, value }) => ({
+        id: label,
+        icon: 'info' as const,
+        label: value,
+      }))
+    : place.amenities.map((amenity) => ({
+        id: amenity,
+        icon: amenity,
+        label: amenityLabels[amenity],
+      }));
   const courses = expandedCourses ? place.courses : place.courses.slice(0, 4);
   const photoIndex = Math.min(photo, Math.max(0, place.photoCount - 1));
 
@@ -239,12 +250,12 @@ function PlaceDetailContent({
               <p className="text-body-b1 leading-32 break-keep text-text-secondary">
                 {place.description || '등록된 소개가 없어요.'}
               </p>
-              {place.amenities.length > 0 ? (
+              {amenities.length > 0 ? (
                 <ul aria-label="편의 정보" className="flex flex-wrap gap-x-24 gap-y-16 pt-16">
-                  {place.amenities.map((amenity, index) => (
-                    <li className="flex items-center gap-24" key={amenity}>
+                  {amenities.map((amenity, index) => (
+                    <li className="flex items-center gap-24" key={amenity.id}>
                       {index > 0 && <Divider type="vertical" className="h-24" />}
-                      <InfoTag icon={amenity}>{amenityLabels[amenity]}</InfoTag>
+                      <InfoTag icon={amenity.icon}>{amenity.label}</InfoTag>
                     </li>
                   ))}
                 </ul>
@@ -354,15 +365,7 @@ function PlaceDetailContent({
               { label: '위치', value: place.location || place.address },
               {
                 label: '영업시간',
-                value: place.hours ? (
-                  <>
-                    <span className="text-text-success">영업 중</span>
-                    {' / '}
-                    {place.hours}
-                  </>
-                ) : (
-                  '영업시간 정보를 확인할 수 없어요'
-                ),
+                value: place.hours || '영업시간 정보를 확인할 수 없어요',
               },
               { label: '전화', value: place.phone || '전화번호 정보가 없어요' },
             ]}

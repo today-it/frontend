@@ -1,3 +1,7 @@
+import type { PlaceDetailResponse } from '@/shared/api';
+
+import { placeConcepts } from '../../_model/place-filters';
+
 export const menuCategories = ['전체', '커피', '음료', '디저트'] as const;
 export type MenuCategory = (typeof menuCategories)[number];
 
@@ -23,6 +27,7 @@ export interface PlaceDetail {
   hours: string | null;
   phone: string | null;
   amenities: ('parking' | 'pets' | 'walk-in' | 'indoor')[];
+  visitorInfo?: { label: string; value: string }[];
   menus: PlaceMenu[];
   courses: {
     id: string;
@@ -87,4 +92,38 @@ export const placeDetailWithImagesFixture: PlaceDetail = {
 
 export function getNextPhoto(current: number, direction: -1 | 1, total: number) {
   return total > 0 ? (current + direction + total) % total : 0;
+}
+
+export function mapPlaceDetail(place: PlaceDetailResponse): PlaceDetail {
+  const timeLabel = (value: string) => (value.split('T')[1] ?? value).slice(0, 5);
+  const hours = place.openingHours.map((entry) => {
+    const time =
+      entry.startAt && entry.endAt ? `${timeLabel(entry.startAt)} ~ ${timeLabel(entry.endAt)}` : '';
+    const breakTime =
+      entry.breakStartAt && entry.breakEndAt
+        ? `휴게시간 ${timeLabel(entry.breakStartAt)} ~ ${timeLabel(entry.breakEndAt)}`
+        : '';
+    return [entry.openDate.split('T')[0], time, breakTime].filter(Boolean).join(' / ');
+  });
+
+  return {
+    id: String(place.placeId),
+    name: place.name,
+    category:
+      placeConcepts.find((concept) => concept.apiCategory === place.category)?.label ??
+      place.category,
+    address: place.address,
+    description: place.description ?? '',
+    photoCount: place.images.length,
+    photos: place.images,
+    location: `위도 ${place.location.latitude} / 경도 ${place.location.longitude}`,
+    hours: hours.filter(Boolean).join(' / ') || null,
+    phone: null,
+    amenities: [],
+    visitorInfo: Object.entries(place.visitorInfo).flatMap(([label, value]) =>
+      value ? [{ label, value }] : [],
+    ),
+    menus: [],
+    courses: [],
+  };
 }
