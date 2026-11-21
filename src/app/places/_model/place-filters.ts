@@ -1,4 +1,4 @@
-import type { Region } from '@/shared/api';
+import type { PlaceCategory, Region } from '@/shared/api';
 
 import type { PlaceSummary } from './place';
 
@@ -121,16 +121,65 @@ export function toPlaceRegions(regions: readonly Region[]): RegionOption[] {
 }
 
 export const placeConcepts = [
-  { id: 'restaurant', label: '음식점', categoryTerms: ['음식점'] },
-  { id: 'cafe', label: '카페·디저트', categoryTerms: ['카페'] },
-  { id: 'exhibition', label: '전시·박물관', categoryTerms: ['전시'] },
-  { id: 'performance', label: '공연', categoryTerms: ['공연'] },
-  { id: 'experience', label: '체험', categoryTerms: ['체험'] },
-  { id: 'leisure', label: '놀이·레저', categoryTerms: ['놀거리', '놀이', '레저'] },
-  { id: 'nature', label: '자연·산책', categoryTerms: ['자연', '산책'] },
-  { id: 'shopping', label: '쇼핑', categoryTerms: ['쇼핑'] },
-  { id: 'landmark', label: '명소·전망', categoryTerms: ['명소', '전망'] },
+  { id: 'restaurant', label: '음식점', categoryTerms: ['음식점'], apiCategory: 'RESTAURANT' },
+  { id: 'cafe', label: '카페·디저트', categoryTerms: ['카페'], apiCategory: 'CAFE_DESSERT' },
+  {
+    id: 'exhibition',
+    label: '전시·박물관',
+    categoryTerms: ['전시'],
+    apiCategory: 'EXHIBITION_MUSEUM',
+  },
+  { id: 'performance', label: '공연', categoryTerms: ['공연'], apiCategory: 'PERFORMANCE' },
+  { id: 'experience', label: '체험', categoryTerms: ['체험'], apiCategory: 'EXPERIENCE' },
+  {
+    id: 'leisure',
+    label: '놀이·레저',
+    categoryTerms: ['놀거리', '놀이', '레저'],
+    apiCategory: 'PLAY_LEISURE',
+  },
+  { id: 'nature', label: '자연·산책', categoryTerms: ['자연', '산책'], apiCategory: 'NATURE_WALK' },
+  { id: 'shopping', label: '쇼핑', categoryTerms: ['쇼핑'], apiCategory: 'SHOPPING' },
+  {
+    id: 'landmark',
+    label: '명소·전망',
+    categoryTerms: ['명소', '전망'],
+    apiCategory: 'LANDMARK_VIEW',
+  },
 ] as const;
+
+/** 선택한 화면 필터를 장소 목록 API 파라미터로 변환한다. */
+export function toPlaceApiParams(
+  filters: PlaceFilterState,
+  query = '',
+  regions: readonly RegionOption[] = [],
+) {
+  const selectedCategories = placeConcepts.filter((concept) =>
+    filters.conceptIds.includes(concept.id),
+  );
+  return {
+    ...(filters.regions.length
+      ? {
+          regions: filters.regions.map(({ regionId, districtIds }) => {
+            if (districtIds.length === 0) return { sidoCode: regionId, sigunguCodes: [] };
+            const region = regions.find((item) => item.id === regionId);
+            const groups = region ? getPlaceDistrictGroups(region) : [];
+            const sigunguCodes = districtIds.flatMap((districtId) => {
+              const group = groups.find(({ district }) => district.id === districtId);
+              return group?.children.length
+                ? [districtId, ...group.children.map((child) => child.id)]
+                : [districtId];
+            });
+            return { sidoCode: regionId, sigunguCodes: [...new Set(sigunguCodes)] };
+          }),
+        }
+      : {}),
+    ...(selectedCategories.length
+      ? { categories: selectedCategories.map((concept) => concept.apiCategory as PlaceCategory) }
+      : {}),
+    query,
+    ...(query.trim() ? { size: 100 } : {}),
+  };
+}
 
 export const emptyPlaceFilters: PlaceFilterState = {
   regions: [],
