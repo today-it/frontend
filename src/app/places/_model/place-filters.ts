@@ -12,16 +12,45 @@ export interface PlaceFilterState {
   conceptIds: string[];
 }
 
+/** 시/도 식별자와 표시 이름 및 평면 구/군 목록 */
 export interface RegionOption {
   id: string;
   label: string;
-  districts: readonly { id: string; label: string }[];
+  districts: readonly { id: string; label: string; parentId?: string; shortLabel?: string }[];
+}
+
+/** 2열 시/군/구 항목과 3열 세부 지역 하위 목록 묶음 */
+export interface PlaceDistrictGroup {
+  district: RegionOption['districts'][number];
+  children: readonly RegionOption['districts'][number][];
+}
+
+/**
+ * 시/도의 구/군 목록을 `parentId` 기준으로 2열 시/군/구와 3열 세부 지역 그룹으로 묶는다.
+ * 부모가 없는 항목은 단독 그룹으로 유지하고, 자식 항목은 부모의 `children` 배열로 분류한다.
+ *
+ * @param region 구/군 목록이 포함된 시/도 옵션
+ * @returns 2열 시/군/구 및 3열 세부 지역 계층 그룹 목록
+ */
+export function getPlaceDistrictGroups(region: RegionOption): PlaceDistrictGroup[] {
+  const groups = region.districts.map((district) => ({
+    district,
+    children: [] as RegionOption['districts'][number][],
+  }));
+  const byId = new Map(groups.map((group) => [group.district.id, group]));
+  return groups.filter((group) => {
+    const parentId = group.district.parentId;
+    const parent = parentId ? byId.get(parentId) : undefined;
+    if (!parent || parent === group) return true;
+    parent.children.push(group.district);
+    return false;
+  });
 }
 
 export const MAX_PLACE_FILTERS = 12;
 export const MAX_PLACE_DISTRICTS = 3;
 
-/** 서버 이름은 유지하고, 좁은 시/도 탭에만 기존 약칭을 사용합니다. */
+/** 서버 이름은 유지하고 좁은 시/도 탭에만 적용하는 약칭 매핑 */
 const regionLabels: Record<string, string> = {
   '11': '서울',
   '12': '전남광주',
@@ -60,15 +89,27 @@ const regionOrder = [
   '50',
 ];
 
+/**
+ * API 지역 응답 목록을 장소 필터에서 사용하는 시/도 및 평면 구/군 목록 구조로 변환한다.
+ * 하위 `subRegions`는 부모 이름을 접두어로 붙인 전체 이름(`label`), 짧은 이름(`shortLabel`), `parentId`를 갖는 평면 항목으로 펼치고 정해진 시/도 순서로 정렬한다.
+ *
+ * @param regions 백엔드 지역 API 응답 목록
+ * @returns 필터 선택용으로 변환 및 정렬된 지역 옵션 목록
+ */
 export function toPlaceRegions(regions: readonly Region[]): RegionOption[] {
   return regions
     .map((region) => ({
       id: region.sidoCode,
       label: regionLabels[region.sidoCode] ?? region.sidoName,
-      districts: region.sigungus.map((district) => ({
-        id: district.sigunguCode,
-        label: district.sigunguName,
-      })),
+      districts: region.sigungus.flatMap((district) => [
+        { id: district.sigunguCode, label: district.sigunguName },
+        ...district.subRegions.map((sub) => ({
+          id: sub.sigunguCode,
+          label: `${district.sigunguName} ${sub.sigunguName}`,
+          shortLabel: sub.sigunguName,
+          parentId: district.sigunguCode,
+        })),
+      ]),
     }))
     .sort((a, b) => {
       const aIndex = regionOrder.indexOf(a.id);
@@ -97,7 +138,7 @@ export const emptyPlaceFilters: PlaceFilterState = {
 };
 
 /**
- * 시/도 전체 또는 선택한 구/군 수에 카테고리 수를 더합니다.
+ * 시/도 전체 또는 선택한 구/군 수에 카테고리 수를 더한다.
  * @param filters 현재 장소 필터 상태
  * @returns 선택된 필터의 총 개수
  */
@@ -105,14 +146,14 @@ export function getPlaceFilterCount(filters: PlaceFilterState) {
   return getPlaceRegionFilterCount(filters) + filters.conceptIds.length;
 }
 
-/** 시/도 전체는 1개, 세부 지역은 선택한 구/군 개수로 합산합니다. */
+/** 시/도 전체는 1개, 세부 지역은 선택한 구/군 개수로 합산한다. */
 export function getPlaceRegionFilterCount(filters: PlaceFilterState) {
   return filters.regions.reduce((count, region) => count + (region.districtIds.length || 1), 0);
 }
 
 /**
- * 하나의 시/도와 최대 3개 구/군을 선택하며, 이전 시/도의 선택은 교체합니다.
- * 지역 및 전체 필터 개수를 넘으면 원래 상태를 반환합니다.
+ * 하나의 시/도와 최대 3개 구/군을 선택하며 이전 시/도의 선택은 교체한다.
+ * 지역 및 전체 필터 개수를 초과하면 원래 상태를 반환한다.
  */
 export function updatePlaceRegionSelection(
   filters: PlaceFilterState,
@@ -126,8 +167,100 @@ export function updatePlaceRegionSelection(
 }
 
 /**
- * 검색어와 필터 상태를 `/places` 경로의 검색 파라미터로 직렬화합니다.
- * 검색어 앞뒤 공백을 제거하고, 시/도와 소속을 포함한 구/군 및 카테고리를 반복 파라미터로 추가합니다.
+ * 2열 부모 시/군/구와 3열 세부 지역 계층 관계를 반영하여 구/군 선택을 전환한다.
+ * 부모 선택 시 기존 자식 선택을 대체하고, 모든 자식 선택 시 부모 1개로 합치며, 최대 3개 선택 상한을 검증한다.
+ *
+ * @param filters 현재 장소 필터 상태
+ * @param regionId 대상 시/도 ID
+ * @param districtId 선택 또는 해제할 구/군 ID
+ * @param region 계층 정보를 포함한 시/도 옵션
+ * @returns 갱신된 장소 필터 상태
+ */
+export function togglePlaceGroupedDistrictSelection(
+  filters: PlaceFilterState,
+  regionId: string,
+  districtId: string,
+  region: RegionOption,
+): PlaceFilterState {
+  const group = getPlaceDistrictGroups(region).find(
+    (option) =>
+      option.district.id === districtId || option.children.some((child) => child.id === districtId),
+  );
+  if (!group || group.children.length === 0)
+    return togglePlaceDistrictSelection(filters, regionId, districtId);
+  const selected = filters.regions[0];
+  const sameRegion = selected?.regionId === regionId;
+  const current = sameRegion ? selected.districtIds : [];
+  const isParent = group.district.id === districtId;
+  const siblings = group.children.map((child) => child.id);
+  const withoutGroup = current.filter((id) => id !== group.district.id && !siblings.includes(id));
+  let nextIds: string[];
+  if (isParent) {
+    nextIds = current.includes(districtId) ? withoutGroup : [...withoutGroup, districtId];
+  } else if (current.includes(group.district.id)) {
+    nextIds = [...withoutGroup, districtId];
+  } else if (current.includes(districtId)) {
+    nextIds = current.filter((id) => id !== districtId);
+  } else {
+    const nextChildren = [...current.filter((id) => siblings.includes(id)), districtId];
+    nextIds =
+      nextChildren.length === siblings.length
+        ? [...withoutGroup, group.district.id]
+        : [...current, districtId];
+  }
+  if (nextIds.length === 0) return { ...filters, regions: [] };
+  if (!current.includes(districtId) && getPlaceRegionFilterCount(filters) >= MAX_PLACE_DISTRICTS)
+    return filters;
+  return updatePlaceRegionSelection(filters, regionId, nextIds);
+}
+
+/**
+ * 계층 구조가 없는 일반 구/군 선택을 전환한다.
+ * 이미 선택된 항목은 제거하고, 미선택 항목은 최대 3개 선택 상한을 확인한 뒤 추가한다.
+ *
+ * @param filters 현재 장소 필터 상태
+ * @param regionId 대상 시/도 ID
+ * @param districtId 선택 또는 해제할 구/군 ID
+ * @returns 갱신된 장소 필터 상태
+ */
+export function togglePlaceDistrictSelection(
+  filters: PlaceFilterState,
+  regionId: string,
+  districtId: string,
+): PlaceFilterState {
+  const selected = filters.regions[0];
+  const sameRegion = selected?.regionId === regionId;
+  const districtIds = sameRegion ? selected.districtIds : [];
+  if (sameRegion && districtIds.includes(districtId)) {
+    const remaining = districtIds.filter((id) => id !== districtId);
+    return { ...filters, regions: remaining.length ? [{ regionId, districtIds: remaining }] : [] };
+  }
+  if (getPlaceRegionFilterCount(filters) >= MAX_PLACE_DISTRICTS) return filters;
+  return updatePlaceRegionSelection(filters, regionId, [...districtIds, districtId]);
+}
+
+/**
+ * 시/도 전체 선택을 전환한다.
+ * 이미 시/도 전체가 선택된 상태면 해제하고, 미선택 상태면 하위 구/군 선택을 비운 시/도 전체로 설정한다.
+ *
+ * @param filters 현재 장소 필터 상태
+ * @param regionId 대상 시/도 ID
+ * @returns 갱신된 장소 필터 상태
+ */
+export function togglePlaceRegionWhole(
+  filters: PlaceFilterState,
+  regionId: string,
+): PlaceFilterState {
+  if (filters.regions[0]?.regionId === regionId && filters.regions[0].districtIds.length === 0) {
+    return { ...filters, regions: [] };
+  }
+  if (getPlaceRegionFilterCount(filters) >= MAX_PLACE_DISTRICTS) return filters;
+  return updatePlaceRegionSelection(filters, regionId, []);
+}
+
+/**
+ * 검색어와 필터 상태를 `/places` 경로의 검색 파라미터로 직렬화한다.
+ * 검색어 앞뒤 공백을 제거하고, 시/도와 소속을 포함한 구/군 및 카테고리를 반복 파라미터로 추가한다.
  * @param query 검색어
  * @param filters 적용할 장소 필터 상태
  * @returns 필터와 검색어가 포함된 장소 목록 경로
@@ -148,10 +281,11 @@ export function getPlaceSearchHref(query: string, filters: PlaceFilterState) {
 }
 
 /**
- * URL 검색 파라미터를 유효하고 중복 없는 장소 필터 상태로 정규화합니다.
- * 지역 목록을 받기 전에는 코드 형식만 검사해 URL 선택을 보존하고, 조회 후 실제 소속을 검증합니다.
- * 알 수 없는 지역/구군/카테고리를 제외하고 전체 필터 수를 최대 개수로 제한합니다.
+ * URL 검색 파라미터를 유효하고 중복 없는 장소 필터 상태로 정규화한다.
+ * 지역 목록을 받기 전에는 코드 형식만 검사해 URL 선택을 보존하고, 조회 후 실제 소속을 검증한다.
+ * 알 수 없는 지역/구/군/카테고리를 제외하고 전체 필터 수를 최대 개수로 제한한다.
  * @param params URL 검색 파라미터
+ * @param regionOptions 검증에 사용할 지역 옵션 목록
  * @returns 검증 및 정규화된 장소 필터 상태
  */
 export function normalizePlaceFilters(
@@ -194,7 +328,7 @@ export function normalizePlaceFilters(
   };
 }
 
-/** URL에서 복원한 선택과 모달의 임시 선택을 같은 지역 목록으로 검증합니다. */
+/** URL에서 복원한 선택과 모달의 임시 선택을 같은 지역 목록으로 검증한다. */
 export function validatePlaceFilters(filters: PlaceFilterState, regions?: readonly RegionOption[]) {
   return normalizePlaceFilters(
     {
@@ -209,11 +343,12 @@ export function validatePlaceFilters(filters: PlaceFilterState, regions?: readon
 }
 
 /**
- * 검색어와 선택 필터에 모두 맞는 장소만 입력 순서대로 반환합니다.
- * 검색어, 지역, 카테고리 조건은 AND로 결합하고, 여러 지역과 여러 카테고리는 각각 OR로 비교합니다.
+ * 검색어와 선택 필터에 모두 맞는 장소만 입력 순서대로 반환한다.
+ * 검색어, 지역, 카테고리 조건은 AND로 결합하고, 여러 지역과 여러 카테고리는 각각 OR로 비교한다.
  * @param places 검색할 장소 목록
  * @param query 장소명, 분류, 지역 등에서 찾을 검색어
- * @param filters 적용할 지역/구군/카테고리 필터
+ * @param filters 적용할 지역/구/군/카테고리 필터
+ * @param regionOptions 부모/자식 계층 매칭을 위한 지역 옵션 목록
  * @returns 검색 및 필터 조건을 만족하는 장소 목록
  */
 export function filterPlaces(
@@ -242,7 +377,21 @@ export function filterPlaces(
       filters.regions.some(
         (region) =>
           place.regionId === region.regionId &&
-          (region.districtIds.length === 0 || region.districtIds.includes(place.districtId ?? '')),
+          (region.districtIds.length === 0 ||
+            region.districtIds.includes(place.districtId ?? '') ||
+            region.districtIds.some((id) =>
+              getPlaceDistrictGroups(
+                regionOptions.find((option) => option.id === region.regionId) ?? {
+                  id: '',
+                  label: '',
+                  districts: [],
+                },
+              ).some(
+                (group) =>
+                  group.district.id === id &&
+                  group.children.some((child) => child.id === place.districtId),
+              ),
+            )),
       );
     const matchesConcept =
       selectedConcepts.length === 0 ||
@@ -255,8 +404,9 @@ export function filterPlaces(
 }
 
 /**
- * 지역 ID에 해당하는 표시 이름을 반환합니다.
- * @param id 조회할 지역 ID. `null`이면 빈 문자열을 반환합니다.
+ * 지역 ID에 해당하는 표시 이름을 반환한다.
+ * @param id 조회할 지역 ID (`null`인 경우 빈 문자열 반환)
+ * @param regionOptions 지역 옵션 목록
  * @returns 지역 표시 이름 또는 빈 문자열
  */
 export function getRegionLabel(id: string | null, regionOptions: readonly RegionOption[]) {
@@ -264,9 +414,10 @@ export function getRegionLabel(id: string | null, regionOptions: readonly Region
 }
 
 /**
- * 지역과 구/군 ID에 해당하는 구/군 표시 이름을 반환합니다.
+ * 지역과 구/군 ID에 해당하는 구/군 표시 이름을 반환한다.
  * @param regionId 구/군이 속한 지역 ID
  * @param districtId 조회할 구/군 ID
+ * @param regionOptions 지역 옵션 목록
  * @returns 구/군 표시 이름 또는 빈 문자열
  */
 export function getDistrictLabel(
