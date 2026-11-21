@@ -47,3 +47,13 @@ export function toPlaceSummary(place: Place): PlaceSummary {
     liked: place.liked,
   };
 }
+
+export function matchesPlaceName(name: string, query: string): boolean {
+  const normalizedName = name.toLocaleLowerCase();
+  return query
+    .trim()
+    .toLocaleLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .every((term) => normalizedName.includes(term));
+}

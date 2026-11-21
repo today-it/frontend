@@ -1,28 +1,19 @@
 'use client';
 
 import { Dialog } from '@base-ui/react/dialog';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
-import { placeSearchInfiniteQueryOptions, placesInfiniteQueryOptions } from '@/shared/api';
 import { cn } from '@/shared/lib';
 import { Button, Chip, Icon, ModalBackdrop, ModalTitle, RegionRow } from '@/shared/ui';
 
 import {
-  emptyPlaceFilters,
-  getPlaceDistrictGroups,
-  getPlaceFilterCount,
-  getPlaceRegionFilterCount,
-  MAX_PLACE_DISTRICTS,
   MAX_PLACE_FILTERS,
   placeConcepts,
   type PlaceFilterState,
   type RegionOption,
-  togglePlaceGroupedDistrictSelection,
-  togglePlaceRegionWhole,
-  toPlaceApiParams,
-  validatePlaceFilters,
 } from '../_model/place-filters';
+import { usePlaceFilterModalState } from '../_model/use-place-filter-modal-state';
+import { usePlacesSearch } from '../_model/use-places-search';
 import { PlaceFilterBar, type PlaceFilterTab } from './place-filter-bar';
 import { PlaceFilterChips } from './place-filter-chips';
 
@@ -57,124 +48,41 @@ export function PlaceSearchModal({
   const regionTabRef = useRef<HTMLButtonElement>(null);
   const categoryTabRef = useRef<HTMLButtonElement>(null);
   const [activeTab, setActiveTab] = useState<PlaceFilterTab>(initialTab);
-  const [draft, setDraft] = useState<PlaceFilterState | null>(null);
-  const draftFilters = validatePlaceFilters(
-    draft ?? initialFilters,
-    regionsReady ? regions : undefined,
-  );
-  const selectedCount = getPlaceFilterCount(draftFilters);
+  const {
+    draftFilters,
+    selectedCount,
+    regionFilterCount,
+    activeRegionId,
+    selectedRegion,
+    districtIds,
+    districtGroups,
+    activeDistrictId,
+    activeDistrict,
+    isWholeRegionSelected,
+    isWholeRegionDisabled,
+    isDistrictDisabled,
+    setDraftFilters,
+    selectRegion,
+    selectDistrict,
+    toggleWholeRegion,
+    toggleDistrict,
+    toggleConcept,
+    clearConcepts,
+    resetFilters,
+  } = usePlaceFilterModalState({ initialFilters, regions, regionsReady });
   const hasSearchConditions = Boolean(query.trim() || selectedCount);
   const canSubmit = hasSearchConditions && regionsReady;
-  const isNameOnlySearch = Boolean(query.trim()) && selectedCount === 0;
-  const placesParams = toPlaceApiParams(draftFilters, query, regions);
-  const previewQuery = useInfiniteQuery({
-    ...(isNameOnlySearch
-      ? placeSearchInfiniteQueryOptions({ keyword: query })
-      : placesInfiniteQueryOptions(placesParams)),
-    enabled: hasSearchConditions && regionsReady,
-  });
-  const previewPages = previewQuery.data?.pages ?? [];
-  const fetchNextPreviewPage = previewQuery.fetchNextPage;
-  const hasNextPreviewPage = previewQuery.hasNextPage;
-  const isFetchingNextPreviewPage = previewQuery.isFetchingNextPage;
-  const isPreviewError = previewQuery.isError;
-  const previewPlaces = Array.from(
-    new Map(
-      previewPages.flatMap((page) => page.content.map((place) => [place.placeId, place])),
-    ).values(),
-  );
-  const previewComplete = isNameOnlySearch || !query.trim() || !hasNextPreviewPage;
-  const queryTerms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  const previewCount =
-    queryTerms.length && !isNameOnlySearch
-      ? previewComplete
-        ? previewPlaces.filter((place) =>
-            queryTerms.every((term) => place.name.toLocaleLowerCase().includes(term)),
-          ).length
-        : undefined
-      : previewPages[0]?.totalElements;
-  const regionSelection = draftFilters.regions[0];
-  const [viewRegionId, setViewRegionId] = useState<string | null>(
-    regionSelection?.regionId ?? regions[0]?.id ?? null,
-  );
-  const activeRegionId = regions.some((region) => region.id === viewRegionId)
-    ? viewRegionId
-    : (regions[0]?.id ?? null);
-  const selectedRegion = regions.find((region) => region.id === activeRegionId);
-  const districtIds =
-    regionSelection?.regionId === activeRegionId ? regionSelection.districtIds : [];
-  const districtGroups = selectedRegion ? getPlaceDistrictGroups(selectedRegion) : [];
-  const [viewDistrictId, setViewDistrictId] = useState<string | null>(null);
-  const activeDistrictId = districtGroups.some((group) => group.district.id === viewDistrictId)
-    ? viewDistrictId
-    : (districtGroups.find((group) =>
-        group.children.some((child) => districtIds.includes(child.id)),
-      )?.district.id ?? null);
-  const activeDistrict = districtGroups.find((group) => group.district.id === activeDistrictId);
-
-  useEffect(() => {
-    if (
-      !isNameOnlySearch &&
-      query.trim() &&
-      hasNextPreviewPage &&
-      !isFetchingNextPreviewPage &&
-      !isPreviewError
-    ) {
-      void fetchNextPreviewPage();
-    }
-  }, [
-    fetchNextPreviewPage,
-    hasNextPreviewPage,
-    isFetchingNextPreviewPage,
-    isPreviewError,
-    isNameOnlySearch,
+  const {
+    placesQuery: previewQuery,
+    previewCount,
+    isPlacesError: isPreviewError,
+  } = usePlacesSearch({
+    mode: 'preview',
+    initialFilters: draftFilters,
     query,
-  ]);
-
-  function setDraftFilters(next: PlaceFilterState) {
-    setViewDistrictId(activeDistrictId);
-    setDraft(next);
-  }
-
-  function selectRegion(regionId: string) {
-    setViewRegionId(regionId);
-    setViewDistrictId(null);
-  }
-
-  function toggleDistrict(districtId: string) {
-    if (!activeRegionId) return;
-    if (selectedRegion)
-      setDraftFilters(
-        togglePlaceGroupedDistrictSelection(
-          draftFilters,
-          activeRegionId,
-          districtId,
-          selectedRegion,
-        ),
-      );
-  }
-
-  /**
-   * 최대 필터 선택 개수를 지키며 카테고리 선택을 전환한다.
-   * @param conceptId 전환할 카테고리 ID
-   */
-  function toggleConcept(conceptId: string) {
-    const isSelected = draftFilters.conceptIds.includes(conceptId);
-    if (!isSelected && selectedCount >= MAX_PLACE_FILTERS) return;
-
-    setDraftFilters({
-      ...draftFilters,
-      conceptIds: isSelected
-        ? draftFilters.conceptIds.filter((id) => id !== conceptId)
-        : [...draftFilters.conceptIds, conceptId],
-    });
-  }
-
-  /** 모든 임시 필터를 초기화한다. */
-  function resetFilters() {
-    setDraftFilters(emptyPlaceFilters);
-  }
-
+    regions,
+    regionsReady,
+  });
   /** 현재 검색어 초안과 임시 필터 상태를 부모에 전달해 적용한다. */
   function submitSearch() {
     if (canSubmit) onSubmit(query, draftFilters);
@@ -209,7 +117,7 @@ export function PlaceSearchModal({
                 setActiveTab(tab);
               }
             }}
-            regionCount={getPlaceRegionFilterCount(draftFilters)}
+            regionCount={regionFilterCount}
           />
 
           <div
@@ -262,24 +170,9 @@ export function PlaceSearchModal({
                           <>
                             <RegionRow
                               label="전체"
-                              checked={
-                                regionSelection?.regionId === activeRegionId &&
-                                districtIds.length === 0
-                              }
-                              checkDisabled={
-                                (getPlaceRegionFilterCount(draftFilters) >= MAX_PLACE_DISTRICTS ||
-                                  togglePlaceRegionWhole(draftFilters, activeRegionId!) ===
-                                    draftFilters) &&
-                                !(
-                                  regionSelection?.regionId === activeRegionId &&
-                                  districtIds.length === 0
-                                )
-                              }
-                              onCheckedChange={() =>
-                                setDraftFilters(
-                                  togglePlaceRegionWhole(draftFilters, activeRegionId!),
-                                )
-                              }
+                              checked={isWholeRegionSelected}
+                              checkDisabled={isWholeRegionDisabled}
+                              onCheckedChange={toggleWholeRegion}
                             />
                             {districtGroups.length === 0 ? (
                               <p className="px-16 py-12 text-caption-c2 text-text-tertiary">
@@ -293,20 +186,10 @@ export function PlaceSearchModal({
                                   key={district.id}
                                   label={district.label}
                                   checked={checked}
-                                  checkDisabled={
-                                    !checked &&
-                                    togglePlaceGroupedDistrictSelection(
-                                      draftFilters,
-                                      activeRegionId!,
-                                      district.id,
-                                      selectedRegion,
-                                    ) === draftFilters
-                                  }
+                                  checkDisabled={isDistrictDisabled(district.id)}
                                   onCheckedChange={() => toggleDistrict(district.id)}
                                   onNavigate={
-                                    children.length
-                                      ? () => setViewDistrictId(district.id)
-                                      : undefined
+                                    children.length ? () => selectDistrict(district.id) : undefined
                                   }
                                   selected={activeDistrictId === district.id}
                                 />
@@ -329,15 +212,7 @@ export function PlaceSearchModal({
                                 key={child.id}
                                 label={child.shortLabel ?? child.label}
                                 checked={checked}
-                                checkDisabled={
-                                  !checked &&
-                                  togglePlaceGroupedDistrictSelection(
-                                    draftFilters,
-                                    activeRegionId!,
-                                    child.id,
-                                    selectedRegion!,
-                                  ) === draftFilters
-                                }
+                                checkDisabled={isDistrictDisabled(child.id)}
                                 onCheckedChange={() => toggleDistrict(child.id)}
                               />
                             );
@@ -355,7 +230,7 @@ export function PlaceSearchModal({
                 <FilterGroup label="카테고리">
                   <Chip
                     aria-label="카테고리 전체 선택 해제"
-                    onPressedChange={() => setDraftFilters({ ...draftFilters, conceptIds: [] })}
+                    onPressedChange={clearConcepts}
                     pressed={draftFilters.conceptIds.length === 0}
                   >
                     전체

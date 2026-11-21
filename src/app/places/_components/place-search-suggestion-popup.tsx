@@ -1,14 +1,11 @@
 'use client';
 
 import { Dialog } from '@base-ui/react/dialog';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
 
-import { placeSearchInfiniteQueryOptions } from '@/shared/api';
 import { Button, Icon, ModalBackdrop, ModalTitle, SearchBar } from '@/shared/ui';
 
 import type { PlaceSummary } from '../_model/place';
-import { toPlaceSummary } from '../_model/place';
+import { usePlaceSearchSuggestions } from '../_model/use-place-search-suggestions';
 
 export interface PlaceSearchSuggestionPopupProps {
   /** 현재 검색어 입력값 */
@@ -35,68 +32,19 @@ export function PlaceSearchSuggestionPopup({
   onClose,
   onSelect,
 }: PlaceSearchSuggestionPopupProps) {
-  const normalizedQuery = query.trim();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const loadMoreTriggerRef = useRef<HTMLDivElement>(null);
-  const placesQuery = useInfiniteQuery({
-    ...placeSearchInfiniteQueryOptions({ keyword: normalizedQuery }),
-    enabled: Boolean(normalizedQuery),
-    staleTime: 5 * 60 * 1000,
-  });
-  const allPlaces = Array.from(
-    new Map(
-      (placesQuery.data?.pages.flatMap((page) => page.content) ?? []).map((place) => {
-        const summary = toPlaceSummary(place);
-        return [summary.id, summary] as const;
-      }),
-    ).values(),
-  );
-  const suggestions = normalizedQuery ? allPlaces : [];
-  const { fetchNextPage, hasNextPage, isFetchNextPageError, isFetchingNextPage } = placesQuery;
-
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTop = 0;
-    }
-  }, [normalizedQuery]);
-
-  useEffect(() => {
-    const root = scrollContainerRef.current;
-    const target = loadMoreTriggerRef.current;
-
-    if (
-      !root ||
-      !target ||
-      !normalizedQuery ||
-      !hasNextPage ||
-      isFetchingNextPage ||
-      isFetchNextPageError
-    ) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          void fetchNextPage();
-        }
-      },
-      {
-        root,
-        rootMargin: '0px 0px 80px 0px',
-      },
-    );
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [
+  const {
+    normalizedQuery,
+    suggestions,
+    scrollContainerRef,
+    loadMoreTriggerRef,
+    isError,
+    isLoading,
+    refetch,
     fetchNextPage,
     hasNextPage,
     isFetchNextPageError,
     isFetchingNextPage,
-    normalizedQuery,
-    suggestions.length,
-  ]);
+  } = usePlaceSearchSuggestions(query);
 
   return (
     <Dialog.Root
@@ -127,14 +75,14 @@ export function PlaceSearchSuggestionPopup({
             className="max-h-[402px] min-h-0 overflow-y-auto rounded-3xl bg-surface-default p-18"
           >
             <p className="py-12 pl-16 text-caption-c1 text-text-muted">장소</p>
-            {placesQuery.isError && suggestions.length === 0 ? (
+            {isError && suggestions.length === 0 ? (
               <div className="flex flex-col items-center gap-12 px-16 py-24" role="alert">
                 <p className="text-body-b3 text-text-muted">검색 제안을 불러오지 못했어요.</p>
-                <Button onClick={() => void placesQuery.refetch()} size="sm">
+                <Button onClick={() => void refetch()} size="sm">
                   다시 시도
                 </Button>
               </div>
-            ) : placesQuery.isLoading ? (
+            ) : isLoading ? (
               <p className="px-16 py-24 text-body-b3 text-text-muted" role="status">
                 장소를 검색하고 있어요.
               </p>
@@ -170,20 +118,20 @@ export function PlaceSearchSuggestionPopup({
                 {normalizedQuery ? '검색한 장소가 없어요.' : '장소 이름을 입력해주세요.'}
               </p>
             )}
-            {placesQuery.isFetchingNextPage ? (
+            {isFetchingNextPage ? (
               <p className="px-16 py-12 text-center text-body-b3 text-text-muted" role="status">
                 장소를 더 불러오고 있어요.
               </p>
             ) : null}
-            {placesQuery.isFetchNextPageError ? (
+            {isFetchNextPageError ? (
               <div className="flex flex-col items-center gap-12 px-16 py-12" role="alert">
                 <p className="text-body-b3 text-text-muted">장소를 더 불러오지 못했어요.</p>
-                <Button onClick={() => void placesQuery.fetchNextPage()} size="sm">
+                <Button onClick={() => void fetchNextPage()} size="sm">
                   다시 시도
                 </Button>
               </div>
             ) : null}
-            {placesQuery.hasNextPage && !placesQuery.isFetchNextPageError ? (
+            {hasNextPage && !isFetchNextPageError ? (
               <div aria-hidden="true" className="h-1" ref={loadMoreTriggerRef} />
             ) : null}
           </div>

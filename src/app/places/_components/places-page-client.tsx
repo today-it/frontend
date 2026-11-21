@@ -1,29 +1,18 @@
 'use client';
 
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 import { TopHeader } from '@/app/_components/top-header';
 import { useSessionStore } from '@/app/_model/session-store';
-import {
-  placeSearchInfiniteQueryOptions,
-  placesInfiniteQueryOptions,
-  regionQueryOptions,
-} from '@/shared/api';
 import { Button, SearchBar } from '@/shared/ui';
 
-import { toPlaceSummary } from '../_model/place';
 import {
-  getPlaceFilterCount,
   getPlaceRegionFilterCount,
   getPlaceSearchHref,
-  normalizePlaceFilters,
   type PlaceFilterState,
-  toPlaceApiParams,
-  toPlaceRegions,
-  validatePlaceFilters,
 } from '../_model/place-filters';
+import { usePlacesSearch } from '../_model/use-places-search';
 import { PlaceFilterBar, type PlaceFilterTab } from './place-filter-bar';
 import { PlaceSearchModal } from './place-search-modal';
 import { PlaceSearchResults } from './place-search-results';
@@ -44,58 +33,22 @@ export function PlacesPageClient({
 }: PlacesPageClientProps) {
   const member = useSessionStore((state) => state.member);
   const router = useRouter();
-  const regionsQuery = useQuery(regionQueryOptions);
-  const regions = regionsQuery.data ? toPlaceRegions(regionsQuery.data) : undefined;
-  const filters = filterParams
-    ? normalizePlaceFilters(filterParams, regions)
-    : validatePlaceFilters(initialFilters, regions);
-  const isSearchMode = Boolean(initialQuery || getPlaceFilterCount(filters));
-  const isNameOnlySearch = Boolean(initialQuery.trim()) && getPlaceFilterCount(filters) === 0;
-  const placeParams = toPlaceApiParams(filters, initialQuery, regions ?? []);
-  const shouldFetchPlaces = isSearchMode && (isNameOnlySearch || regions !== undefined);
-  const placesQuery = useInfiniteQuery({
-    ...(isNameOnlySearch
-      ? placeSearchInfiniteQueryOptions({ keyword: initialQuery })
-      : placesInfiniteQueryOptions(placeParams)),
-    enabled: shouldFetchPlaces,
-  });
-  const pages = placesQuery.data?.pages ?? [];
+  const {
+    regionsQuery,
+    regions,
+    filters,
+    isSearchMode,
+    isNameOnlySearch,
+    shouldFetchPlaces,
+    placesQuery,
+    places,
+    totalCount,
+    isSearchComplete,
+  } = usePlacesSearch({ mode: 'page', initialFilters, filterParams, query: initialQuery });
   const fetchNextPlacesPage = placesQuery.fetchNextPage;
   const hasNextPlacesPage = placesQuery.hasNextPage;
   const isFetchingNextPlacesPage = placesQuery.isFetchingNextPage;
   const isPlacesError = placesQuery.isError;
-  const places = Array.from(
-    new Map(
-      pages.flatMap((page) =>
-        page.content.map((place) => {
-          const summary = toPlaceSummary(place);
-          return [summary.id, summary] as const;
-        }),
-      ),
-    ).values(),
-  );
-  const isSearchComplete = isNameOnlySearch || !initialQuery.trim() || !hasNextPlacesPage;
-
-  useEffect(() => {
-    if (
-      shouldFetchPlaces &&
-      !isNameOnlySearch &&
-      initialQuery.trim() &&
-      hasNextPlacesPage &&
-      !isFetchingNextPlacesPage &&
-      !isPlacesError
-    ) {
-      void fetchNextPlacesPage();
-    }
-  }, [
-    initialQuery,
-    isNameOnlySearch,
-    fetchNextPlacesPage,
-    hasNextPlacesPage,
-    isFetchingNextPlacesPage,
-    isPlacesError,
-    shouldFetchPlaces,
-  ]);
   const regionNotice = !regions ? (
     <div
       className="flex min-h-48 flex-col items-center justify-center gap-12 py-16 text-caption-c2 text-text-tertiary"
@@ -225,17 +178,7 @@ export function PlacesPageClient({
           <PlaceSearchResults
             regions={regions ?? []}
             places={places}
-            totalCount={
-              initialQuery.trim() && !isNameOnlySearch
-                ? places.filter((place) =>
-                    initialQuery
-                      .trim()
-                      .toLocaleLowerCase()
-                      .split(/\s+/)
-                      .every((term) => place.name.toLocaleLowerCase().includes(term)),
-                  ).length
-                : (pages[0]?.totalElements ?? 0)
-            }
+            totalCount={totalCount}
             isLoading={shouldFetchPlaces && placesQuery.isPending}
             isError={isPlacesError}
             isSearchComplete={isSearchComplete}

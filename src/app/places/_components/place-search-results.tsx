@@ -5,7 +5,7 @@ import { useId, useState } from 'react';
 import { useLoginModalStore } from '@/app/_model/login-modal-store';
 import { Button, Icon, LoadMoreButton, ScrollTopButton } from '@/shared/ui';
 
-import type { PlaceSummary } from '../_model/place';
+import { matchesPlaceName, type PlaceSummary } from '../_model/place';
 import {
   emptyPlaceFilters,
   getPlaceFilterCount,
@@ -52,12 +52,9 @@ export function PlaceSearchResults({
   const titleId = useId();
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const openLogin = useLoginModalStore((state) => state.openLogin);
-  const queryTerms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   const matchedPlaces =
-    queryTerms.length && getPlaceFilterCount(filters) > 0
-      ? places.filter((place) =>
-          queryTerms.every((term) => place.name.toLocaleLowerCase().includes(term)),
-        )
+    query.trim() && getPlaceFilterCount(filters) > 0
+      ? places.filter((place) => matchesPlaceName(place.name, query))
       : places;
   const visiblePlaces = matchedPlaces.slice(0, visibleCount);
   const hasQuery = Boolean(query);
