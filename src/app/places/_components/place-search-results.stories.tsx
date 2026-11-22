@@ -17,6 +17,8 @@ const meta = {
     isSearchComplete: true,
     isFetchingNextPage: false,
     hasNextPage: false,
+    sort: 'POPULAR',
+    onSortChange: fn(),
     onRetry: fn(),
     onLoadMore: fn(),
     regions: placeRegionFixtures,
@@ -50,6 +52,7 @@ export const RemoveDistrictAndReset: Story = {
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
+    await userEvent.click(canvas.getByRole('button', { name: '선택한 필터 2' }));
     await userEvent.click(canvas.getByRole('button', { name: '성동구 필터 해제' }));
     await expect(args.onSearch).toHaveBeenCalledWith('성수', {
       regions: [{ regionId: '11', districtIds: [] }],

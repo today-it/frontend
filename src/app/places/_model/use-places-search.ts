@@ -14,6 +14,7 @@ import {
   getPlaceFilterCount,
   normalizePlaceFilters,
   type PlaceFilterState,
+  type PlaceSort,
   type RegionOption,
   toPlaceApiParams,
   toPlaceRegions,
@@ -23,6 +24,7 @@ import {
 type PlacesSearchOptions = {
   query: string;
   initialFilters: PlaceFilterState;
+  sort?: PlaceSort;
 } & (
   | { mode: 'page'; filterParams?: Record<string, string | string[] | undefined> }
   | { mode: 'preview'; regions: readonly RegionOption[]; regionsReady: boolean }
@@ -50,7 +52,10 @@ export function usePlacesSearch(options: PlacesSearchOptions) {
   const placesQuery = useInfiniteQuery({
     ...(isNameOnlySearch
       ? placeSearchInfiniteQueryOptions({ keyword: query })
-      : placesInfiniteQueryOptions(toPlaceApiParams(filters, query, regions ?? []))),
+      : placesInfiniteQueryOptions({
+          ...toPlaceApiParams(filters, query, regions ?? []),
+          sort: options.sort ?? 'POPULAR',
+        })),
     enabled: shouldFetchPlaces,
   });
   const pages = placesQuery.data?.pages ?? [];

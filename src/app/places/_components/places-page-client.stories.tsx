@@ -30,6 +30,7 @@ const meta = {
   args: {
     initialFilters: emptyPlaceFilters,
     initialQuery: '',
+    sort: 'POPULAR',
     children: (
       <main>
         <button type="button">다른 영역</button>

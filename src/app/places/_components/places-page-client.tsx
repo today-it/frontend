@@ -11,6 +11,7 @@ import {
   getPlaceRegionFilterCount,
   getPlaceSearchHref,
   type PlaceFilterState,
+  type PlaceSort,
 } from '../_model/place-filters';
 import { usePlacesSearch } from '../_model/use-places-search';
 import { PlaceFilterBar, type PlaceFilterTab } from './place-filter-bar';
@@ -23,6 +24,7 @@ interface PlacesPageClientProps {
   initialFilters: PlaceFilterState;
   filterParams?: Record<string, string | string[] | undefined>;
   initialQuery: string;
+  sort: PlaceSort;
 }
 
 export function PlacesPageClient({
@@ -30,6 +32,7 @@ export function PlacesPageClient({
   initialFilters,
   filterParams,
   initialQuery,
+  sort,
 }: PlacesPageClientProps) {
   const member = useSessionStore((state) => state.member);
   const router = useRouter();
@@ -44,7 +47,7 @@ export function PlacesPageClient({
     places,
     totalCount,
     isSearchComplete,
-  } = usePlacesSearch({ mode: 'page', initialFilters, filterParams, query: initialQuery });
+  } = usePlacesSearch({ mode: 'page', initialFilters, filterParams, query: initialQuery, sort });
   const fetchNextPlacesPage = placesQuery.fetchNextPage;
   const hasNextPlacesPage = placesQuery.hasNextPage;
   const isFetchingNextPlacesPage = placesQuery.isFetchingNextPage;
@@ -87,7 +90,7 @@ export function PlacesPageClient({
    * @param filters 이동할 때 적용할 지역 및 카테고리 필터
    */
   function navigateWithFilters(query: string, filters: PlaceFilterState) {
-    router.push(getPlaceSearchHref(query, filters));
+    router.push(getPlaceSearchHref(query, filters, sort));
   }
 
   /**
@@ -193,6 +196,10 @@ export function PlacesPageClient({
             filters={filters}
             onSearch={navigateWithFilters}
             query={initialQuery}
+            sort={sort}
+            onSortChange={(nextSort) => {
+              router.push(getPlaceSearchHref(initialQuery, filters, nextSort));
+            }}
           />
         )
       ) : (

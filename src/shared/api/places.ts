@@ -70,7 +70,7 @@ const placesParamsSchema = z.object({
   categories: z.array(placeCategorySchema).optional(),
   page: z.number().int().nonnegative().default(0),
   size: z.number().int().min(1).max(100).default(20),
-  sort: z.literal('LATEST').default('LATEST'),
+  sort: z.enum(['LATEST', 'POPULAR']).default('LATEST'),
 });
 
 export const placeSearchParamsSchema = z.object({

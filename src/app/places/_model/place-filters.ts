@@ -1,10 +1,16 @@
-import type { PlaceCategory, Region } from '@/shared/api';
+import type { PlaceCategory, PlacesParams, Region } from '@/shared/api';
 
 import type { PlaceSummary } from './place';
 
 export interface PlaceRegionSelection {
   regionId: string;
   districtIds: string[];
+}
+
+export type PlaceSort = NonNullable<PlacesParams['sort']>;
+
+export function normalizePlaceSort(value: string | string[] | undefined): PlaceSort {
+  return value === 'LATEST' ? 'LATEST' : 'POPULAR';
 }
 
 export interface PlaceFilterState {
@@ -314,7 +320,11 @@ export function togglePlaceRegionWhole(
  * @param filters 적용할 장소 필터 상태
  * @returns 필터와 검색어가 포함된 장소 목록 경로
  */
-export function getPlaceSearchHref(query: string, filters: PlaceFilterState) {
+export function getPlaceSearchHref(
+  query: string,
+  filters: PlaceFilterState,
+  sort: PlaceSort = 'POPULAR',
+) {
   const params = new URLSearchParams();
   const normalizedQuery = query.trim();
 
@@ -324,6 +334,7 @@ export function getPlaceSearchHref(query: string, filters: PlaceFilterState) {
     districtIds.forEach((districtId) => params.append('district', `${regionId}:${districtId}`));
   });
   filters.conceptIds.forEach((conceptId) => params.append('concept', conceptId));
+  if (getPlaceFilterCount(filters) > 0) params.set('sort', sort);
 
   const queryString = params.toString();
   return queryString ? `/places?${queryString}` : '/places';
