@@ -72,11 +72,7 @@ export function PlaceSearchModal({
   } = usePlaceFilterModalState({ initialFilters, regions, regionsReady });
   const hasSearchConditions = Boolean(query.trim() || selectedCount);
   const canSubmit = hasSearchConditions && regionsReady;
-  const {
-    placesQuery: previewQuery,
-    previewCount,
-    isPlacesError: isPreviewError,
-  } = usePlacesSearch({
+  const { placesQuery: previewQuery, isPlacesError: isPreviewError } = usePlacesSearch({
     mode: 'preview',
     initialFilters: draftFilters,
     query,
@@ -302,15 +298,7 @@ export function PlaceSearchModal({
                     선택 초기화
                   </button>
                   <Button disabled={!canSubmit} onClick={submitSearch} size="sm">
-                    {!regionsReady
-                      ? '지역 정보 확인 중'
-                      : !hasSearchConditions
-                        ? '장소 보기'
-                        : isPreviewError
-                          ? '장소 수 확인 실패'
-                          : previewCount === undefined
-                            ? '장소 수 확인 중'
-                            : `장소 ${previewCount}곳 보기`}
+                    장소 보기
                   </Button>
                   {hasSearchConditions && isPreviewError ? (
                     <button
