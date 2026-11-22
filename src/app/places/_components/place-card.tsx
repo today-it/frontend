@@ -97,11 +97,7 @@ export function PlaceCard({
             <span className="block truncate">{place.name}</span>
           </Link>
         </h3>
-        <p className="w-full truncate text-body-b3 text-text-secondary">
-          {place.rating !== undefined && place.reviewCount !== undefined
-            ? `${place.neighborhood} / ★ ${place.rating.toFixed(1)} / 리뷰 ${count.format(place.reviewCount)}`
-            : `${place.address ?? place.neighborhood}${place.viewCount === undefined ? '' : ` / 조회수 ${count.format(place.viewCount)}`}`}
-        </p>
+        <p className="w-full truncate text-body-b3 text-text-secondary">{place.address}</p>
       </div>
     </article>
   );
