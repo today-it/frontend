@@ -1,7 +1,7 @@
 'use client';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
 
 import { placeSearchInfiniteQueryOptions } from '@/shared/api';
 
@@ -9,13 +9,25 @@ import { toPlaceSummary } from './place';
 
 export function usePlaceSearchSuggestions(query: string) {
   const normalizedQuery = query.trim();
+  const [debouncedQuery, setDebouncedQuery] = useState(normalizedQuery);
+  useEffect(() => {
+    if (normalizedQuery === debouncedQuery) return;
+    const timeout = window.setTimeout(() => setDebouncedQuery(normalizedQuery), 250);
+    return () => window.clearTimeout(timeout);
+  }, [normalizedQuery, debouncedQuery]);
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const loadMoreTriggerRef = useRef<HTMLDivElement>(null);
   const placesQuery = useInfiniteQuery({
-    ...placeSearchInfiniteQueryOptions({ keyword: normalizedQuery }),
-    enabled: Boolean(normalizedQuery),
+    ...placeSearchInfiniteQueryOptions({ keyword: debouncedQuery }),
+    enabled: Boolean(normalizedQuery) && normalizedQuery === debouncedQuery,
+    placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000,
   });
+  const isUpdating =
+    Boolean(normalizedQuery) &&
+    (normalizedQuery !== debouncedQuery || placesQuery.isPlaceholderData);
+  const canUseResults = Boolean(normalizedQuery) && !isUpdating;
   const allPlaces = Array.from(
     new Map(
       (placesQuery.data?.pages.flatMap((page) => page.content) ?? []).map((place) => {
@@ -31,7 +43,7 @@ export function usePlaceSearchSuggestions(query: string) {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = 0;
     }
-  }, [normalizedQuery]);
+  }, [debouncedQuery]);
 
   useEffect(() => {
     const root = scrollContainerRef.current;
@@ -40,7 +52,7 @@ export function usePlaceSearchSuggestions(query: string) {
     if (
       !root ||
       !target ||
-      !normalizedQuery ||
+      !canUseResults ||
       !hasNextPage ||
       isFetchingNextPage ||
       isFetchNextPageError
@@ -67,7 +79,7 @@ export function usePlaceSearchSuggestions(query: string) {
     hasNextPage,
     isFetchNextPageError,
     isFetchingNextPage,
-    normalizedQuery,
+    canUseResults,
     suggestions.length,
   ]);
 
@@ -76,12 +88,14 @@ export function usePlaceSearchSuggestions(query: string) {
     suggestions,
     scrollContainerRef,
     loadMoreTriggerRef,
-    isError: placesQuery.isError,
-    isLoading: placesQuery.isLoading,
+    isUpdating,
+    isError: canUseResults && placesQuery.isError,
+    isLoading:
+      Boolean(normalizedQuery) && (placesQuery.isLoading || (isUpdating && !suggestions.length)),
     refetch: placesQuery.refetch,
     fetchNextPage,
-    hasNextPage,
-    isFetchNextPageError,
-    isFetchingNextPage,
+    hasNextPage: canUseResults && hasNextPage,
+    isFetchNextPageError: canUseResults && isFetchNextPageError,
+    isFetchingNextPage: canUseResults && isFetchingNextPage,
   };
 }

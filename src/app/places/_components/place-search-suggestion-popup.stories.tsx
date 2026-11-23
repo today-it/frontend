@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test';
 
@@ -6,6 +7,7 @@ import { PlaceSearchSuggestionPopup } from './place-search-suggestion-popup';
 
 const onSearch = fn();
 const onSelect = fn();
+const onQueryAdded = fn();
 
 function SuggestionHarness({ initialQuery = '' }: { initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery);
@@ -23,6 +25,22 @@ function SuggestionHarness({ initialQuery = '' }: { initialQuery?: string }) {
 const meta = {
   title: 'App/Places/PlaceSearchSuggestionPopup',
   render: () => <SuggestionHarness />,
+  decorators: [
+    (Story) => {
+      const [client] = useState(() => {
+        const queryClient = new QueryClient();
+        queryClient.getQueryCache().subscribe((event) => {
+          if (event.type === 'added') onQueryAdded(event.query.queryKey);
+        });
+        return queryClient;
+      });
+      return (
+        <QueryClientProvider client={client}>
+          <Story />
+        </QueryClientProvider>
+      );
+    },
+  ],
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -35,6 +53,7 @@ const meta = {
   beforeEach: () => {
     onSearch.mockClear();
     onSelect.mockClear();
+    onQueryAdded.mockClear();
   },
 } satisfies Meta;
 
@@ -55,11 +74,23 @@ export const NameMatchesAndNoAddressMatches: Story = {
   render: () => <SuggestionHarness initialQuery="도예" />,
   play: async () => {
     const dialog = within(await screen.findByRole('dialog', { name: '장소 검색 제안' }));
-    await expect(dialog.getByText('도예 원데이 클래스')).toBeVisible();
+    await expect(await dialog.findByText('도예 원데이 클래스')).toBeVisible();
     const input = dialog.getByRole('searchbox');
+    onQueryAdded.mockClear();
+    await userEvent.type(input, '공방');
+    const previousPlace = dialog.getByRole('button', { name: /도예 원데이 클래스/ });
+    await expect(previousPlace).toBeDisabled();
+    await userEvent.click(previousPlace);
+    await expect(onSelect).not.toHaveBeenCalled();
     await userEvent.clear(input);
+    await expect(dialog.getByRole('status')).toHaveTextContent('장소 이름을 입력해주세요.');
     await userEvent.type(input, '종로 카페거리');
-    await expect(dialog.getByText('종로 카페거리')).toBeVisible();
+    await expect(await dialog.findByText('종로 카페거리')).toBeVisible();
+    await expect(onQueryAdded).not.toHaveBeenCalledWith([
+      'places',
+      'search',
+      expect.objectContaining({ keyword: '도예공' }),
+    ]);
     await userEvent.click(dialog.getByRole('button', { name: /종로 카페거리/ }));
     await expect(onSelect).toHaveBeenCalledWith(
       expect.objectContaining({ id: '12', name: '종로 카페거리' }),

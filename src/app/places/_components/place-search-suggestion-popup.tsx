@@ -39,6 +39,7 @@ export function PlaceSearchSuggestionPopup({
     loadMoreTriggerRef,
     isError,
     isLoading,
+    isUpdating,
     refetch,
     fetchNextPage,
     hasNextPage,
@@ -74,7 +75,9 @@ export function PlaceSearchSuggestionPopup({
             ref={scrollContainerRef}
             className="max-h-[402px] min-h-0 overflow-y-auto rounded-3xl bg-surface-default p-18"
           >
-            <p className="py-12 pl-16 text-caption-c1 text-text-muted">장소</p>
+            <p className="py-12 pl-16 text-caption-c1 text-text-muted">
+              {isUpdating && suggestions.length > 0 ? '장소 검색 중…' : '장소'}
+            </p>
             {isError && suggestions.length === 0 ? (
               <div className="flex flex-col items-center gap-12 px-16 py-24" role="alert">
                 <p className="text-body-b3 text-text-muted">검색 제안을 불러오지 못했어요.</p>
@@ -92,6 +95,7 @@ export function PlaceSearchSuggestionPopup({
                   <li key={place.id}>
                     <button
                       className="flex h-[var(--td-number-72)] w-full cursor-pointer items-center gap-16 rounded-xl px-16 text-left outline-none hover:bg-surface-subtle focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-inset"
+                      disabled={isUpdating}
                       onClick={() => onSelect(place)}
                       type="button"
                     >

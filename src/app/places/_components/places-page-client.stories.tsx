@@ -313,7 +313,8 @@ export const SelectSuggestionOpensDetail: Story = {
       const search = dialog.getByRole('searchbox');
       await userEvent.clear(search);
       await userEvent.type(search, '블루엘리펀트');
-      const suggestion = dialog.getByRole('button', { name: /블루엘리펀트 스페이스 성수/ });
+      const suggestion = await dialog.findByRole('button', { name: /블루엘리펀트 스페이스 성수/ });
+      await waitFor(() => expect(suggestion).toBeEnabled());
       if (activation === 'click') {
         await userEvent.click(suggestion);
       } else {
