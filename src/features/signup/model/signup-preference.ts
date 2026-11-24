@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { type PreferredTheme } from '@/shared/api';
+
 interface SignupPreferenceOption {
   label: string;
   value: string;
@@ -9,31 +11,84 @@ interface SignupRegion extends SignupPreferenceOption {
   districts: readonly SignupPreferenceOption[];
 }
 
-const toOptions = (labels: readonly string[]): SignupPreferenceOption[] =>
-  labels.map((label) => ({ label, value: label }));
-
-// 목업 데이터입니다. 옵션 목록이 확정되면 서버 목록으로 교체합니다.
+/** 선호 지역으로 고를 수 있는 30곳. 구·군의 `value`는 `시/도 코드:시/군/구 코드`입니다. */
 export const signupRegions: readonly SignupRegion[] = [
-  { label: '서울', value: '서울', districts: toOptions(['강남구', '마포구', '성동구', '종로구']) },
+  {
+    label: '서울',
+    value: 'seoul',
+    districts: [
+      { label: '마포구', value: '11:440' },
+      { label: '성동구', value: '11:200' },
+      { label: '강남구', value: '11:680' },
+      { label: '송파구', value: '11:710' },
+      { label: '종로구', value: '11:110' },
+      { label: '용산구', value: '11:170' },
+      { label: '영등포구', value: '11:560' },
+      { label: '중구', value: '11:140' },
+      { label: '서초구', value: '11:650' },
+      { label: '광진구', value: '11:215' },
+    ],
+  },
+  {
+    label: '경기 & 인천',
+    value: 'gyeonggi-incheon',
+    districts: [
+      { label: '수원시 팔달구', value: '41:115' },
+      { label: '성남시 분당구', value: '41:135' },
+      { label: '고양시 일산동구', value: '41:285' },
+      { label: '파주시', value: '41:480' },
+      { label: '가평군', value: '41:820' },
+      { label: '인천 연수구', value: '28:185' },
+    ],
+  },
   {
     label: '부산',
-    value: '부산',
-    districts: toOptions(['해운대구', '서면', '남포동', '광안리', '기장군']),
+    value: 'busan',
+    districts: [
+      { label: '수영구', value: '26:500' },
+      { label: '해운대구', value: '26:350' },
+      { label: '부산진구', value: '26:230' },
+    ],
   },
-  { label: '인천', value: '인천', districts: toOptions(['연수구', '남동구', '부평구', '중구']) },
-  { label: '대구', value: '대구', districts: toOptions(['수성구', '중구', '동구', '달서구']) },
-  { label: '대전', value: '대전', districts: toOptions(['유성구', '서구', '중구', '동구']) },
-  { label: '광주', value: '광주', districts: toOptions(['동구', '서구', '남구', '광산구']) },
+  {
+    label: '강원',
+    value: 'gangwon',
+    districts: [
+      { label: '강릉시', value: '51:150' },
+      { label: '속초시', value: '51:210' },
+      { label: '춘천시', value: '51:110' },
+    ],
+  },
+  {
+    label: '제주',
+    value: 'jeju',
+    districts: [
+      { label: '제주시', value: '50:110' },
+      { label: '서귀포시', value: '50:130' },
+    ],
+  },
+  {
+    label: '기타',
+    value: 'etc',
+    districts: [
+      { label: '경주시', value: '47:130' },
+      { label: '전주시 완산구', value: '52:111' },
+      { label: '여수시', value: '12:130' },
+      { label: '대전 중구', value: '30:140' },
+      { label: '대구 중구', value: '27:110' },
+      { label: '천안시 동남구', value: '44:131' },
+    ],
+  },
 ];
 
-export const signupConcepts: readonly SignupPreferenceOption[] = toOptions([
-  '조용함',
-  '로맨틱',
-  '아늑함',
-  '활기참',
-  '감성적',
-  '이색적',
-]);
+export const signupConcepts: readonly { label: string; value: PreferredTheme }[] = [
+  { label: '조용함', value: 'QUIET' },
+  { label: '로맨틱', value: 'ROMANTIC' },
+  { label: '아늑함', value: 'COZY' },
+  { label: '활기참', value: 'LIVELY' },
+  { label: '감성적', value: 'EMOTIONAL' },
+  { label: '이색적', value: 'UNIQUE' },
+];
 
 export const signupPreferenceSchema = z.object({
   city: z.string().min(1),
@@ -43,16 +98,9 @@ export const signupPreferenceSchema = z.object({
 
 export type SignupPreferenceValues = z.infer<typeof signupPreferenceSchema>;
 
-const signupAllDistrictsOption: SignupPreferenceOption = {
-  label: '전체 선택',
-  value: '전체',
-};
-
-/** 지역의 구·군 옵션을 반환합니다. 맨 앞에 전체 선택이 있고, 지역을 고르지 않았으면 빈 목록입니다. */
+/** 지역의 구·군 옵션을 반환합니다. 지역을 고르지 않았으면 빈 목록입니다. */
 export function getDistrictOptions(city: string): readonly SignupPreferenceOption[] {
-  const region = signupRegions.find(({ value }) => value === city);
-
-  return region ? [signupAllDistrictsOption, ...region.districts] : [];
+  return signupRegions.find(({ value }) => value === city)?.districts ?? [];
 }
 
 /** 컨셉 하나의 선택 여부를 바꾼 새 목록을 반환합니다. */

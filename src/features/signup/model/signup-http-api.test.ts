@@ -283,3 +283,24 @@ describe('createHttpSignupApi.signup', () => {
     await expect(createHttpSignupApi().signup(socialRequest)).resolves.toBe(expected);
   });
 });
+
+describe('createHttpSignupApi.savePreference', () => {
+  it('선택한 지역 코드와 컨셉을 프로필 수정 요청으로 보낸다', async () => {
+    const fetchMock = mockFetch(ok({ memberId: 'id' }));
+
+    await createHttpSignupApi().savePreference({
+      city: 'seoul',
+      district: '11:440',
+      concepts: ['QUIET', 'ROMANTIC'],
+    });
+
+    const [url, init] = fetchMock.mock.calls[0];
+
+    expect(url).toBe(`${BASE_URL}/api/v1/members/me`);
+    expect(init.method).toBe('PATCH');
+    expect(JSON.parse(init.body)).toEqual({
+      preferredRegions: [{ sidoCode: '11', sigunguCode: '440' }],
+      preferredThemes: ['QUIET', 'ROMANTIC'],
+    });
+  });
+});

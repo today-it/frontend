@@ -38,18 +38,18 @@ async function choose(dialog: HTMLElement, name: string, option: string) {
 export const Default: Story = {};
 
 export const CitySelected: Story = {
-  args: { defaultCity: '부산' },
+  args: { defaultCity: 'busan' },
 };
 
 export const RegionSelected: Story = {
-  args: { defaultCity: '부산', defaultDistrict: '서면' },
+  args: { defaultCity: 'busan', defaultDistrict: '26:500' },
 };
 
 export const AllSelected: Story = {
   args: {
-    defaultCity: '부산',
-    defaultDistrict: '서면',
-    defaultConcepts: ['조용함', '로맨틱', '아늑함'],
+    defaultCity: 'busan',
+    defaultDistrict: '26:500',
+    defaultConcepts: ['QUIET', 'ROMANTIC', 'COZY'],
   },
 };
 
@@ -59,20 +59,20 @@ export const CityOpen: Story = {
 
     await userEvent.click(within(dialog).getByRole('combobox', { name: '지역' }));
 
-    for (const city of ['서울', '부산', '인천', '대구', '대전', '광주']) {
+    for (const city of ['서울', '경기 & 인천', '부산', '강원', '제주', '기타']) {
       await expect(await screen.findByRole('option', { name: city })).toBeVisible();
     }
   },
 };
 
 export const DistrictOpen: Story = {
-  args: { defaultCity: '부산' },
+  args: { defaultCity: 'busan' },
   play: async () => {
     const dialog = await screen.findByRole('dialog');
 
     await userEvent.click(within(dialog).getByRole('combobox', { name: '구/군' }));
 
-    for (const district of ['전체 선택', '해운대구', '서면', '남포동', '광안리', '기장군']) {
+    for (const district of ['수영구', '해운대구', '부산진구']) {
       await expect(await screen.findByRole('option', { name: district })).toBeVisible();
     }
   },
@@ -89,30 +89,11 @@ export const SelectRegion: Story = {
     await expect(within(dialog).getByRole('combobox', { name: '지역' })).toHaveTextContent('부산');
     await expect(district).toBeEnabled();
 
-    await choose(dialog, '구/군', '서면');
-    await expect(district).toHaveTextContent('서면');
+    await choose(dialog, '구/군', '수영구');
+    await expect(district).toHaveTextContent('수영구');
 
     await choose(dialog, '지역', '서울');
     await expect(district).toHaveTextContent('구/군 선택');
-  },
-};
-
-export const SelectAllDistricts: Story = {
-  args: { defaultCity: '부산', defaultConcepts: ['조용함'] },
-  play: async ({ args }) => {
-    const dialog = await screen.findByRole('dialog');
-
-    await choose(dialog, '구/군', '전체 선택');
-    await expect(within(dialog).getByRole('combobox', { name: '구/군' })).toHaveTextContent(
-      '전체 선택',
-    );
-
-    await userEvent.click(within(dialog).getByRole('button', { name: '선택 완료' }));
-    await expect(args.onSubmit).toHaveBeenCalledWith({
-      city: '부산',
-      district: '전체',
-      concepts: ['조용함'],
-    });
   },
 };
 
@@ -124,7 +105,7 @@ export const SelectPreference: Story = {
     await expect(submit).toBeDisabled();
 
     await choose(dialog, '지역', '부산');
-    await choose(dialog, '구/군', '서면');
+    await choose(dialog, '구/군', '수영구');
     await expect(submit).toBeDisabled();
 
     const quiet = within(dialog).getByRole('button', { name: '조용함' });
@@ -139,9 +120,9 @@ export const SelectPreference: Story = {
 
     await userEvent.click(submit);
     await expect(args.onSubmit).toHaveBeenCalledWith({
-      city: '부산',
-      district: '서면',
-      concepts: ['로맨틱'],
+      city: 'busan',
+      district: '26:500',
+      concepts: ['ROMANTIC'],
     });
   },
 };
@@ -159,18 +140,18 @@ export const Skip: Story = {
 
 export const Submitting: Story = {
   args: {
-    defaultCity: '부산',
-    defaultDistrict: '서면',
-    defaultConcepts: ['조용함', '로맨틱'],
+    defaultCity: 'busan',
+    defaultDistrict: '26:500',
+    defaultConcepts: ['QUIET', 'ROMANTIC'],
     isSubmitting: true,
   },
 };
 
 export const RequestError: Story = {
   args: {
-    defaultCity: '부산',
-    defaultDistrict: '서면',
-    defaultConcepts: ['조용함', '로맨틱'],
+    defaultCity: 'busan',
+    defaultDistrict: '26:500',
+    defaultConcepts: ['QUIET', 'ROMANTIC'],
     requestError: true,
   },
 };

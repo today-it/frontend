@@ -1,4 +1,4 @@
-import { apiRequest, isApiError } from '@/shared/api';
+import { apiRequest, isApiError, type PreferredTheme, updateMemberProfile } from '@/shared/api';
 
 import { type SignupApi } from './signup-api';
 import { type SignupTermId } from './signup-terms';
@@ -173,7 +173,13 @@ export function createHttpSignupApi(): SignupApi {
       return 'created';
     },
 
-    // 선호 지역·컨셉 저장 API는 아직 명세에 없어 저장하지 않고 성공으로 처리합니다.
-    async savePreference() {},
+    async savePreference({ district, concepts }) {
+      const [sidoCode, sigunguCode] = district.split(':');
+
+      await updateMemberProfile({
+        preferredRegions: [{ sidoCode, sigunguCode }],
+        preferredThemes: concepts as PreferredTheme[],
+      });
+    },
   };
 }
