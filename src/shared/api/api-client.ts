@@ -1,7 +1,7 @@
 type QueryValue = string | number | boolean;
 
 export interface ApiRequestOptions {
-  method?: 'GET' | 'POST';
+  method?: 'GET' | 'POST' | 'PATCH';
   /** 쿼리 문자열로 전달할 값. 인코딩은 이 함수가 처리합니다. */
   query?: Record<string, QueryValue>;
   /** JSON으로 전송할 본문 */
@@ -88,10 +88,16 @@ function buildUrl(path: string, query?: Record<string, QueryValue>) {
  */
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const { method = 'GET', query, body, signal } = options;
+  // 서버 컴포넌트에서도 호출하므로 브라우저에서만 토큰을 읽습니다.
+  const accessToken =
+    typeof localStorage === 'undefined' ? null : localStorage.getItem('accessToken');
 
   const response = await fetch(buildUrl(path, query), {
     method,
-    headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+    headers: {
+      ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    },
     body: body === undefined ? undefined : JSON.stringify(body),
     signal,
   });
